@@ -124,6 +124,7 @@ font-size:12px;
 display:flex;
 gap:8px;
 margin-top:10px;
+flex-wrap:wrap;
 }
 
 .small-btn{
@@ -310,7 +311,7 @@ cursor:pointer;
 type="text"
 id="search"
 class="search-box"
-placeholder="도서명 또는 저자 검색">
+placeholder="도서명 / 저자 / 카테고리 / 위치 검색">
 
 <h3>✨ 신규 도서</h3>
 
@@ -369,7 +370,6 @@ isNew:true
 ];
 
 let currentCategory='전체';
-
 let admin=false;
 
 const room=document.getElementById('room');
@@ -414,29 +414,60 @@ return `https://source.unsplash.com/300x450/?book,${encodeURIComponent(title)},$
 
 function renderBooks(){
 
-const keyword=
+const keyword =
 document.getElementById('search')
 .value
-.toLowerCase();
+.toLowerCase()
+.trim();
 
-const list=
+const list =
 document.getElementById('bookList');
 
 list.innerHTML='';
 
-const filtered=books.filter(book=>{
+const filtered = books.filter(book=>{
 
-const cat=
-currentCategory==='전체' ||
-book.category===currentCategory;
+const matchKeyword =
 
-const key=
 book.title.toLowerCase().includes(keyword) ||
-book.author.toLowerCase().includes(keyword);
 
-return cat && key;
+book.author.toLowerCase().includes(keyword) ||
+
+book.category.toLowerCase().includes(keyword) ||
+
+book.location.toLowerCase().includes(keyword);
+
+const matchCategory =
+
+currentCategory === '전체' ||
+
+book.category === currentCategory ||
+
+keyword !== '';
+
+return matchKeyword && matchCategory;
 
 });
+
+if(filtered.length===0){
+
+list.innerHTML=`
+
+<div style="
+text-align:center;
+padding:30px;
+color:#777;
+">
+
+검색 결과 없음
+
+</div>
+
+`;
+
+return;
+
+}
 
 filtered.forEach((book,index)=>{
 
@@ -457,28 +488,54 @@ onerror="this.src='https://via.placeholder.com/80x110?text=BOOK'"
 <div class="book-info">
 
 <div class="book-title">
+
+${book.isNew ? '⭐ ' : ''}
+
 ${book.title}
+
 </div>
 
 <div class="book-author">
+
 ${book.author}
+
 </div>
 
 <div class="book-tag">
+
 ${book.category}
+
+</div>
+
+<div style="
+margin-top:5px;
+font-size:13px;
+color:#555;
+">
+
+📍 ${book.location}
+
 </div>
 
 <div class="book-actions">
 
 <button
 class="small-btn location-btn"
-onclick="event.stopPropagation();showLocation('${book.title}','${book.location}')">
+onclick="event.stopPropagation();
+showLocation(
+'${book.title}',
+'${book.location}'
+)">
 위치
 </button>
 
+${admin ? `
+
 <button
 class="small-btn new-btn"
-onclick="event.stopPropagation();toggleNew(${index})">
+onclick="event.stopPropagation();
+toggleNew(${index})"
+>
 
 ${book.isNew ? '⭐ 신규해제' : '☆ 신규등록'}
 
@@ -486,11 +543,15 @@ ${book.isNew ? '⭐ 신규해제' : '☆ 신규등록'}
 
 <button
 class="small-btn delete-btn"
-onclick="event.stopPropagation();deleteBook(${index})">
+onclick="event.stopPropagation();
+deleteBook(${index})"
+>
 
 삭제
 
 </button>
+
+` : ''}
 
 </div>
 
@@ -622,6 +683,8 @@ document
 .getElementById('adminBox')
 .style.display='block';
 
+renderBooks();
+
 }else{
 
 alert('로그인 실패');
@@ -635,6 +698,8 @@ admin=false;
 document
 .getElementById('adminBox')
 .style.display='none';
+
+renderBooks();
 
 }
 
@@ -701,7 +766,8 @@ renderNewBooks();
 
 function toggleNew(index){
 
-books[index].isNew=!books[index].isNew;
+books[index].isNew =
+!books[index].isNew;
 
 saveBooks();
 
