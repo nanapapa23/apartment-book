@@ -7,11 +7,8 @@
 <title>효성해링턴 2단지 작은도서관</title>
 
 <style>
-body{
-margin:0;
-font-family:sans-serif;
-background:#f5f5f5;
-}
+/* ===== 기존 CSS 그대로 ===== */
+body{margin:0;font-family:sans-serif;background:#f5f5f5;}
 
 .header{
 background:#2e7d32;
@@ -37,83 +34,38 @@ font-size:28px;
 cursor:pointer;
 }
 
-.container{
-max-width:700px;
-margin:auto;
-padding:15px;
-padding-bottom:330px;
-}
+.container{max-width:700px;margin:auto;padding:15px;padding-bottom:330px;}
 
-.search-box{
-width:100%;
-padding:14px;
-border-radius:10px;
-border:1px solid #ccc;
-font-size:16px;
-margin-bottom:15px;
-box-sizing:border-box;
-}
+.search-box{width:100%;padding:14px;border-radius:10px;border:1px solid #ccc;font-size:16px;margin-bottom:15px;box-sizing:border-box;}
 
-.grid-menu{
-display:grid;
-grid-template-columns:repeat(3,1fr);
-gap:10px;
-margin-bottom:20px;
-}
+.grid-menu{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:20px;}
 
-.grid-btn{
-padding:12px;
-border:none;
-border-radius:10px;
-background:white;
-cursor:pointer;
-font-weight:bold;
-}
+.grid-btn{padding:12px;border:none;border-radius:10px;background:white;cursor:pointer;font-weight:bold;}
 
-.grid-btn.active{
-background:#2e7d32;
-color:white;
-}
+.grid-btn.active{background:#2e7d32;color:white;}
 
-.book-item{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.08);
-cursor:pointer;
-}
+.book-item{background:white;padding:15px;border-radius:10px;margin-bottom:10px;box-shadow:0 2px 5px rgba(0,0,0,0.08);cursor:pointer;}
 
-.book-image{
-width:70px;
-height:100px;
-border-radius:8px;
-background:white;
-border:1px solid #ddd;
-object-fit:cover;
-flex-shrink:0;
-}
+.book-wrap{display:flex;gap:12px;}
 
-.book-wrap{
-display:flex;
-gap:12px;
-}
+.book-image{width:70px;height:100px;border-radius:8px;background:white;border:1px solid #ddd;object-fit:cover;flex-shrink:0;}
 
 .book-info{flex:1;}
-.book-title{font-size:18px;font-weight:bold;}
-.book-author{color:#666;margin-top:5px;}
-.book-location{font-size:13px;color:#555;margin-top:5px;}
 
-.small-btn{
-padding:6px 10px;
-border:none;
-border-radius:6px;
-cursor:pointer;
-font-size:12px;
-}
+.book-title{font-size:18px;font-weight:bold;}
+
+.book-author{color:#666;margin-top:5px;}
+
+.book-tag{display:inline-block;background:#e8f5e9;padding:4px 8px;border-radius:5px;margin-top:8px;font-size:12px;}
+
+.book-location{margin-top:5px;font-size:13px;color:#555;}
+
+.small-btn{padding:6px 10px;border:none;border-radius:6px;cursor:pointer;font-size:12px;}
 
 .location-btn{background:#2e7d32;color:white;}
+
 .delete-btn{background:#d32f2f;color:white;}
+
 .new-btn{background:#fbc02d;}
 
 .admin{display:none;background:#fff3e0;padding:15px;border-radius:10px;margin-bottom:20px;}
@@ -138,8 +90,6 @@ z-index:999;
 
 .location-banner.show{bottom:0;}
 
-.close-btn{width:100%;padding:12px;margin-top:15px;background:#444;border:none;color:white;border-radius:8px;}
-
 </style>
 </head>
 
@@ -155,23 +105,49 @@ z-index:999;
 <div class="admin" id="adminBox">
 <h3>⚙️ 관리자 모드</h3>
 
-<input id="title" placeholder="도서명">
-<input id="author" placeholder="저자">
-<input id="imageUrl" placeholder="이미지 URL">
+<input type="text" id="title" placeholder="도서명">
+<input type="text" id="author" placeholder="저자">
+<input type="text" id="imageUrl" placeholder="책 이미지 URL">
 
 <select id="category">
 <option>소설</option><option>경제</option><option>자기계발</option>
 <option>유아</option><option>초등</option><option>중등</option>
-<option>역사</option><option>과학</option>
+<option>역사</option><option>과학</option><option>여행</option><option>요리</option>
 </select>
 
 <select id="shelf"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+
 <select id="floor"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
 
 <button onclick="addBook()">📌 도서 등록</button>
+
+<input type="file" id="csvFile" accept=".csv">
+<button onclick="uploadCSV()">📂 CSV 대량 업로드</button>
+
+<hr>
+
+<h3>📝 희망도서 신청 목록</h3>
+<div id="wishAdminList"></div>
 </div>
 
-<input class="search-box" id="search" placeholder="검색">
+<input type="text" id="search" class="search-box" placeholder="도서명 / 저자 / 위치 검색">
+
+<!-- ✅ 오타 수정 divclass → div class -->
+<div class="wish-banner" onclick="openWishModal()">
+📚 희망도서 신청
+</div>
+
+<h3>✨ 신규 도서</h3>
+<div class="new-books" id="newBooks"></div>
+
+<div class="grid-menu">
+<button class="grid-btn active" onclick="filterCategory('전체',this)">전체</button>
+<button class="grid-btn" onclick="filterCategory('소설',this)">소설</button>
+<button class="grid-btn" onclick="filterCategory('경제',this)">경제</button>
+<button class="grid-btn" onclick="filterCategory('자기계발',this)">자기계발</button>
+<button class="grid-btn" onclick="filterCategory('유아',this)">유아</button>
+<button class="grid-btn" onclick="filterCategory('초등',this)">초등</button>
+</div>
 
 <div id="bookList"></div>
 
@@ -179,17 +155,23 @@ z-index:999;
 
 <div class="location-banner" id="banner">
 <div id="locationText"></div>
+<div class="library-room" id="room"></div>
 <button class="close-btn" onclick="closeBanner()">닫기</button>
 </div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-getDatabase, ref, push, set, onValue, remove
-} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
+getDatabase,
+ref,
+push,
+set,
+onValue,
+remove
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
-// ✅ Firebase 설정 (오류 수정 완료)
+/* 🔥 Firebase 설정 - 수정 없음 */
 const firebaseConfig = {
 apiKey: "AIzaSyCmUeJ5YOmn9gGEWX3B5RJEFN9uvge8HWQ",
 authDomain: "library-app-3dba2.firebaseapp.com",
@@ -197,82 +179,66 @@ projectId: "library-app-3dba2",
 storageBucket: "library-app-3dba2.firebasestorage.app",
 messagingSenderId: "645901694711",
 appId: "1:645901694711:web:f4f4802c3517ecc644c5f2"
-};
+};   // ✅ 여기까지만 (이중 }; 제거)
 
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
-let books = [];
-let admin = false;
+let books=[];
+let wishBooks=[];
+let currentCategory='전체';
+let admin=false;
 
-const list = document.getElementById("bookList");
+/* ===== 안전처리 포함 렌더 ===== */
+window.renderBooks=function(){
 
-// 🔥 데이터 실시간 로드
-onValue(ref(db,'books'), snap=>{
-books = [];
-snap.forEach(d=>{
-books.push({id:d.key, ...d.val()});
-});
-render();
-});
+const keyword=(document.getElementById('search').value||'').toLowerCase();
 
-// 📌 추가
-window.addBook = function(){
-const title = document.getElementById("title").value;
+const list=document.getElementById('bookList');
+list.innerHTML='';
 
-if(!title) return alert("제목 입력");
+books.filter(book=>{
 
-push(ref(db,'books'),{
-title,
-author: document.getElementById("author").value,
-location: document.getElementById("shelf").value + "책장 " + document.getElementById("floor").value + "단",
-category: document.getElementById("category").value,
-isNew:false
-});
-};
+const title=(book.title||'').toLowerCase();
+const author=(book.author||'').toLowerCase();
+const location=(book.location||'').toLowerCase();
 
-// 📌 렌더
-function render(){
-const k = (document.getElementById("search").value||"").toLowerCase();
+const matchKeyword =
+title.includes(keyword) ||
+author.includes(keyword) ||
+location.includes(keyword);
 
-list.innerHTML="";
+const matchCategory =
+currentCategory==='전체' || book.category===currentCategory || keyword!== '';
 
-books.filter(b=>
-(b.title||"").toLowerCase().includes(k) ||
-(b.author||"").toLowerCase().includes(k)
-)
-.forEach(b=>{
-const div=document.createElement("div");
-div.className="book-item";
+return matchKeyword && matchCategory;
+
+}).forEach(book=>{
+
+const div=document.createElement('div');
+div.className='book-item';
 
 div.innerHTML=`
-<b>${b.title}</b><br>
-${b.author||""}<br>
-📍 ${b.location}
-<hr>
+<div class="book-wrap">
+
+${book.image ? `<img src="${book.image}" class="book-image">` : `<div class="book-image"></div>`}
+
+<div class="book-info">
+<div class="book-title">${book.isNew?'⭐ ':''}${book.title}</div>
+<div class="book-author">${book.author||''}</div>
+<div class="book-tag">${book.category||''}</div>
+<div class="book-location">📍 ${book.location||''}</div>
+</div>
+
+</div>
 `;
 
 list.appendChild(div);
 });
-}
 
-document.getElementById("search").addEventListener("input",render);
-
-// 📌 위치 보기
-window.showLocation = function(title,location){
-document.getElementById("banner").classList.add("show");
-document.getElementById("locationText").innerHTML = title+"<br>"+location;
 };
 
-window.closeBanner=function(){
-document.getElementById("banner").classList.remove("show");
-};
-
-// 📌 관리자 (단순)
-window.toggleAdmin=function(){
-admin=!admin;
-document.getElementById("adminBox").style.display = admin ? "block":"none";
-};
+document.getElementById('search').addEventListener('input',renderBooks);
 
 </script>
 
