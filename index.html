@@ -24,7 +24,6 @@ font-weight:bold;
 position:sticky;
 top:0;
 z-index:100;
-position:sticky;
 }
 
 .lock-btn{
@@ -85,6 +84,25 @@ margin-bottom:10px;
 box-shadow:0 2px 5px rgba(0,0,0,0.08);
 }
 
+.book-wrap{
+display:flex;
+gap:12px;
+}
+
+.book-image{
+width:70px;
+height:100px;
+border-radius:8px;
+background:white;
+border:1px solid #ddd;
+object-fit:cover;
+flex-shrink:0;
+}
+
+.book-info{
+flex:1;
+}
+
 .book-title{
 font-size:18px;
 font-weight:bold;
@@ -125,6 +143,11 @@ cursor:pointer;
 font-size:12px;
 }
 
+.location-btn{
+background:#2e7d32;
+color:white;
+}
+
 .delete-btn{
 background:#d32f2f;
 color:white;
@@ -132,11 +155,6 @@ color:white;
 
 .new-btn{
 background:#fbc02d;
-}
-
-.location-btn{
-background:#2e7d32;
-color:white;
 }
 
 .admin{
@@ -265,28 +283,25 @@ onclick="toggleAdmin()">
 
 <input type="text" id="author" placeholder="저자">
 
-<select id="category">
+<input type="text" id="imageUrl" placeholder="책 이미지 URL (선택)">
 
+<select id="category">
 <option>성인</option>
 <option>청소년</option>
 <option>어린이</option>
 <option>여행</option>
 <option>요리</option>
-
 </select>
 
 <select id="shelf">
-
 <option>A</option>
 <option>B</option>
 <option>C</option>
 <option>D</option>
 <option>E</option>
-
 </select>
 
 <select id="floor">
-
 <option>1</option>
 <option>2</option>
 <option>3</option>
@@ -294,7 +309,6 @@ onclick="toggleAdmin()">
 <option>5</option>
 <option>6</option>
 <option>7</option>
-
 </select>
 
 <button onclick="addBook()">
@@ -302,6 +316,13 @@ onclick="toggleAdmin()">
 📌 도서 등록
 
 </button>
+
+<div style="font-size:13px;color:#666;margin-bottom:10px;">
+
+CSV 형식 :
+도서명,저자,위치,카테고리,이미지URL
+
+</div>
 
 <input type="file" id="csvFile" accept=".csv">
 
@@ -373,7 +394,8 @@ title:'소년이 온다',
 author:'한강',
 category:'성인',
 location:'A책장 3단',
-isNew:true
+isNew:true,
+image:''
 },
 
 {
@@ -381,7 +403,8 @@ title:'불편한 편의점',
 author:'김호연',
 category:'청소년',
 location:'C책장 1단',
-isNew:true
+isNew:true,
+image:''
 }
 
 ];
@@ -493,6 +516,29 @@ div.className='book-item';
 
 div.innerHTML=`
 
+<div class="book-wrap">
+
+${
+book.image
+?
+
+`
+<img
+src="${book.image}"
+class="book-image"
+onerror="this.style.display='none'"
+>
+`
+
+:
+
+`
+<div class="book-image"></div>
+`
+}
+
+<div class="book-info">
+
 <div class="book-title">
 
 ${book.isNew ? '⭐ ' : ''}
@@ -551,6 +597,10 @@ onclick="deleteBook(${realIndex})"
 </button>
 
 ` : ''}
+
+</div>
+
+</div>
 
 </div>
 
@@ -733,6 +783,9 @@ document.getElementById('shelf').value;
 const floor=
 document.getElementById('floor').value;
 
+const image=
+document.getElementById('imageUrl').value.trim();
+
 if(!title || !author){
 
 alert('도서명과 저자를 입력하세요');
@@ -747,7 +800,8 @@ title,
 author,
 category,
 location:`${shelf}책장 ${floor}단`,
-isNew:false
+isNew:false,
+image:image
 
 });
 
@@ -759,6 +813,7 @@ renderNewBooks();
 
 document.getElementById('title').value='';
 document.getElementById('author').value='';
+document.getElementById('imageUrl').value='';
 
 alert('등록 완료');
 
@@ -793,12 +848,12 @@ renderNewBooks();
 
 function downloadCSV(){
 
-let csv='도서명,저자,위치,카테고리\n';
+let csv='도서명,저자,위치,카테고리,이미지URL\n';
 
 books.forEach(book=>{
 
 csv+=
-`${book.title},${book.author},${book.location},${book.category}\n`;
+`${book.title},${book.author},${book.location},${book.category},${book.image || ''}\n`;
 
 });
 
@@ -873,6 +928,7 @@ title:cols[0].trim(),
 author:cols[1].trim(),
 location:cols[2].trim(),
 category:cols[3].trim(),
+image: cols[4] ? cols[4].trim() : '',
 isNew:false
 
 });
