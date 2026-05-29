@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -266,7 +267,6 @@ font-size:22px;
 font-weight:bold;
 text-align:center;
 cursor:pointer;
-box-shadow:0 4px 10px rgba(0,0,0,0.15);
 }
 
 .modal{
@@ -379,14 +379,6 @@ onclick="toggleAdmin()">
 📂 CSV 대량 업로드
 </button>
 
-<button onclick="downloadCSV()">
-📥 전체목록 다운로드
-</button>
-
-<hr>
-
-<div id="adminStats"></div>
-
 <hr>
 
 <h3>📝 희망도서 신청 목록</h3>
@@ -475,13 +467,40 @@ onclick="closeWishModal()">
 
 </div>
 
-<script>
+<script type="module">
 
-let books=
-JSON.parse(localStorage.getItem('books')) || [];
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-let wishBooks=
-JSON.parse(localStorage.getItem('wishBooks')) || [];
+import {
+getDatabase,
+ref,
+push,
+set,
+onValue,
+remove
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+/* Firebase 설정값 넣기 */
+
+const firebaseConfig = {
+
+  apiKey: "AIzaSyCmUeJ5YOmn9gGEWX3B5RJEFN9uvge8HWQ",
+  authDomain: "library-app-3dba2.firebaseapp.com",
+  projectId: "library-app-3dba2",
+  storageBucket: "library-app-3dba2.firebasestorage.app",
+  messagingSenderId: "645901694711",
+  appId: "1:645901694711:web:f4f4802c3517ecc644c5f2"
+
+};
+};
+
+const app = initializeApp(firebaseConfig);
+
+const db = getDatabase(app);
+
+let books=[];
+let wishBooks=[];
 
 let currentCategory='전체';
 
@@ -512,70 +531,163 @@ room.innerHTML+=html;
 
 });
 
-function saveBooks(){
+onValue(ref(db,'books'), snapshot=>{
 
-localStorage.setItem(
-'books',
-JSON.stringify(books)
-);
+books=[];
 
-}
+snapshot.forEach(child=>{
 
-function saveWishBooks(){
+books.push({
 
-localStorage.setItem(
-'wishBooks',
-JSON.stringify(wishBooks)
-);
+id:child.key,
+...child.val()
 
-}
+});
 
-function getChosung(str){
+});
 
-const cho=[
-'ㄱ','ㄲ','ㄴ','ㄷ','ㄸ',
-'ㄹ','ㅁ','ㅂ','ㅃ','ㅅ',
-'ㅆ','ㅇ','ㅈ','ㅉ','ㅊ',
-'ㅋ','ㅌ','ㅍ','ㅎ'
-];
+renderBooks();
+renderNewBooks();
 
-let result='';
+});
 
-for(let s of str){
+onValue(ref(db,'wishBooks'), snapshot=>{
 
-const code=s.charCodeAt(0)-44032;
+wishBooks=[];
 
-if(code>-1 && code<11172){
+snapshot.forEach(child=>{
 
-result+=cho[Math.floor(code/588)];
+wishBooks.push({
+
+id:child.key,
+...child.val()
+
+});
+
+});
+
+renderWishAdmin();
+
+});
+
+window.toggleAdmin=function(){
+
+const lockBtn=
+document.getElementById('lockBtn');
+
+if(!admin){
+
+const id=prompt('ID');
+
+const pw=prompt('PW');
+
+if(id==='admin' && pw==='1234'){
+
+admin=true;
+
+document
+.getElementById('adminBox')
+.style.display='block';
+
+lockBtn.innerHTML='🔓';
+
+renderBooks();
+renderWishAdmin();
 
 }else{
 
-result+=s;
+alert('로그인 실패');
 
 }
 
+}else{
+
+admin=false;
+
+document
+.getElementById('adminBox')
+.style.display='none';
+
+lockBtn.innerHTML='🔒';
+
+renderBooks();
+
 }
 
-return result;
+};
+
+window.addBook=function(){
+
+const title=
+document.getElementById('title').value.trim();
+
+const author=
+document.getElementById('author').value.trim();
+
+const image=
+document.getElementById('imageUrl').value.trim();
+
+const category=
+document.getElementById('category').value;
+
+const shelf=
+document.getElementById('shelf').value;
+
+const floor=
+document.getElementById('floor').value;
+
+if(!title || !author){
+
+alert('도서명 입력');
+
+return;
 
 }
 
-function renderBooks(){
+push(ref(db,'books'),{
+
+title,
+author,
+image,
+category,
+location:`${shelf}책장 ${floor}단`,
+isNew:false
+
+});
+
+alert('등록 완료');
+
+};
+
+window.deleteBook=function(id){
+
+if(!confirm('삭제할까요?')) return;
+
+remove(ref(db,'books/'+id));
+
+};
+
+window.toggleNew=function(id,current){
+
+set(ref(db,'books/'+id+'/isNew'),!current);
+
+};
+
+window.renderBooks=function(){
 
 const keyword=
 document
 .getElementById('search')
 .value
-.toLowerCase()
-.trim();
+.toLowerCase();
 
 const list=
 document.getElementById('bookList');
 
 list.innerHTML='';
 
-const filtered=books.filter(book=>{
+books
+.filter(book=>{
 
 const matchKeyword=
 
@@ -583,9 +695,7 @@ book.title.toLowerCase().includes(keyword) ||
 
 book.author.toLowerCase().includes(keyword) ||
 
-book.location.toLowerCase().includes(keyword) ||
-
-getChosung(book.title).includes(keyword);
+book.location.toLowerCase().includes(keyword);
 
 const matchCategory=
 
@@ -597,11 +707,9 @@ keyword!== '';
 
 return matchKeyword && matchCategory;
 
-});
+})
 
-filtered.forEach(book=>{
-
-const realIndex=books.indexOf(book);
+.forEach(book=>{
 
 const div=document.createElement('div');
 
@@ -673,15 +781,20 @@ ${admin ? `
 
 <button
 class="small-btn new-btn"
-onclick="toggleNew(${realIndex})">
+onclick="toggleNew(
+'${book.id}',
+${book.isNew}
+)">
 
-${book.isNew ? '⭐ 해제' : '☆ 신규'}
+⭐
 
 </button>
 
 <button
 class="small-btn delete-btn"
-onclick="deleteBook(${realIndex})">
+onclick="deleteBook(
+'${book.id}'
+)">
 
 삭제
 
@@ -701,9 +814,9 @@ list.appendChild(div);
 
 });
 
-}
+};
 
-function renderNewBooks(){
+window.renderNewBooks=function(){
 
 const area=
 document.getElementById('newBooks');
@@ -747,63 +860,108 @@ area.appendChild(div);
 
 });
 
+};
+
+window.filterCategory=function(category,el){
+
+currentCategory=category;
+
+document
+.querySelectorAll('.grid-btn')
+.forEach(btn=>btn.classList.remove('active'));
+
+el.classList.add('active');
+
+renderBooks();
+
+};
+
+window.showLocation=function(title,location){
+
+const banner=
+document.getElementById('banner');
+
+banner.classList.add('show');
+
+document.getElementById('locationText')
+.innerHTML=
+`📖 ${title}<br><br>${location}`;
+
+document
+.querySelectorAll('.cell')
+.forEach(c=>c.classList.remove('highlight'));
+
+const shelf=location.charAt(0);
+
+const floor=
+location.match(/\d+/)[0];
+
+const target=
+document.getElementById(`${shelf}-${floor}`);
+
+if(target){
+
+target.classList.add('highlight');
+
 }
 
-function renderAdminStats(){
+};
 
-if(!admin){
+window.closeBanner=function(){
 
-document.getElementById('adminStats').innerHTML='';
+document
+.getElementById('banner')
+.classList.remove('show');
+
+};
+
+window.openWishModal=function(){
+
+document
+.getElementById('wishModal')
+.style.display='flex';
+
+};
+
+window.closeWishModal=function(){
+
+document
+.getElementById('wishModal')
+.style.display='none';
+
+};
+
+window.addWishBook=function(){
+
+const title=
+document.getElementById('wishTitle').value.trim();
+
+const author=
+document.getElementById('wishAuthor').value.trim();
+
+if(!title){
+
+alert('도서명 입력');
 
 return;
 
 }
 
-const total=books.length;
+push(ref(db,'wishBooks'),{
 
-const newCount=
-books.filter(b=>b.isNew).length;
-
-const popular=[...books]
-.sort((a,b)=>(b.views||0)-(a.views||0))
-.slice(0,5);
-
-let html=`
-
-<h3>📊 도서관 통계</h3>
-
-총 도서 :
-${total}권<br><br>
-
-신규 도서 :
-${newCount}권<br><br>
-
-희망도서 :
-${wishBooks.length}건
-
-<hr>
-
-<h3>🔥 인기도서 TOP5</h3>
-
-`;
-
-popular.forEach((book,index)=>{
-
-html+=`
-
-${index+1}위
-${book.title}
-(${book.views||0}회)<br><br>
-
-`;
+title,
+author,
+date:new Date().toLocaleDateString()
 
 });
 
-document.getElementById('adminStats').innerHTML=html;
+closeWishModal();
 
-}
+alert('신청 완료');
 
-function renderWishAdmin(){
+};
+
+window.renderWishAdmin=function(){
 
 const area=
 document.getElementById('wishAdminList');
@@ -818,7 +976,7 @@ return;
 
 let html='';
 
-wishBooks.forEach((wish,index)=>{
+wishBooks.forEach(wish=>{
 
 html+=`
 
@@ -848,22 +1006,6 @@ color:#999;
 ${wish.date}
 </div>
 
-<button
-style="
-margin-top:10px;
-background:#d32f2f;
-color:white;
-border:none;
-padding:8px 10px;
-border-radius:6px;
-cursor:pointer;
-"
-onclick="deleteWishBook(${index})">
-
-삭제
-
-</button>
-
 </div>
 
 `;
@@ -872,312 +1014,9 @@ onclick="deleteWishBook(${index})">
 
 area.innerHTML=html;
 
-}
+};
 
-function addWishBook(){
-
-const title=
-document.getElementById('wishTitle').value.trim();
-
-const author=
-document.getElementById('wishAuthor').value.trim();
-
-if(!title){
-
-alert('도서명을 입력하세요');
-
-return;
-
-}
-
-wishBooks.push({
-
-title,
-author,
-date:new Date().toLocaleDateString()
-
-});
-
-saveWishBooks();
-
-document.getElementById('wishTitle').value='';
-document.getElementById('wishAuthor').value='';
-
-closeWishModal();
-
-renderWishAdmin();
-
-renderAdminStats();
-
-alert('희망도서 신청 완료 🙂');
-
-}
-
-function deleteWishBook(index){
-
-if(!confirm('삭제할까요?')) return;
-
-wishBooks.splice(index,1);
-
-saveWishBooks();
-
-renderWishAdmin();
-
-renderAdminStats();
-
-}
-
-function openWishModal(){
-
-document.getElementById('wishModal')
-.style.display='flex';
-
-}
-
-function closeWishModal(){
-
-document.getElementById('wishModal')
-.style.display='none';
-
-}
-
-function showLocation(title,location){
-
-event.stopPropagation();
-
-const banner=
-document.getElementById('banner');
-
-banner.classList.add('show');
-
-document.getElementById('locationText')
-.innerHTML=
-`📖 ${title}<br><br>${location}`;
-
-document
-.querySelectorAll('.cell')
-.forEach(c=>c.classList.remove('highlight'));
-
-const shelf=location.charAt(0);
-
-const floor=
-location.match(/\d+/)[0];
-
-const target=
-document.getElementById(`${shelf}-${floor}`);
-
-if(target){
-
-target.classList.add('highlight');
-
-}
-
-}
-
-function closeBanner(){
-
-document
-.getElementById('banner')
-.classList.remove('show');
-
-}
-
-function filterCategory(category,el){
-
-currentCategory=category;
-
-document
-.querySelectorAll('.grid-btn')
-.forEach(btn=>btn.classList.remove('active'));
-
-el.classList.add('active');
-
-renderBooks();
-
-}
-
-function toggleAdmin(){
-
-const lockBtn=
-document.getElementById('lockBtn');
-
-if(!admin){
-
-const id=prompt('ID');
-
-if(id===null) return;
-
-const pw=prompt('PW');
-
-if(pw===null) return;
-
-if(id==='admin' && pw==='1234'){
-
-admin=true;
-
-document
-.getElementById('adminBox')
-.style.display='block';
-
-lockBtn.innerHTML='🔓';
-
-renderBooks();
-
-renderWishAdmin();
-
-renderAdminStats();
-
-}else{
-
-alert('로그인 실패');
-
-}
-
-}else{
-
-admin=false;
-
-document
-.getElementById('adminBox')
-.style.display='none';
-
-lockBtn.innerHTML='🔒';
-
-renderBooks();
-
-renderWishAdmin();
-
-renderAdminStats();
-
-}
-
-}
-
-function addBook(){
-
-const title=
-document.getElementById('title').value.trim();
-
-const author=
-document.getElementById('author').value.trim();
-
-const category=
-document.getElementById('category').value;
-
-const shelf=
-document.getElementById('shelf').value;
-
-const floor=
-document.getElementById('floor').value;
-
-const image=
-document.getElementById('imageUrl').value.trim();
-
-if(!title || !author){
-
-alert('도서명과 저자를 입력하세요');
-
-return;
-
-}
-
-books.push({
-
-title,
-author,
-category,
-location:`${shelf}책장 ${floor}단`,
-isNew:false,
-views:0,
-image:image
-
-});
-
-saveBooks();
-
-renderBooks();
-
-renderNewBooks();
-
-renderAdminStats();
-
-alert('등록 완료');
-
-}
-
-function deleteBook(index){
-
-if(!confirm('삭제할까요?')) return;
-
-books.splice(index,1);
-
-saveBooks();
-
-renderBooks();
-
-renderNewBooks();
-
-renderAdminStats();
-
-}
-
-function toggleNew(index){
-
-books[index].isNew=
-!books[index].isNew;
-
-saveBooks();
-
-renderBooks();
-
-renderNewBooks();
-
-renderAdminStats();
-
-}
-
-function downloadCSV(){
-
-let csv='도서명,저자,위치,카테고리,이미지URL\n';
-
-books.forEach(book=>{
-
-csv+=
-`${book.title},${book.author},${book.location},${book.category},${book.image || ''}\n`;
-
-});
-
-const blob=new Blob(
-["\uFEFF"+csv],
-{
-type:'text/csv;charset=utf-8;'
-}
-);
-
-const link=document.createElement('a');
-
-const now=new Date();
-
-const yy=
-String(now.getFullYear()).slice(2);
-
-const mm=
-String(now.getMonth()+1).padStart(2,'0');
-
-const dd=
-String(now.getDate()).padStart(2,'0');
-
-link.href=
-URL.createObjectURL(blob);
-
-link.download=
-`${yy}${mm}${dd}_booklist.csv`;
-
-link.click();
-
-}
-
-function uploadCSV(){
+window.uploadCSV=function(){
 
 const file=
 document.getElementById('csvFile').files[0];
@@ -1210,15 +1049,14 @@ const cols=row.split(',');
 
 if(cols.length>=4){
 
-books.push({
+push(ref(db,'books'),{
 
 title:cols[0].trim(),
 author:cols[1].trim(),
 location:cols[2].trim(),
 category:cols[3].trim(),
 image: cols[4] ? cols[4].trim() : '',
-isNew:false,
-views:0
+isNew:false
 
 });
 
@@ -1228,31 +1066,20 @@ count++;
 
 }
 
-saveBooks();
-
-renderBooks();
-
-renderNewBooks();
-
-renderAdminStats();
-
 alert(count+'권 업로드 완료');
 
 };
 
 reader.readAsText(file,'utf-8');
 
-}
+};
 
 document
 .getElementById('search')
 .addEventListener('input',renderBooks);
 
-renderBooks();
-
-renderNewBooks();
-
 </script>
 
 </body>
 </html>
+```
