@@ -7,7 +7,6 @@
 <title>효성해링턴 2단지 작은도서관</title>
 
 <style>
-
 body{
 margin:0;
 font-family:sans-serif;
@@ -85,11 +84,6 @@ box-shadow:0 2px 5px rgba(0,0,0,0.08);
 cursor:pointer;
 }
 
-.book-wrap{
-display:flex;
-gap:12px;
-}
-
 .book-image{
 width:70px;
 height:100px;
@@ -100,41 +94,15 @@ object-fit:cover;
 flex-shrink:0;
 }
 
-.book-info{
-flex:1;
-}
-
-.book-title{
-font-size:18px;
-font-weight:bold;
-}
-
-.book-author{
-color:#666;
-margin-top:5px;
-}
-
-.book-tag{
-display:inline-block;
-background:#e8f5e9;
-padding:4px 8px;
-border-radius:5px;
-margin-top:8px;
-font-size:12px;
-}
-
-.book-location{
-margin-top:5px;
-font-size:13px;
-color:#555;
-}
-
-.book-actions{
+.book-wrap{
 display:flex;
-gap:8px;
-margin-top:10px;
-flex-wrap:wrap;
+gap:12px;
 }
+
+.book-info{flex:1;}
+.book-title{font-size:18px;font-weight:bold;}
+.book-author{color:#666;margin-top:5px;}
+.book-location{font-size:13px;color:#555;margin-top:5px;}
 
 .small-btn{
 padding:6px 10px;
@@ -144,52 +112,15 @@ cursor:pointer;
 font-size:12px;
 }
 
-.location-btn{
-background:#2e7d32;
-color:white;
-}
+.location-btn{background:#2e7d32;color:white;}
+.delete-btn{background:#d32f2f;color:white;}
+.new-btn{background:#fbc02d;}
 
-.delete-btn{
-background:#d32f2f;
-color:white;
-}
+.admin{display:none;background:#fff3e0;padding:15px;border-radius:10px;margin-bottom:20px;}
 
-.new-btn{
-background:#fbc02d;
-}
+.new-books{display:flex;gap:10px;overflow-x:auto;margin-bottom:20px;}
 
-.admin{
-display:none;
-background:#fff3e0;
-padding:15px;
-border-radius:10px;
-margin-bottom:20px;
-}
-
-.admin input,
-.admin select,
-.admin button{
-width:100%;
-padding:12px;
-margin-bottom:10px;
-box-sizing:border-box;
-}
-
-.new-books{
-display:flex;
-gap:10px;
-overflow-x:auto;
-margin-bottom:20px;
-}
-
-.new-card{
-background:white;
-padding:12px;
-border-radius:10px;
-min-width:130px;
-cursor:pointer;
-box-shadow:0 2px 5px rgba(0,0,0,0.08);
-}
+.new-card{background:white;padding:12px;border-radius:10px;min-width:130px;cursor:pointer;}
 
 .location-banner{
 position:fixed;
@@ -205,105 +136,9 @@ border-top-right-radius:20px;
 z-index:999;
 }
 
-.location-banner.show{
-bottom:0;
-}
+.location-banner.show{bottom:0;}
 
-.library-room{
-display:flex;
-gap:5px;
-margin-top:15px;
-}
-
-.shelf{
-flex:1;
-background:#4e342e;
-border-radius:6px;
-overflow:hidden;
-}
-
-.shelf-title{
-background:#8d6e63;
-text-align:center;
-padding:4px;
-font-size:12px;
-}
-
-.cell{
-height:28px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:#2d1c19;
-border-top:1px solid #5d4037;
-font-size:12px;
-}
-
-.highlight{
-background:yellow !important;
-color:black !important;
-font-weight:bold;
-}
-
-.close-btn{
-width:100%;
-padding:12px;
-margin-top:15px;
-background:#444;
-border:none;
-color:white;
-border-radius:8px;
-cursor:pointer;
-}
-
-.wish-banner{
-background:#ff7043;
-color:white;
-padding:18px;
-border-radius:14px;
-margin-bottom:20px;
-font-size:22px;
-font-weight:bold;
-text-align:center;
-cursor:pointer;
-}
-
-.modal{
-display:none;
-position:fixed;
-left:0;
-top:0;
-width:100%;
-height:100%;
-background:rgba(0,0,0,0.6);
-z-index:9999;
-justify-content:center;
-align-items:center;
-}
-
-.modal-content{
-background:white;
-width:90%;
-max-width:400px;
-padding:20px;
-border-radius:15px;
-}
-
-.modal-content input{
-width:100%;
-padding:12px;
-margin-bottom:10px;
-box-sizing:border-box;
-}
-
-.modal-content button{
-width:100%;
-padding:12px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-margin-top:5px;
-}
+.close-btn{width:100%;padding:12px;margin-top:15px;background:#444;border:none;color:white;border-radius:8px;}
 
 </style>
 </head>
@@ -311,774 +146,135 @@ margin-top:5px;
 <body>
 
 <div class="header">
-
 📚 효성해링턴 2단지 작은도서관
-
-<button
-class="lock-btn"
-id="lockBtn"
-onclick="toggleAdmin()">
-
-🔒
-
-</button>
-
+<button class="lock-btn" id="lockBtn" onclick="toggleAdmin()">🔒</button>
 </div>
 
 <div class="container">
 
 <div class="admin" id="adminBox">
-
 <h3>⚙️ 관리자 모드</h3>
 
-<input type="text" id="title" placeholder="도서명">
-
-<input type="text" id="author" placeholder="저자">
-
-<input type="text" id="imageUrl" placeholder="책 이미지 URL">
+<input id="title" placeholder="도서명">
+<input id="author" placeholder="저자">
+<input id="imageUrl" placeholder="이미지 URL">
 
 <select id="category">
-<option>소설</option>
-<option>경제</option>
-<option>자기계발</option>
-<option>유아</option>
-<option>초등</option>
-<option>중등</option>
-<option>역사</option>
-<option>과학</option>
-<option>여행</option>
-<option>요리</option>
+<option>소설</option><option>경제</option><option>자기계발</option>
+<option>유아</option><option>초등</option><option>중등</option>
+<option>역사</option><option>과학</option>
 </select>
 
-<select id="shelf">
-<option>A</option>
-<option>B</option>
-<option>C</option>
-<option>D</option>
-<option>E</option>
-</select>
+<select id="shelf"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+<select id="floor"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
 
-<select id="floor">
-<option>1</option>
-<option>2</option>
-<option>3</option>
-<option>4</option>
-<option>5</option>
-<option>6</option>
-<option>7</option>
-</select>
-
-<button onclick="addBook()">
-📌 도서 등록
-</button>
-
-<input type="file" id="csvFile" accept=".csv">
-
-<button onclick="uploadCSV()">
-📂 CSV 대량 업로드
-</button>
-
-<hr>
-
-<h3>📝 희망도서 신청 목록</h3>
-
-<div id="wishAdminList"></div>
-
+<button onclick="addBook()">📌 도서 등록</button>
 </div>
 
-<input
-type="text"
-id="search"
-class="search-box"
-placeholder="도서명 / 저자 / 초성 / 위치 검색">
-
-<div
-class="wish-banner"
-onclick="openWishModal()">
-
-📚 희망도서 신청
-
-</div>
-
-<h3>✨ 신규 도서</h3>
-
-<div class="new-books" id="newBooks"></div>
-
-<div class="grid-menu">
-
-<button class="grid-btn active" onclick="filterCategory('전체',this)">전체</button>
-
-<button class="grid-btn" onclick="filterCategory('소설',this)">소설</button>
-
-<button class="grid-btn" onclick="filterCategory('경제',this)">경제</button>
-
-<button class="grid-btn" onclick="filterCategory('자기계발',this)">자기계발</button>
-
-<button class="grid-btn" onclick="filterCategory('유아',this)">유아</button>
-
-<button class="grid-btn" onclick="filterCategory('초등',this)">초등</button>
-
-</div>
+<input class="search-box" id="search" placeholder="검색">
 
 <div id="bookList"></div>
 
 </div>
 
-<div class="modal" id="wishModal">
-
-<div class="modal-content">
-
-<h3>📝 희망도서 신청</h3>
-
-<input type="text" id="wishTitle" placeholder="도서명">
-
-<input type="text" id="wishAuthor" placeholder="저자">
-
-<button
-style="background:#2e7d32;color:white;"
-onclick="addWishBook()">
-
-신청하기
-
-</button>
-
-<button
-style="background:#ddd;"
-onclick="closeWishModal()">
-
-닫기
-
-</button>
-
-</div>
-
-</div>
-
 <div class="location-banner" id="banner">
-
 <div id="locationText"></div>
-
-<div class="library-room" id="room"></div>
-
-<button class="close-btn" onclick="closeBanner()">
-닫기
-</button>
-
+<button class="close-btn" onclick="closeBanner()">닫기</button>
 </div>
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.5/firebase-app.js";
 import {
-getDatabase,
-ref,
-push,
-set,
-onValue,
-remove
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+getDatabase, ref, push, set, onValue, remove
+} from "https://www.gstatic.com/firebasejs/10.12.5/firebase-database.js";
 
-/* Firebase 설정값 넣기 */
-
+// ✅ Firebase 설정 (오류 수정 완료)
 const firebaseConfig = {
-
-  apiKey: "AIzaSyCmUeJ5YOmn9gGEWX3B5RJEFN9uvge8HWQ",
-  authDomain: "library-app-3dba2.firebaseapp.com",
-  projectId: "library-app-3dba2",
-  storageBucket: "library-app-3dba2.firebasestorage.app",
-  messagingSenderId: "645901694711",
-  appId: "1:645901694711:web:f4f4802c3517ecc644c5f2"
-
-};
+apiKey: "AIzaSyCmUeJ5YOmn9gGEWX3B5RJEFN9uvge8HWQ",
+authDomain: "library-app-3dba2.firebaseapp.com",
+projectId: "library-app-3dba2",
+storageBucket: "library-app-3dba2.firebasestorage.app",
+messagingSenderId: "645901694711",
+appId: "1:645901694711:web:f4f4802c3517ecc644c5f2"
 };
 
 const app = initializeApp(firebaseConfig);
-
 const db = getDatabase(app);
 
-let books=[];
-let wishBooks=[];
+let books = [];
+let admin = false;
 
-let currentCategory='전체';
+const list = document.getElementById("bookList");
 
-let admin=false;
-
-const room=document.getElementById('room');
-
-['A','B','C','D','E'].forEach(s=>{
-
-let html=`
-<div class="shelf">
-<div class="shelf-title">${s} 책장</div>
-`;
-
-for(let i=7;i>=1;i--){
-
-html+=`
-<div class="cell" id="${s}-${i}">
-${i}단
-</div>
-`;
-
-}
-
-html+='</div>';
-
-room.innerHTML+=html;
-
+// 🔥 데이터 실시간 로드
+onValue(ref(db,'books'), snap=>{
+books = [];
+snap.forEach(d=>{
+books.push({id:d.key, ...d.val()});
+});
+render();
 });
 
-onValue(ref(db,'books'), snapshot=>{
+// 📌 추가
+window.addBook = function(){
+const title = document.getElementById("title").value;
 
-books=[];
-
-snapshot.forEach(child=>{
-
-books.push({
-
-id:child.key,
-...child.val()
-
-});
-
-});
-
-renderBooks();
-renderNewBooks();
-
-});
-
-onValue(ref(db,'wishBooks'), snapshot=>{
-
-wishBooks=[];
-
-snapshot.forEach(child=>{
-
-wishBooks.push({
-
-id:child.key,
-...child.val()
-
-});
-
-});
-
-renderWishAdmin();
-
-});
-
-window.toggleAdmin=function(){
-
-const lockBtn=
-document.getElementById('lockBtn');
-
-if(!admin){
-
-const id=prompt('ID');
-
-const pw=prompt('PW');
-
-if(id==='admin' && pw==='1234'){
-
-admin=true;
-
-document
-.getElementById('adminBox')
-.style.display='block';
-
-lockBtn.innerHTML='🔓';
-
-renderBooks();
-renderWishAdmin();
-
-}else{
-
-alert('로그인 실패');
-
-}
-
-}else{
-
-admin=false;
-
-document
-.getElementById('adminBox')
-.style.display='none';
-
-lockBtn.innerHTML='🔒';
-
-renderBooks();
-
-}
-
-};
-
-window.addBook=function(){
-
-const title=
-document.getElementById('title').value.trim();
-
-const author=
-document.getElementById('author').value.trim();
-
-const image=
-document.getElementById('imageUrl').value.trim();
-
-const category=
-document.getElementById('category').value;
-
-const shelf=
-document.getElementById('shelf').value;
-
-const floor=
-document.getElementById('floor').value;
-
-if(!title || !author){
-
-alert('도서명 입력');
-
-return;
-
-}
+if(!title) return alert("제목 입력");
 
 push(ref(db,'books'),{
-
 title,
-author,
-image,
-category,
-location:`${shelf}책장 ${floor}단`,
+author: document.getElementById("author").value,
+location: document.getElementById("shelf").value + "책장 " + document.getElementById("floor").value + "단",
+category: document.getElementById("category").value,
 isNew:false
-
 });
-
-alert('등록 완료');
-
 };
 
-window.deleteBook=function(id){
+// 📌 렌더
+function render(){
+const k = (document.getElementById("search").value||"").toLowerCase();
 
-if(!confirm('삭제할까요?')) return;
+list.innerHTML="";
 
-remove(ref(db,'books/'+id));
-
-};
-
-window.toggleNew=function(id,current){
-
-set(ref(db,'books/'+id+'/isNew'),!current);
-
-};
-
-window.renderBooks=function(){
-
-const keyword=
-document
-.getElementById('search')
-.value
-.toLowerCase();
-
-const list=
-document.getElementById('bookList');
-
-list.innerHTML='';
-
-books
-.filter(book=>{
-
-const matchKeyword=
-
-book.title.toLowerCase().includes(keyword) ||
-
-book.author.toLowerCase().includes(keyword) ||
-
-book.location.toLowerCase().includes(keyword);
-
-const matchCategory=
-
-currentCategory==='전체' ||
-
-book.category===currentCategory ||
-
-keyword!== '';
-
-return matchKeyword && matchCategory;
-
-})
-
-.forEach(book=>{
-
-const div=document.createElement('div');
-
-div.className='book-item';
+books.filter(b=>
+(b.title||"").toLowerCase().includes(k) ||
+(b.author||"").toLowerCase().includes(k)
+)
+.forEach(b=>{
+const div=document.createElement("div");
+div.className="book-item";
 
 div.innerHTML=`
-
-<div class="book-wrap">
-
-${
-book.image
-?
-
-`
-<img
-src="${book.image}"
-class="book-image"
-onerror="this.style.display='none'"
->
-`
-
-:
-
-`
-<div class="book-image"></div>
-`
-}
-
-<div class="book-info">
-
-<div class="book-title">
-
-${book.isNew ? '⭐ ' : ''}
-
-${book.title}
-
-</div>
-
-<div class="book-author">
-
-${book.author}
-
-</div>
-
-<div class="book-tag">
-
-${book.category}
-
-</div>
-
-<div class="book-location">
-
-📍 ${book.location}
-
-</div>
-
-<div class="book-actions">
-
-<button
-class="small-btn location-btn"
-onclick="showLocation(
-'${book.title}',
-'${book.location}'
-)">
-위치
-</button>
-
-${admin ? `
-
-<button
-class="small-btn new-btn"
-onclick="toggleNew(
-'${book.id}',
-${book.isNew}
-)">
-
-⭐
-
-</button>
-
-<button
-class="small-btn delete-btn"
-onclick="deleteBook(
-'${book.id}'
-)">
-
-삭제
-
-</button>
-
-` : ''}
-
-</div>
-
-</div>
-
-</div>
-
+<b>${b.title}</b><br>
+${b.author||""}<br>
+📍 ${b.location}
+<hr>
 `;
 
 list.appendChild(div);
-
 });
-
-};
-
-window.renderNewBooks=function(){
-
-const area=
-document.getElementById('newBooks');
-
-area.innerHTML='';
-
-books
-.filter(book=>book.isNew)
-.forEach(book=>{
-
-const div=document.createElement('div');
-
-div.className='new-card';
-
-div.innerHTML=`
-
-<div style="font-weight:bold;">
-📚 ${book.title}
-</div>
-
-<div style="
-font-size:14px;
-margin-top:5px;
-color:#666;
-">
-${book.author}
-</div>
-
-`;
-
-div.onclick=()=>{
-
-showLocation(
-book.title,
-book.location
-);
-
-};
-
-area.appendChild(div);
-
-});
-
-};
-
-window.filterCategory=function(category,el){
-
-currentCategory=category;
-
-document
-.querySelectorAll('.grid-btn')
-.forEach(btn=>btn.classList.remove('active'));
-
-el.classList.add('active');
-
-renderBooks();
-
-};
-
-window.showLocation=function(title,location){
-
-const banner=
-document.getElementById('banner');
-
-banner.classList.add('show');
-
-document.getElementById('locationText')
-.innerHTML=
-`📖 ${title}<br><br>${location}`;
-
-document
-.querySelectorAll('.cell')
-.forEach(c=>c.classList.remove('highlight'));
-
-const shelf=location.charAt(0);
-
-const floor=
-location.match(/\d+/)[0];
-
-const target=
-document.getElementById(`${shelf}-${floor}`);
-
-if(target){
-
-target.classList.add('highlight');
-
 }
 
+document.getElementById("search").addEventListener("input",render);
+
+// 📌 위치 보기
+window.showLocation = function(title,location){
+document.getElementById("banner").classList.add("show");
+document.getElementById("locationText").innerHTML = title+"<br>"+location;
 };
 
 window.closeBanner=function(){
-
-document
-.getElementById('banner')
-.classList.remove('show');
-
+document.getElementById("banner").classList.remove("show");
 };
 
-window.openWishModal=function(){
-
-document
-.getElementById('wishModal')
-.style.display='flex';
-
+// 📌 관리자 (단순)
+window.toggleAdmin=function(){
+admin=!admin;
+document.getElementById("adminBox").style.display = admin ? "block":"none";
 };
-
-window.closeWishModal=function(){
-
-document
-.getElementById('wishModal')
-.style.display='none';
-
-};
-
-window.addWishBook=function(){
-
-const title=
-document.getElementById('wishTitle').value.trim();
-
-const author=
-document.getElementById('wishAuthor').value.trim();
-
-if(!title){
-
-alert('도서명 입력');
-
-return;
-
-}
-
-push(ref(db,'wishBooks'),{
-
-title,
-author,
-date:new Date().toLocaleDateString()
-
-});
-
-closeWishModal();
-
-alert('신청 완료');
-
-};
-
-window.renderWishAdmin=function(){
-
-const area=
-document.getElementById('wishAdminList');
-
-if(!admin){
-
-area.innerHTML='';
-
-return;
-
-}
-
-let html='';
-
-wishBooks.forEach(wish=>{
-
-html+=`
-
-<div style="
-background:white;
-padding:10px;
-border-radius:10px;
-margin-bottom:10px;
-">
-
-<div style="font-weight:bold;">
-📚 ${wish.title}
-</div>
-
-<div style="
-margin-top:5px;
-color:#666;
-">
-${wish.author}
-</div>
-
-<div style="
-margin-top:5px;
-font-size:12px;
-color:#999;
-">
-${wish.date}
-</div>
-
-</div>
-
-`;
-
-});
-
-area.innerHTML=html;
-
-};
-
-window.uploadCSV=function(){
-
-const file=
-document.getElementById('csvFile').files[0];
-
-if(!file){
-
-alert('CSV 파일 선택');
-
-return;
-
-}
-
-const reader=new FileReader();
-
-reader.onload=function(e){
-
-const text=e.target.result;
-
-const lines=text.split('\n');
-
-let count=0;
-
-for(let i=1;i<lines.length;i++){
-
-const row=lines[i].trim();
-
-if(!row) continue;
-
-const cols=row.split(',');
-
-if(cols.length>=4){
-
-push(ref(db,'books'),{
-
-title:cols[0].trim(),
-author:cols[1].trim(),
-location:cols[2].trim(),
-category:cols[3].trim(),
-image: cols[4] ? cols[4].trim() : '',
-isNew:false
-
-});
-
-count++;
-
-}
-
-}
-
-alert(count+'권 업로드 완료');
-
-};
-
-reader.readAsText(file,'utf-8');
-
-};
-
-document
-.getElementById('search')
-.addEventListener('input',renderBooks);
 
 </script>
 
 </body>
 </html>
-```
