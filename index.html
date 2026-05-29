@@ -1,16 +1,17 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>칠곡남율효성해링턴플레이스 2단지 작은도서관</title>
+<title>효성해링턴 2단지 작은도서관</title>
 
 <style>
 
 :root{
   --main:#2e7d32;
-  --bg:#f4f6f8;
+  --bg:#f5f5f5;
 }
 
 *{
@@ -19,8 +20,8 @@
 
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   background:var(--bg);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   color:#222;
 }
 
@@ -28,9 +29,9 @@ body{
   background:var(--main);
   color:white;
   padding:18px;
+  text-align:center;
   font-size:22px;
   font-weight:bold;
-  text-align:center;
   position:sticky;
   top:0;
   z-index:100;
@@ -49,10 +50,10 @@ body{
 }
 
 .container{
-  max-width:700px;
+  max-width:750px;
   margin:auto;
   padding:15px;
-  padding-bottom:320px;
+  padding-bottom:330px;
 }
 
 .search-box{
@@ -61,7 +62,7 @@ body{
   border-radius:10px;
   border:2px solid #ddd;
   font-size:16px;
-  margin-bottom:15px;
+  margin-bottom:20px;
 }
 
 .grid-menu{
@@ -73,21 +74,17 @@ body{
 
 .grid-btn{
   border:none;
-  border-radius:12px;
-  padding:15px;
   background:white;
-  font-weight:bold;
+  padding:14px;
+  border-radius:12px;
   cursor:pointer;
+  font-weight:bold;
   box-shadow:0 2px 6px rgba(0,0,0,0.06);
 }
 
 .grid-btn.active{
   background:var(--main);
   color:white;
-}
-
-.section{
-  margin-bottom:20px;
 }
 
 .section-title{
@@ -100,6 +97,7 @@ body{
   display:flex;
   overflow-x:auto;
   gap:12px;
+  margin-bottom:25px;
 }
 
 .new-card{
@@ -120,8 +118,8 @@ body{
 
 .new-title{
   margin-top:8px;
-  font-weight:bold;
   font-size:14px;
+  font-weight:bold;
 }
 
 .new-author{
@@ -159,12 +157,11 @@ body{
 .book-title{
   font-size:18px;
   font-weight:bold;
-  margin-bottom:5px;
 }
 
 .book-author{
   color:#666;
-  margin-bottom:5px;
+  margin:6px 0;
 }
 
 .book-tag{
@@ -204,6 +201,10 @@ body{
   font-weight:bold;
   cursor:pointer;
   margin-bottom:10px;
+}
+
+.delete-btn{
+  background:#c62828 !important;
 }
 
 .location-banner{
@@ -261,18 +262,14 @@ body{
   font-weight:bold;
 }
 
-.delete-btn{
-  background:#c62828 !important;
-}
-
 .close-btn{
-  margin-top:15px;
+  width:100%;
+  border:none;
   background:#444;
   color:white;
-  border:none;
-  padding:10px;
+  padding:12px;
   border-radius:8px;
-  width:100%;
+  margin-top:15px;
   cursor:pointer;
 }
 
@@ -319,12 +316,12 @@ body{
 <option>7</option>
 </select>
 
-<label style="font-size:14px;">
+<label>
 <input type="checkbox" id="isNew">
 신규도서 등록
 </label>
 
-<button onclick="addBook()">📌 책 등록</button>
+<button onclick="addBook()">📌 도서 등록</button>
 
 <input type="file" id="csvFile" accept=".csv">
 
@@ -340,15 +337,11 @@ class="search-box"
 id="search"
 placeholder="도서명 또는 저자 검색">
 
-<div class="section">
-
 <div class="section-title">
 ✨ 신규 입고 도서
 </div>
 
 <div class="new-books" id="newBooks"></div>
-
-</div>
 
 <div class="grid-menu">
 
@@ -377,7 +370,8 @@ placeholder="도서명 또는 저자 검색">
 
 <script type="module">
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
 import {
 getFirestore,
@@ -391,7 +385,17 @@ from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
 
-/* 여기에 Firebase 코드 넣기 */
+apiKey: "여기에_APIKEY",
+
+authDomain: "여기에.firebaseapp.com",
+
+projectId: "여기에_PROJECTID",
+
+storageBucket: "여기에.appspot.com",
+
+messagingSenderId: "000000",
+
+appId: "여기에_APPID"
 
 };
 
@@ -401,41 +405,42 @@ const db = getFirestore(app);
 const ADMIN_ID = "admin";
 const ADMIN_PW = atob("MTIzNA==");
 
-let admin = false;
 let books = [];
 let currentCategory = "전체";
-let selectedId = null;
+let selectedBookId = null;
+let adminMode = false;
 
 const room = document.getElementById("room");
 
-["A","B","C","D","E"].forEach(s=>{
+["A","B","C","D","E"].forEach(shelf => {
 
-let html=`
+let html = `
 <div class="shelf">
-<div class="shelf-title">${s} 책장</div>
+<div class="shelf-title">${shelf} 책장</div>
 `;
 
 for(let i=7;i>=1;i--){
 
-html+=`
-<div class="cell" id="${s}-${i}">
+html += `
+<div class="cell" id="${shelf}-${i}">
 ${i}단
 </div>
 `;
 
 }
 
-html+=`</div>`;
+html += `</div>`;
 
-room.innerHTML+=html;
+room.innerHTML += html;
 
 });
 
 async function loadBooks(){
 
-books=[];
+books = [];
 
-const querySnapshot = await getDocs(collection(db,"books"));
+const querySnapshot =
+await getDocs(collection(db,"books"));
 
 querySnapshot.forEach((docu)=>{
 
@@ -453,35 +458,39 @@ renderNewBooks();
 
 function renderBooks(){
 
-const list=document.getElementById("bookList");
-list.innerHTML="";
+const list = document.getElementById("bookList");
 
-const keyword=document.getElementById("search")
-.value.toLowerCase();
+list.innerHTML = "";
 
-let filtered=books.filter(book=>{
+const keyword =
+document.getElementById("search")
+.value
+.toLowerCase();
 
-const cat=
+const filtered = books.filter(book=>{
+
+const categoryMatch =
 currentCategory==="전체" ||
 book.category===currentCategory;
 
-const key=
+const keywordMatch =
 book.title.toLowerCase().includes(keyword) ||
 book.author.toLowerCase().includes(keyword);
 
-return cat && key;
+return categoryMatch && keywordMatch;
 
 });
 
 filtered.forEach(book=>{
 
-const div=document.createElement("div");
-div.className="book-item";
+const div = document.createElement("div");
 
-const cover=
+div.className = "book-item";
+
+const cover =
 `https://covers.openlibrary.org/b/title/${encodeURIComponent(book.title)}-M.jpg`;
 
-div.innerHTML=`
+div.innerHTML = `
 
 <div class="book-wrap">
 
@@ -511,9 +520,9 @@ ${book.category}
 
 `;
 
-div.onclick=()=>{
+div.onclick = ()=>{
 
-selectedId=book.id;
+selectedBookId = book.id;
 
 showLocation(
 book.title,
@@ -530,22 +539,25 @@ list.appendChild(div);
 
 function renderNewBooks(){
 
-const area=document.getElementById("newBooks");
+const area =
+document.getElementById("newBooks");
 
-area.innerHTML="";
+area.innerHTML = "";
 
-const newBooks=books.filter(b=>b.isNew);
+const newBooks =
+books.filter(book=>book.isNew);
 
 newBooks.forEach(book=>{
 
-const div=document.createElement("div");
+const div =
+document.createElement("div");
 
-div.className="new-card";
+div.className = "new-card";
 
-const cover=
+const cover =
 `https://covers.openlibrary.org/b/title/${encodeURIComponent(book.title)}-M.jpg`;
 
-div.innerHTML=`
+div.innerHTML = `
 
 <img
 src="${cover}"
@@ -562,7 +574,7 @@ ${book.author}
 
 `;
 
-div.onclick=()=>{
+div.onclick = ()=>{
 
 showLocation(
 book.title,
@@ -577,11 +589,12 @@ area.appendChild(div);
 
 }
 
-window.filterCategory=(cat,el)=>{
+window.filterCategory = (category,el)=>{
 
-currentCategory=cat;
+currentCategory = category;
 
-document.querySelectorAll(".grid-btn")
+document
+.querySelectorAll(".grid-btn")
 .forEach(btn=>btn.classList.remove("active"));
 
 el.classList.add("active");
@@ -594,22 +607,23 @@ document
 .getElementById("search")
 .addEventListener("input",renderBooks);
 
-window.toggleAdmin=()=>{
+window.toggleAdmin = ()=>{
 
-if(!admin){
+if(!adminMode){
 
-const id=prompt("관리자 ID");
+const id = prompt("관리자 ID");
 if(id===null)return;
 
-const pw=prompt("비밀번호");
+const pw = prompt("비밀번호");
 if(pw===null)return;
 
 if(id===ADMIN_ID && pw===ADMIN_PW){
 
-admin=true;
+adminMode = true;
 
-document.getElementById("adminBox")
-.style.display="block";
+document
+.getElementById("adminBox")
+.style.display = "block";
 
 alert("관리자모드 활성화");
 
@@ -621,32 +635,45 @@ alert("로그인 실패");
 
 }else{
 
-admin=false;
+adminMode = false;
 
-document.getElementById("adminBox")
-.style.display="none";
+document
+.getElementById("adminBox")
+.style.display = "none";
 
 }
 
 };
 
-window.addBook=async()=>{
+window.addBook = async ()=>{
 
-const title=document.getElementById("title").value;
-const author=document.getElementById("author").value;
-const category=document.getElementById("category").value;
-const shelf=document.getElementById("shelf").value;
-const floor=document.getElementById("floor").value;
-const isNew=document.getElementById("isNew").checked;
+const title =
+document.getElementById("title").value;
+
+const author =
+document.getElementById("author").value;
+
+const category =
+document.getElementById("category").value;
+
+const shelf =
+document.getElementById("shelf").value;
+
+const floor =
+document.getElementById("floor").value;
+
+const isNew =
+document.getElementById("isNew").checked;
 
 if(!title || !author){
 
-alert("입력하세요");
+alert("도서명과 저자를 입력하세요");
 return;
 
 }
 
-const location=`${shelf}책장 ${floor}단`;
+const location =
+`${shelf}책장 ${floor}단`;
 
 await addDoc(collection(db,"books"),{
 
@@ -660,57 +687,71 @@ isNew
 
 alert("등록 완료");
 
+document.getElementById("title").value="";
+document.getElementById("author").value="";
+
 loadBooks();
 
 };
 
-window.deleteBook=async()=>{
+window.deleteBook = async ()=>{
 
-if(!selectedId){
+if(!selectedBookId){
 
-alert("삭제할 책 클릭");
+alert("삭제할 책을 먼저 클릭하세요");
 return;
 
 }
 
-if(!confirm("삭제할까요?"))return;
+if(!confirm("삭제할까요?")) return;
 
-await deleteDoc(doc(db,"books",selectedId));
+await deleteDoc(
+doc(db,"books",selectedBookId)
+);
 
 alert("삭제 완료");
 
-selectedId=null;
+selectedBookId = null;
 
 loadBooks();
 
 };
 
-window.downloadCSV=()=>{
+window.downloadCSV = ()=>{
 
-let csv="도서명,저자,위치,카테고리\n";
+let csv =
+"도서명,저자,위치,카테고리\n";
 
 books.forEach(book=>{
 
-csv+=`${book.title},${book.author},${book.location},${book.category}\n`;
+csv +=
+`${book.title},${book.author},${book.location},${book.category}\n`;
 
 });
 
-const blob=new Blob(
+const blob = new Blob(
 ["\uFEFF"+csv],
 {type:"text/csv;charset=utf-8;"}
 );
 
-const link=document.createElement("a");
+const link =
+document.createElement("a");
 
-const now=new Date();
+const now = new Date();
 
-const yy=String(now.getFullYear()).slice(2);
-const mm=String(now.getMonth()+1).padStart(2,"0");
-const dd=String(now.getDate()).padStart(2,"0");
+const yy =
+String(now.getFullYear()).slice(2);
 
-link.href=URL.createObjectURL(blob);
+const mm =
+String(now.getMonth()+1).padStart(2,"0");
 
-link.download=
+const dd =
+String(now.getDate()).padStart(2,"0");
+
+link.href =
+URL.createObjectURL(blob);
+
+link.download =
 `${yy}${mm}${dd}_booklist.csv`;
 
 link.click();
@@ -721,17 +762,18 @@ document
 .getElementById("csvFile")
 .addEventListener("change",async(e)=>{
 
-const file=e.target.files[0];
+const file = e.target.files[0];
 
-if(!file)return;
+if(!file) return;
 
-const text=await file.text();
+const text = await file.text();
 
-const rows=text.split("\n").slice(1);
+const rows =
+text.split("\n").slice(1);
 
 for(const row of rows){
 
-const cols=row.split(",");
+const cols = row.split(",");
 
 if(cols.length>=4){
 
@@ -757,33 +799,40 @@ loadBooks();
 
 function showLocation(title,location){
 
-document.getElementById("banner")
+document
+.getElementById("banner")
 .classList.add("show");
 
-document.getElementById("locationText")
-.innerHTML=
+document
+.getElementById("locationText")
+.innerHTML =
 `📖 ${title}<br><br>위치 : ${location}`;
 
-document.querySelectorAll(".cell")
-.forEach(c=>c.classList.remove("highlight"));
+document
+.querySelectorAll(".cell")
+.forEach(cell=>cell.classList.remove("highlight"));
 
-const shelf=location.charAt(0);
+const shelf =
+location.charAt(0);
 
-const floor=location.match(/\d+/)[0];
+const floor =
+location.match(/\d+/)[0];
 
-const cell=document.getElementById(`${shelf}-${floor}`);
+const target =
+document.getElementById(`${shelf}-${floor}`);
 
-if(cell){
+if(target){
 
-cell.classList.add("highlight");
+target.classList.add("highlight");
 
 }
 
 }
 
-window.closeBanner=()=>{
+window.closeBanner = ()=>{
 
-document.getElementById("banner")
+document
+.getElementById("banner")
 .classList.remove("show");
 
 };
@@ -794,3 +843,4 @@ loadBooks();
 
 </body>
 </html>
+```
