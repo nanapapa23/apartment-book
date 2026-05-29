@@ -82,6 +82,7 @@ padding:15px;
 border-radius:10px;
 margin-bottom:10px;
 box-shadow:0 2px 5px rgba(0,0,0,0.08);
+cursor:pointer;
 }
 
 .book-wrap{
@@ -255,6 +256,27 @@ border-radius:8px;
 cursor:pointer;
 }
 
+.top-books{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.wish-box{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
+.stats-box{
+background:white;
+padding:15px;
+border-radius:10px;
+margin-bottom:20px;
+}
+
 </style>
 </head>
 
@@ -279,16 +301,23 @@ onclick="toggleAdmin()">
 
 <div class="admin" id="adminBox">
 
+<h3>관리자 모드</h3>
+
 <input type="text" id="title" placeholder="도서명">
 
 <input type="text" id="author" placeholder="저자">
 
-<input type="text" id="imageUrl" placeholder="책 이미지 URL (선택)">
+<input type="text" id="imageUrl" placeholder="책 이미지 URL">
 
 <select id="category">
-<option>성인</option>
-<option>청소년</option>
-<option>어린이</option>
+<option>소설</option>
+<option>경제</option>
+<option>자기계발</option>
+<option>유아</option>
+<option>초등</option>
+<option>중등</option>
+<option>역사</option>
+<option>과학</option>
 <option>여행</option>
 <option>요리</option>
 </select>
@@ -312,30 +341,22 @@ onclick="toggleAdmin()">
 </select>
 
 <button onclick="addBook()">
-
 📌 도서 등록
-
 </button>
 
 <div style="font-size:13px;color:#666;margin-bottom:10px;">
-
 CSV 형식 :
 도서명,저자,위치,카테고리,이미지URL
-
 </div>
 
 <input type="file" id="csvFile" accept=".csv">
 
 <button onclick="uploadCSV()">
-
 📂 CSV 대량 업로드
-
 </button>
 
 <button onclick="downloadCSV()">
-
 📥 전체목록 다운로드
-
 </button>
 
 </div>
@@ -344,7 +365,51 @@ CSV 형식 :
 type="text"
 id="search"
 class="search-box"
-placeholder="도서명 / 저자 / 카테고리 / 위치 검색">
+placeholder="도서명 / 저자 / 초성 / 카테고리 / 위치 검색">
+
+<div class="top-books">
+<h3>🔥 인기 도서 TOP5</h3>
+<div id="topBooksList"></div>
+</div>
+
+<div class="stats-box">
+<h3>📊 도서관 통계</h3>
+
+<div id="statsArea"></div>
+
+</div>
+
+<div class="wish-box">
+
+<h3>📝 희망도서 신청</h3>
+
+<input
+type="text"
+id="wishTitle"
+placeholder="희망 도서명"
+style="width:100%;padding:12px;margin-bottom:10px;box-sizing:border-box;">
+
+<input
+type="text"
+id="wishAuthor"
+placeholder="저자"
+style="width:100%;padding:12px;margin-bottom:10px;box-sizing:border-box;">
+
+<button
+onclick="addWishBook()"
+style="
+width:100%;
+padding:12px;
+background:#2e7d32;
+color:white;
+border:none;
+border-radius:8px;">
+
+희망도서 신청
+
+</button>
+
+</div>
 
 <h3>✨ 신규 도서</h3>
 
@@ -354,15 +419,15 @@ placeholder="도서명 / 저자 / 카테고리 / 위치 검색">
 
 <button class="grid-btn active" onclick="filterCategory('전체',this)">전체</button>
 
-<button class="grid-btn" onclick="filterCategory('성인',this)">성인</button>
+<button class="grid-btn" onclick="filterCategory('소설',this)">소설</button>
 
-<button class="grid-btn" onclick="filterCategory('청소년',this)">청소년</button>
+<button class="grid-btn" onclick="filterCategory('경제',this)">경제</button>
 
-<button class="grid-btn" onclick="filterCategory('어린이',this)">어린이</button>
+<button class="grid-btn" onclick="filterCategory('자기계발',this)">자기계발</button>
 
-<button class="grid-btn" onclick="filterCategory('여행',this)">여행</button>
+<button class="grid-btn" onclick="filterCategory('유아',this)">유아</button>
 
-<button class="grid-btn" onclick="filterCategory('요리',this)">요리</button>
+<button class="grid-btn" onclick="filterCategory('초등',this)">초등</button>
 
 </div>
 
@@ -377,9 +442,7 @@ placeholder="도서명 / 저자 / 카테고리 / 위치 검색">
 <div class="library-room" id="room"></div>
 
 <button class="close-btn" onclick="closeBanner()">
-
 닫기
-
 </button>
 
 </div>
@@ -392,22 +455,27 @@ JSON.parse(localStorage.getItem('books')) || [
 {
 title:'소년이 온다',
 author:'한강',
-category:'성인',
+category:'소설',
 location:'A책장 3단',
 isNew:true,
+views:0,
 image:''
 },
 
 {
 title:'불편한 편의점',
 author:'김호연',
-category:'청소년',
+category:'소설',
 location:'C책장 1단',
 isNew:true,
+views:0,
 image:''
 }
 
 ];
+
+let wishBooks =
+JSON.parse(localStorage.getItem('wishBooks')) || [];
 
 let currentCategory='전체';
 
@@ -447,6 +515,37 @@ JSON.stringify(books)
 
 }
 
+function getChosung(str){
+
+const cho=[
+'ㄱ','ㄲ','ㄴ','ㄷ','ㄸ',
+'ㄹ','ㅁ','ㅂ','ㅃ','ㅅ',
+'ㅆ','ㅇ','ㅈ','ㅉ','ㅊ',
+'ㅋ','ㅌ','ㅍ','ㅎ'
+];
+
+let result='';
+
+for(let s of str){
+
+const code=s.charCodeAt(0)-44032;
+
+if(code>-1 && code<11172){
+
+result+=cho[Math.floor(code/588)];
+
+}else{
+
+result+=s;
+
+}
+
+}
+
+return result;
+
+}
+
 function renderBooks(){
 
 const keyword=
@@ -471,7 +570,9 @@ book.author.toLowerCase().includes(keyword) ||
 
 book.category.toLowerCase().includes(keyword) ||
 
-book.location.toLowerCase().includes(keyword);
+book.location.toLowerCase().includes(keyword) ||
+
+getChosung(book.title).includes(keyword);
 
 const matchCategory=
 
@@ -488,17 +589,13 @@ return matchKeyword && matchCategory;
 if(filtered.length===0){
 
 list.innerHTML=`
-
 <div style="
 text-align:center;
 padding:30px;
 color:#777;
 ">
-
 검색 결과 없음
-
 </div>
-
 `;
 
 return;
@@ -513,6 +610,8 @@ books.indexOf(book);
 const div=document.createElement('div');
 
 div.className='book-item';
+
+div.onclick=()=>showBookDetail(book);
 
 div.innerHTML=`
 
@@ -569,7 +668,7 @@ ${book.category}
 
 <button
 class="small-btn location-btn"
-onclick="showLocation(
+onclick="event.stopPropagation();showLocation(
 '${book.title}',
 '${book.location}'
 )">
@@ -580,7 +679,7 @@ ${admin ? `
 
 <button
 class="small-btn new-btn"
-onclick="toggleNew(${realIndex})"
+onclick="event.stopPropagation();toggleNew(${realIndex})"
 >
 
 ${book.isNew ? '⭐ 신규해제' : '☆ 신규등록'}
@@ -589,7 +688,7 @@ ${book.isNew ? '⭐ 신규해제' : '☆ 신규등록'}
 
 <button
 class="small-btn delete-btn"
-onclick="deleteBook(${realIndex})"
+onclick="event.stopPropagation();deleteBook(${realIndex})"
 >
 
 삭제
@@ -661,6 +760,120 @@ book.location
 area.appendChild(div);
 
 });
+
+}
+
+function showBookDetail(book){
+
+book.views = (book.views || 0) + 1;
+
+saveBooks();
+
+renderTopBooks();
+
+alert(
+
+'📚 도서 정보\n\n'+
+'도서명 : '+book.title+'\n'+
+'저자 : '+book.author+'\n'+
+'카테고리 : '+book.category+'\n'+
+'위치 : '+book.location+'\n'+
+'조회수 : '+book.views
+
+);
+
+}
+
+function renderTopBooks(){
+
+const top=document.getElementById('topBooksList');
+
+const sorted=[...books]
+.sort((a,b)=>(b.views||0)-(a.views||0))
+.slice(0,5);
+
+let html='';
+
+sorted.forEach((book,index)=>{
+
+html+=`
+
+<div style="
+padding:8px 0;
+border-bottom:1px solid #eee;
+">
+
+${index+1}위
+${book.title}
+
+(${book.views||0}회)
+
+</div>
+
+`;
+
+});
+
+top.innerHTML=html;
+
+}
+
+function renderStats(){
+
+const total=books.length;
+
+const newCount=
+books.filter(b=>b.isNew).length;
+
+document.getElementById('statsArea')
+.innerHTML=`
+
+총 도서 수 : ${total}권<br><br>
+
+신규 도서 : ${newCount}권<br><br>
+
+희망도서 신청 :
+${wishBooks.length}건
+
+`;
+
+}
+
+function addWishBook(){
+
+const title=
+document.getElementById('wishTitle').value.trim();
+
+const author=
+document.getElementById('wishAuthor').value.trim();
+
+if(!title){
+
+alert('도서명을 입력하세요');
+
+return;
+
+}
+
+wishBooks.push({
+
+title,
+author,
+date:new Date().toLocaleDateString()
+
+});
+
+localStorage.setItem(
+'wishBooks',
+JSON.stringify(wishBooks)
+);
+
+alert('희망도서 신청 완료');
+
+document.getElementById('wishTitle').value='';
+document.getElementById('wishAuthor').value='';
+
+renderStats();
 
 }
 
@@ -801,6 +1014,7 @@ author,
 category,
 location:`${shelf}책장 ${floor}단`,
 isNew:false,
+views:0,
 image:image
 
 });
@@ -810,6 +1024,8 @@ saveBooks();
 renderBooks();
 
 renderNewBooks();
+
+renderStats();
 
 document.getElementById('title').value='';
 document.getElementById('author').value='';
@@ -831,6 +1047,8 @@ renderBooks();
 
 renderNewBooks();
 
+renderStats();
+
 }
 
 function toggleNew(index){
@@ -843,6 +1061,8 @@ saveBooks();
 renderBooks();
 
 renderNewBooks();
+
+renderStats();
 
 }
 
@@ -929,7 +1149,8 @@ author:cols[1].trim(),
 location:cols[2].trim(),
 category:cols[3].trim(),
 image: cols[4] ? cols[4].trim() : '',
-isNew:false
+isNew:false,
+views:0
 
 });
 
@@ -944,6 +1165,10 @@ saveBooks();
 renderBooks();
 
 renderNewBooks();
+
+renderStats();
+
+renderTopBooks();
 
 alert(uploadCount+'권 업로드 완료');
 
@@ -960,6 +1185,10 @@ document
 renderBooks();
 
 renderNewBooks();
+
+renderTopBooks();
+
+renderStats();
 
 </script>
 
