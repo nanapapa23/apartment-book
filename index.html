@@ -256,13 +256,8 @@ border-radius:8px;
 cursor:pointer;
 }
 
-.top-books{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:20px;
-}
-
+.top-books,
+.stats-box,
 .wish-box{
 background:white;
 padding:15px;
@@ -270,11 +265,12 @@ border-radius:10px;
 margin-bottom:20px;
 }
 
-.stats-box{
+.wish-admin-item{
 background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:20px;
+padding:10px;
+border-radius:8px;
+margin-bottom:10px;
+border:1px solid #eee;
 }
 
 </style>
@@ -301,7 +297,7 @@ onclick="toggleAdmin()">
 
 <div class="admin" id="adminBox">
 
-<h3>관리자 모드</h3>
+<h3>⚙️ 관리자 모드</h3>
 
 <input type="text" id="title" placeholder="도서명">
 
@@ -359,6 +355,12 @@ CSV 형식 :
 📥 전체목록 다운로드
 </button>
 
+<hr>
+
+<h3>📝 희망도서 신청 목록</h3>
+
+<div id="wishAdminList"></div>
+
 </div>
 
 <input
@@ -368,11 +370,15 @@ class="search-box"
 placeholder="도서명 / 저자 / 초성 / 카테고리 / 위치 검색">
 
 <div class="top-books">
+
 <h3>🔥 인기 도서 TOP5</h3>
+
 <div id="topBooksList"></div>
+
 </div>
 
 <div class="stats-box">
+
 <h3>📊 도서관 통계</h3>
 
 <div id="statsArea"></div>
@@ -383,17 +389,37 @@ placeholder="도서명 / 저자 / 초성 / 카테고리 / 위치 검색">
 
 <h3>📝 희망도서 신청</h3>
 
+<div style="
+font-size:13px;
+color:#666;
+margin-bottom:12px;
+">
+
+읽고 싶은 책이 있으면 신청해주세요 🙂
+
+</div>
+
 <input
 type="text"
 id="wishTitle"
 placeholder="희망 도서명"
-style="width:100%;padding:12px;margin-bottom:10px;box-sizing:border-box;">
+style="
+width:100%;
+padding:12px;
+margin-bottom:10px;
+box-sizing:border-box;
+">
 
 <input
 type="text"
 id="wishAuthor"
 placeholder="저자"
-style="width:100%;padding:12px;margin-bottom:10px;box-sizing:border-box;">
+style="
+width:100%;
+padding:12px;
+margin-bottom:10px;
+box-sizing:border-box;
+">
 
 <button
 onclick="addWishBook()"
@@ -403,9 +429,11 @@ padding:12px;
 background:#2e7d32;
 color:white;
 border:none;
-border-radius:8px;">
+border-radius:8px;
+cursor:pointer;
+">
 
-희망도서 신청
+희망도서 신청하기
 
 </button>
 
@@ -511,6 +539,15 @@ function saveBooks(){
 localStorage.setItem(
 'books',
 JSON.stringify(books)
+);
+
+}
+
+function saveWishBooks(){
+
+localStorage.setItem(
+'wishBooks',
+JSON.stringify(wishBooks)
 );
 
 }
@@ -763,27 +800,6 @@ area.appendChild(div);
 
 }
 
-function showBookDetail(book){
-
-book.views = (book.views || 0) + 1;
-
-saveBooks();
-
-renderTopBooks();
-
-alert(
-
-'📚 도서 정보\n\n'+
-'도서명 : '+book.title+'\n'+
-'저자 : '+book.author+'\n'+
-'카테고리 : '+book.category+'\n'+
-'위치 : '+book.location+'\n'+
-'조회수 : '+book.views
-
-);
-
-}
-
 function renderTopBooks(){
 
 const top=document.getElementById('topBooksList');
@@ -839,6 +855,113 @@ ${wishBooks.length}건
 
 }
 
+function renderWishAdmin(){
+
+const area=
+document.getElementById('wishAdminList');
+
+if(!admin){
+
+area.innerHTML='';
+
+return;
+
+}
+
+if(wishBooks.length===0){
+
+area.innerHTML=`
+
+<div style="
+padding:10px;
+color:#777;
+">
+
+신청된 희망도서 없음
+
+</div>
+
+`;
+
+return;
+
+}
+
+let html='';
+
+wishBooks.forEach((wish,index)=>{
+
+html+=`
+
+<div class="wish-admin-item">
+
+<div style="font-weight:bold;">
+
+📚 ${wish.title}
+
+</div>
+
+<div style="
+font-size:14px;
+color:#666;
+margin-top:5px;
+">
+
+✍️ ${wish.author || '-'}
+
+</div>
+
+<div style="
+font-size:12px;
+color:#999;
+margin-top:5px;
+">
+
+신청일 :
+${wish.date}
+
+</div>
+
+<button
+onclick="deleteWishBook(${index})"
+style="
+margin-top:10px;
+padding:6px 10px;
+background:#d32f2f;
+border:none;
+color:white;
+border-radius:6px;
+cursor:pointer;
+">
+
+삭제
+
+</button>
+
+</div>
+
+`;
+
+});
+
+area.innerHTML=html;
+
+}
+
+function deleteWishBook(index){
+
+if(!confirm('삭제할까요?')) return;
+
+wishBooks.splice(index,1);
+
+saveWishBooks();
+
+renderWishAdmin();
+
+renderStats();
+
+}
+
 function addWishBook(){
 
 const title=
@@ -863,17 +986,37 @@ date:new Date().toLocaleDateString()
 
 });
 
-localStorage.setItem(
-'wishBooks',
-JSON.stringify(wishBooks)
-);
-
-alert('희망도서 신청 완료');
+saveWishBooks();
 
 document.getElementById('wishTitle').value='';
 document.getElementById('wishAuthor').value='';
 
+alert('희망도서 신청 완료 🙂');
+
+renderWishAdmin();
+
 renderStats();
+
+}
+
+function showBookDetail(book){
+
+book.views = (book.views || 0) + 1;
+
+saveBooks();
+
+renderTopBooks();
+
+alert(
+
+'📚 도서 정보\n\n'+
+'도서명 : '+book.title+'\n'+
+'저자 : '+book.author+'\n'+
+'카테고리 : '+book.category+'\n'+
+'위치 : '+book.location+'\n'+
+'조회수 : '+book.views
+
+);
 
 }
 
@@ -957,6 +1100,8 @@ lockBtn.innerHTML='🔓';
 
 renderBooks();
 
+renderWishAdmin();
+
 }else{
 
 alert('로그인 실패');
@@ -974,6 +1119,8 @@ document
 lockBtn.innerHTML='🔒';
 
 renderBooks();
+
+renderWishAdmin();
 
 }
 
@@ -1026,10 +1173,6 @@ renderBooks();
 renderNewBooks();
 
 renderStats();
-
-document.getElementById('title').value='';
-document.getElementById('author').value='';
-document.getElementById('imageUrl').value='';
 
 alert('등록 완료');
 
