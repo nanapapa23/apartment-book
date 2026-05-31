@@ -216,3 +216,22 @@ width:95%;
 }
 
 }
+.header-wrap{
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
+margin-bottom:20px;
+}
+
+#adminIcon{
+position:absolute;
+right:0;
+font-size:22px;
+cursor:pointer;
+padding:5px;
+}
+
+#adminIcon:hover{
+transform:scale(1.1);
+}
