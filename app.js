@@ -116,7 +116,7 @@ document.createElement("div");
 
 div.className="new-book-card";
 
-div.innerHTML=`
+div.innerHTML=
 <div class="new-title">
 ${book.title || ""}
 </div>
