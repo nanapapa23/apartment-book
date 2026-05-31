@@ -57,7 +57,7 @@ function renderBooks(data) {
     }
     data.forEach(book => {
         const div = document.createElement("div");
-        div.className = "book-card"; // style.css의 카드 클래스 적용
+        div.className = "book-card";
         div.innerHTML = `
             <div class="title">${book.title || ""}</div>
             <div class="author">저자: ${book.author || ""}</div>
@@ -102,11 +102,12 @@ function showDetail(book) {
     modal.style.display = "block";
 }
 
+// 중복 에러를 방지하기 위해 drawShelf 함수는 여기서 딱 한 번만 선언합니다.
 function drawShelf(book) {
     const shelf = document.getElementById("shelfView");
     shelf.innerHTML = `<div style="text-align:center; margin:10px 0; font-weight:bold;">${book.shelf || ""} 책장</div>`;
     const box = document.createElement("div");
-    box.className = "shelf-grid"; // style.css의 그리드 클래스
+    box.className = "shelf-grid";
     for(let i = 1; i <= 7; i++) {
         const div = document.createElement("div");
         div.className = "slot" + (String(i) === String(book.slot) ? " active" : "");
@@ -119,7 +120,7 @@ function drawShelf(book) {
 closeBtn.onclick = () => { modal.style.display = "none"; };
 window.onclick = (e) => { if(e.target === modal) modal.style.display = "none"; };
 
-/* --------------------- 시작 --------------------- */
+/* --------------------- 시작 및 관리자 연동 --------------------- */
 loadBooks();
 
 const adminIcon = document.getElementById("adminIcon");
