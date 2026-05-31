@@ -7,19 +7,16 @@
 </head>
 <body>
     <div class="admin-card">
-        <h3>도서 등록/수정</h3>
+        <h3>도서 등록</h3>
         <input id="title" placeholder="도서명">
         <input id="author" placeholder="저자">
         <input id="imageUrl" placeholder="이미지 URL">
         <select id="shelf"><option>A</option><option>B</option><option>C</option></select>
         <select id="slot"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
         <label><input type="checkbox" id="newbook"> 신간도서</label>
-        <button id="saveBtn">저장하기</button>
-        <hr>
-        <button id="exportBtn" style="background:#64748b;">CSV 다운로드</button>
-        <input type="file" id="importFile" accept=".csv">
+        <button id="saveBtn">등록하기</button>
     </div>
-    <div id="adminList"></div>
+    <button id="exportBtn" style="background:#64748b; margin-bottom:20px;">CSV 다운로드</button>
     <script type="module" src="admin.js"></script>
 </body>
 </html>
