@@ -1,14 +1,23 @@
-:root { --primary: #6366f1; --bg: #f8f9fe; --text: #1e293b; --new: #ef4444; }
+:root { --primary: #6366f1; --bg: #f8f9fe; --text: #1e293b; }
 * { box-sizing: border-box; font-family: 'Pretendard', sans-serif; }
-body { background: var(--bg); padding: 15px; color: var(--text); }
+body { background: var(--bg); padding: 20px; color: var(--text); }
 
-/* 입주민 UI */
-.book-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 15px; }
-.book-card { background: white; border-radius: 20px; padding: 12px; position: relative; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
-.book-img { width: 100%; height: 160px; border-radius: 15px; background: #f1f5f9; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; margin-bottom: 10px; }
-.new-badge { position: absolute; top: 20px; right: 20px; background: var(--new); color: white; padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+/* 헤더 및 타이틀 */
+.header-wrap { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+.section-title { font-size: 18px; font-weight: 700; margin: 20px 0 10px; }
 
-/* 관리자 UI */
-.admin-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+/* 신간 배너 */
+.new-books-banner { display: flex; gap: 15px; overflow-x: auto; padding: 5px; margin-bottom: 10px; }
+.new-book-card { min-width: 130px; text-align: center; }
+
+/* 전체 도서 그리드 */
+.book-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+.book-card { background: white; border-radius: 20px; padding: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+
+/* 공통 이미지 스타일 */
+.book-img { width: 100%; height: 170px; border-radius: 15px; background: #e2e8f0; display: flex; align-items: center; justify-content: center; background-size: cover; background-position: center; margin-bottom: 8px; font-size: 30px; }
+
+/* 관리자용 */
+.admin-card { background: white; padding: 20px; border-radius: 20px; margin-bottom: 15px; }
 input, select { width: 100%; padding: 12px; border: 1px solid #e2e8f0; border-radius: 12px; margin-bottom: 10px; }
 button { padding: 12px; border-radius: 12px; border: none; background: var(--primary); color: white; cursor: pointer; width: 100%; font-weight: bold; }
