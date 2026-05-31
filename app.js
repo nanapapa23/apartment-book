@@ -402,9 +402,15 @@ id==="admin" &&
 pw==="1234"
 ){
 
+sessionStorage.setItem(
+"libraryAdmin",
+"true"
+);
+
 window.location.href =
 "admin.html";
 
+}
 }else{
 
 alert("아이디 또는 비밀번호가 틀렸습니다.");
