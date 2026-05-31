@@ -1,113 +1,61 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
-
-<title>도서관리</title>
-
-<link rel="stylesheet"
-href="style.css">
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도서관 관리자 모드</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
+<body class="admin-body">
+    <script>
+        if(sessionStorage.getItem("libraryAdmin") !== "true") {
+            alert("관리자 권한이 없습니다.");
+            window.location.href = "index.html";
+        }
+    </script>
 
-<body>
-<body>
+    <div class="admin-header">
+        <h1>🛠️ 도서 관리 시스템</h1>
+        <div class="admin-btns">
+            <button id="exportBtn" class="btn-secondary"><i class="fa-solid fa-download"></i> 전체 다운로드</button>
+            <label for="importFile" class="btn-secondary" style="cursor:pointer;"><i class="fa-solid fa-upload"></i> 대량 업로드</label>
+            <input type="file" id="importFile" accept=".csv" style="display:none;">
+            <button id="logoutBtn" class="btn-danger">로그아웃</button>
+        </div>
+    </div>
 
-<script>
+    <div class="admin-container">
+        <div class="admin-card input-card">
+            <h3 id="formTitle">새 도서 등록</h3>
+            <div class="input-group">
+                <input id="title" placeholder="도서명 입력">
+                <input id="author" placeholder="저자명 입력">
+            </div>
+            <div class="select-group">
+                <select id="category">
+                    <option>성인</option><option>청소년</option><option>어린이</option><option>자기개발</option><option>기타</option>
+                </select>
+                <select id="shelf">
+                    <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option><option>F</option>
+                </select>
+                <select id="slot">
+                    <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option>
+                </select>
+            </div>
+            <div class="checkbox-group">
+                <label><input type="checkbox" id="newbook"> 신간도서로 설정</label>
+            </div>
+            <button id="saveBtn" class="btn-primary">도서 추가하기</button>
+            <button id="cancelBtn" class="btn-ghost" style="display:none;">취소</button>
+        </div>
 
-if(
-sessionStorage.getItem(
-"libraryAdmin"
-)!=="true"
-){
+        <div class="admin-card list-card">
+            <h3>보유 도서 목록 (<span id="adminCount">0</span>)</h3>
+            <div id="adminList" class="admin-list"></div>
+        </div>
+    </div>
 
-alert("관리자 로그인 후 이용 가능합니다.");
-
-window.location.href="index.html";
-
-}
-
-</script>
-
-<div class="header-wrap">
-</div>  
-<div class="header">
-📚 도서관리
-</div>
-<button id="logoutBtn">
-로그아웃
-</button>
-  
-<div class="book">
-
-<input id="title"
-placeholder="도서명"
-style="width:100%;padding:10px;margin-bottom:10px;">
-
-<input id="author"
-placeholder="저자"
-style="width:100%;padding:10px;margin-bottom:10px;">
-
-<select id="category"
-style="width:100%;padding:10px;margin-bottom:10px;">
-
-<option>성인</option>
-<option>청소년</option>
-<option>어린이</option>
-<option>자기개발</option>
-<option>기타</option>
-
-</select>
-
-<select id="shelf"
-style="width:100%;padding:10px;margin-bottom:10px;">
-
-<option>A</option>
-<option>B</option>
-<option>C</option>
-<option>D</option>
-<option>E</option>
-<option>F</option>
-
-</select>
-
-<select id="slot"
-style="width:100%;padding:10px;margin-bottom:10px;">
-
-<option>1</option>
-<option>2</option>
-<option>3</option>
-<option>4</option>
-<option>5</option>
-<option>6</option>
-<option>7</option>
-
-</select>
-
-<label>
-
-<input
-type="checkbox"
-id="newbook">
-
-신간도서
-
-</label>
-
-<br><br>
-
-<button id="saveBtn">
-도서 추가
-</button>
-
-</div>
-
-<div id="adminList"></div>
-
-<script type="module"
-src="admin.js"></script>
-
+    <script type="module" src="admin.js"></script>
 </body>
 </html>
