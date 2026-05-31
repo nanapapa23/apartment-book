@@ -1,7 +1,6 @@
 import { db } from "./firebase.js";
-import { collection, addDoc, getDocs, writeBatch, doc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, addDoc, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 저장 로직 (수정 시 로직 추가 필요)
 document.getElementById("saveBtn").onclick = async () => {
     await addDoc(collection(db, "books"), {
         title: document.getElementById("title").value,
@@ -11,10 +10,9 @@ document.getElementById("saveBtn").onclick = async () => {
         slot: document.getElementById("slot").value,
         newbook: document.getElementById("newbook").checked
     });
-    alert("저장 완료");
+    alert("등록 완료");
 };
 
-// CSV 다운로드 (파일명: yymmdd_booklist.csv)
 document.getElementById("exportBtn").onclick = async () => {
     const snapshot = await getDocs(collection(db, "books"));
     let csv = "도서명,저자,이미지URL,책장,칸,신간\n";
