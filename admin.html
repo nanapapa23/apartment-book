@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+content="width=device-width,initial-scale=1">
+
+<title>도서관리</title>
+
+<link rel="stylesheet"
+href="style.css">
+
+</head>
+
+<body>
+
+<div class="header">
+📚 도서관리
+</div>
+
+<div class="book">
+
+<input id="title"
+placeholder="도서명"
+style="width:100%;padding:10px;margin-bottom:10px;">
+
+<input id="author"
+placeholder="저자"
+style="width:100%;padding:10px;margin-bottom:10px;">
+
+<select id="category"
+style="width:100%;padding:10px;margin-bottom:10px;">
+
+<option>성인</option>
+<option>청소년</option>
+<option>어린이</option>
+<option>자기개발</option>
+<option>기타</option>
+
+</select>
+
+<select id="shelf"
+style="width:100%;padding:10px;margin-bottom:10px;">
+
+<option>A</option>
+<option>B</option>
+<option>C</option>
+<option>D</option>
+<option>E</option>
+<option>F</option>
+
+</select>
+
+<select id="slot"
+style="width:100%;padding:10px;margin-bottom:10px;">
+
+<option>1</option>
+<option>2</option>
+<option>3</option>
+<option>4</option>
+<option>5</option>
+<option>6</option>
+<option>7</option>
+
+</select>
+
+<label>
+
+<input
+type="checkbox"
+id="newbook">
+
+신간도서
+
+</label>
+
+<br><br>
+
+<button id="saveBtn">
+도서 추가
+</button>
+
+</div>
+
+<div id="adminList"></div>
+
+<script type="module"
+src="admin.js"></script>
+
+</body>
+</html>
