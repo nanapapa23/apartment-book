@@ -2,57 +2,16 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>효성해링턴 2단지 작은도서관</title>
+    <title>효성해링턴 작은도서관</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
-    <div class="header-wrap">
-        <div class="header">📚 효성해링턴 2단지 작은도서관</div>
-        <div id="adminIcon" title="관리자 로그인">🔐</div>
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+        <h2>📚 도서관</h2>
+        <div id="adminIcon" style="cursor:pointer;">🔐</div>
     </div>
-
-    <div class="search-wrap">
-        <i class="fa-solid fa-magnifying-glass search-icon"></i>
-        <input type="text" id="search" placeholder="도서명, 저자 또는 초성(ㄱㄴㄷ) 검색">
-    </div>
-
-    <div class="section-title">✨ 이번 주 신간도서</div>
-    <div id="newBooks" class="new-books-container"></div>
-
-    <div class="category-wrap">
-        <button class="category-btn active" data-category="전체">전체</button>
-        <button class="category-btn" data-category="성인">성인</button>
-        <button class="category-btn" data-category="청소년">청소년</button>
-        <button class="category-btn" data-category="어린이">어린이</button>
-        <button class="category-btn" data-category="자기개발">자기개발</button>
-        <button class="category-btn" data-category="기타">기타</button>
-    </div>
-
-    <div class="count-bar">
-        <span id="count">총 0권의 도서가 있습니다.</span>
-    </div>
-
+    <input type="text" id="search" placeholder="도서명, 저자 검색">
     <div id="bookList" class="book-grid"></div>
-
-    <div id="detailModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="closeBtn">&times;</span>
-            <div class="modal-header">
-                <h2 id="detailTitle"></h2>
-                <span id="detailBadge" class="badge">신간</span>
-            </div>
-            <div class="book-info">
-                <p><i class="fa-solid fa-user"></i> <span id="detailAuthor"></span></p>
-                <p><i class="fa-solid fa-tag"></i> <span id="detailCategory"></span></p>
-                <p><i class="fa-solid fa-location-dot"></i> <span id="detailLocation"></span></p>
-            </div>
-            <div class="location-title">📍 실제 책장 위치 (7칸 중 해당 위치)</div>
-            <div id="shelfView"></div>
-        </div>
-    </div>
-
     <script type="module" src="app.js"></script>
 </body>
 </html>
