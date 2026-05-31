@@ -120,7 +120,6 @@ div.innerHTML=`
 <div class="new-title">
 ${book.title || ""}
 </div>
-`;
 
 <div class="new-author">
 ${book.author || ""}
