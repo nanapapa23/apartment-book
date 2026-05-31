@@ -400,3 +400,18 @@ alert("아이디 또는 비밀번호가 틀렸습니다.");
 });
 
 }
+// ... 기존 코드 ...
+function drawShelf(book) {
+    const shelf = document.getElementById("shelfView");
+    shelf.innerHTML = `<div style="text-align:center; margin:10px 0;"><strong>${book.shelf} 책장</strong></div>`;
+    const box = document.createElement("div");
+    box.className = "shelf-grid";
+    for(let i=1; i<=7; i++) {
+        const div = document.createElement("div");
+        div.className = "slot" + (String(i) === String(book.slot) ? " active" : "");
+        div.innerText = i;
+        box.appendChild(div);
+    }
+    shelf.appendChild(box);
+}
+// ... 나머지 로직 ...
