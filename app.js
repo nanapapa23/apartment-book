@@ -117,12 +117,16 @@ document.createElement("div");
 div.className="new-book-card";
 
 div.innerHTML = `
-<div class="new-title">
+<div class="title">
 ${book.title || ""}
 </div>
 
-<div class="new-author">
-${book.author || ""}
+<div class="author">
+저자 : ${book.author || ""}
+</div>
+
+<div class="category">
+${book.category || ""}
 </div>
 `;
 
@@ -162,12 +166,16 @@ document.createElement("div");
 div.className="book";
 
 div.innerHTML = `
-<div class="new-title">
+<div class="title">
 ${book.title || ""}
 </div>
 
-<div class="new-author">
-${book.author || ""}
+<div class="author">
+저자 : ${book.author || ""}
+</div>
+
+<div class="category">
+${book.category || ""}
 </div>
 `;
 
