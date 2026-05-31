@@ -161,7 +161,7 @@ document.createElement("div");
 
 div.className="book";
 
-div.innerHTML=`
+div.innerHTML=
 
 <div class="title">
 ${book.title || ""}
@@ -175,7 +175,7 @@ ${book.title || ""}
 ${book.category || ""}
 </div>
 
-`;
+;
 
 div.onclick=()=>showDetail(book);
 
