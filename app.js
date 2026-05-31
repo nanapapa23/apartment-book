@@ -124,7 +124,7 @@ ${book.title || ""}
 <div class="new-author">
 ${book.author || ""}
 </div>
-`;
+;
 
 div.onclick=()=>showDetail(book);
 
