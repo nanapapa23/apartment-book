@@ -6,12 +6,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
-        <h2>📚 도서관</h2>
+    <div class="header-wrap">
+        <h2>📚 작은도서관</h2>
         <div id="adminIcon" style="cursor:pointer;">🔐</div>
     </div>
-    <input type="text" id="search" placeholder="도서명, 저자 검색">
+    
+    <div class="section-title">✨ 신간도서</div>
+    <div id="newBooks" class="new-books-banner"></div>
+
+    <div class="section-title">📖 전체 도서</div>
     <div id="bookList" class="book-grid"></div>
+
     <script type="module" src="app.js"></script>
 </body>
 </html>
