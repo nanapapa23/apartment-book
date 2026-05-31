@@ -385,6 +385,8 @@ loadBooks();
 const adminIcon =
 document.getElementById("adminIcon");
 
+if(adminIcon){
+
 adminIcon.addEventListener("click",()=>{
 
 const id =
@@ -410,10 +412,13 @@ sessionStorage.setItem(
 window.location.href =
 "admin.html";
 
-}
 }else{
 
 alert("아이디 또는 비밀번호가 틀렸습니다.");
+
+}
+
+});
 
 }
 
