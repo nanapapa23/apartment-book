@@ -116,18 +116,8 @@ document.createElement("div");
 
 div.className="new-book-card";
 
-/* 수정 전 코드와 비교하여 백틱을 꼭 확인하세요 */
-div.innerHTML = `
-  <div class="title">
-    ${book.title || ""}
-  </div>
-  <div class="author">
-    저자 : ${book.author || ""}
-  </div>
-  <div class="category">
-    ${book.category || ""}
-  </div>
-`; // <--- 이 부분에 백틱(backtick)이 있는지 꼭 확인하세요!
+// renderNewBooks 함수 내부의 div.innerHTML 부분을 이렇게 한 줄로 바꿔보세요.
+div.innerHTML = '<div class="title">' + (book.title || "") + '</div><div class="author">저자 : ' + (book.author || "") + '</div><div class="category">' + (book.category || "") + '</div>';
 
 div.onclick=()=>showDetail(book);
 
@@ -164,19 +154,8 @@ document.createElement("div");
 
 div.className="book";
 
-div.innerHTML = `
-<div class="title">
-${book.title || ""}
-</div>
-
-<div class="author">
-저자 : ${book.author || ""}
-</div>
-
-<div class="category">
-${book.category || ""}
-</div>
-`;
+// renderNewBooks 함수 내부의 div.innerHTML 부분을 이렇게 한 줄로 바꿔보세요.
+div.innerHTML = '<div class="title">' + (book.title || "") + '</div><div class="author">저자 : ' + (book.author || "") + '</div><div class="category">' + (book.category || "") + '</div>';
 
 div.onclick=()=>showDetail(book);
 
