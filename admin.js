@@ -341,3 +341,22 @@ loadBooks();
 ------------------- */
 
 loadBooks();
+const logoutBtn =
+document.getElementById(
+"logoutBtn"
+);
+
+if(logoutBtn){
+
+logoutBtn.onclick=()=>{
+
+sessionStorage.removeItem(
+"libraryAdmin"
+);
+
+location.href=
+"index.html";
+
+};
+
+}
