@@ -378,4 +378,38 @@ modal.style.display="none";
 --------------------- */
 
 loadBooks();
+/* -------------------
+   관리자 로그인
+------------------- */
+
+const adminIcon =
+document.getElementById("adminIcon");
+
+adminIcon.addEventListener("click",()=>{
+
+const id =
+prompt("관리자 아이디");
+
+if(id===null) return;
+
+const pw =
+prompt("비밀번호");
+
+if(pw===null) return;
+
+if(
+id==="admin" &&
+pw==="1234"
+){
+
+window.location.href =
+"admin.html";
+
+}else{
+
+alert("아이디 또는 비밀번호가 틀렸습니다.");
+
+}
+
+});
 ```
