@@ -1,46 +1,23 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>효성해링턴 2단지 작은도서관</title>
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <title>효성해링턴 2단지 작은도서관</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-<div class="header-wrap">
     <div class="header">📚 도서관 검색</div>
-    <div id="adminIcon" style="position:absolute; right:0; cursor:pointer;">🔐</div>
-</div>
-
-<div class="card">
-    <input type="text" id="search" placeholder="도서명 또는 저자로 검색하세요">
-</div>
-
-<div class="section-title">✨ 신간도서</div>
-<div id="newBooks"></div>
-
-<div class="category-wrap" style="display:flex; overflow-x:auto; margin:15px 0;">
-    <button class="category-btn active" data-category="전체">전체</button>
-    <button class="category-btn" data-category="성인">성인</button>
-    <button class="category-btn" data-category="청소년">청소년</button>
-    <button class="category-btn" data-category="어린이">어린이</button>
-</div>
-
-<div id="count" style="font-size:14px; color:#888; margin-bottom:10px;">총 0권</div>
-<div id="bookList"></div>
-
-<div id="detailModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeBtn">×</span>
-        <h2 id="detailTitle"></h2>
-        <div id="detailAuthor" style="margin-top:10px;"></div>
-        <div id="detailCategory"></div>
-        <div id="detailLocation" style="font-weight:bold; margin:10px 0;"></div>
-        <div id="shelfView"></div>
+    <input type="text" id="search" placeholder="도서명 / 저자 검색">
+    <div id="newBooks" style="display:flex; gap:10px; overflow-x:auto;"></div>
+    <div id="bookList"></div>
+    <div id="detailModal" class="modal">
+        <div class="modal-content">
+            <h2 id="detailTitle"></h2>
+            <p id="detailAuthor"></p>
+            <div id="shelfView"></div>
+            <button id="closeBtn" class="btn-sub" style="margin-top:20px; width:100%;">닫기</button>
+        </div>
     </div>
-</div>
-
-<script type="module" src="app.js"></script>
+    <script type="module" src="app.js"></script>
 </body>
 </html>
