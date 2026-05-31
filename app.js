@@ -106,12 +106,15 @@ function showDetail(book) {
 function drawShelf(book) {
     const shelf = document.getElementById("shelfView");
     shelf.innerHTML = `<div style="text-align:center; margin:10px 0; font-weight:bold;">${book.shelf || ""} 책장</div>`;
+    
     const box = document.createElement("div");
-    box.className = "shelf-grid";
+    box.className = "shelf-box";
+    
+    // 7칸을 아래에서 위로(1~7) 쌓는 구조
     for(let i = 1; i <= 7; i++) {
         const div = document.createElement("div");
         div.className = "slot" + (String(i) === String(book.slot) ? " active" : "");
-        div.innerText = i;
+        div.innerText = i + "칸";
         box.appendChild(div);
     }
     shelf.appendChild(box);
