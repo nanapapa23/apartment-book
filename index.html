@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,69 +7,8 @@
 
 <title>효성해링턴 2단지 작은도서관</title>
 
-<style>
+<link rel="stylesheet" href="style.css">
 
-body{
-margin:0;
-padding:20px;
-font-family:sans-serif;
-background:#f5f5f5;
-}
-
-.header{
-text-align:center;
-font-size:28px;
-font-weight:bold;
-margin-bottom:20px;
-}
-
-#search{
-width:100%;
-padding:14px;
-font-size:16px;
-border-radius:10px;
-border:1px solid #ccc;
-box-sizing:border-box;
-}
-
-.book{
-background:white;
-padding:15px;
-margin-top:12px;
-border-radius:12px;
-box-shadow:0 2px 5px rgba(0,0,0,.1);
-}
-
-.title{
-font-size:18px;
-font-weight:bold;
-}
-
-.author{
-margin-top:6px;
-color:#666;
-}
-
-.status{
-margin-top:8px;
-font-weight:bold;
-}
-
-.available{
-color:green;
-}
-
-.borrowed{
-color:red;
-}
-
-.count{
-margin-top:15px;
-font-size:14px;
-color:#666;
-}
-
-</style>
 </head>
 
 <body>
@@ -77,141 +17,92 @@ color:#666;
 📚 효성해링턴 2단지 작은도서관
 </div>
 
+<div class="search-wrap">
 <input
 type="text"
 id="search"
-placeholder="도서명 검색">
+placeholder="도서명 / 저자 / 초성 검색">
+</div>
 
-<div class="count" id="count"></div>
+<div class="section-title">
+📖 신간도서
+</div>
+
+<div id="newBooks"></div>
+
+<div class="category-wrap">
+
+<button class="category-btn active"
+data-category="전체">
+전체
+</button>
+
+<button class="category-btn"
+data-category="성인">
+성인
+</button>
+
+<button class="category-btn"
+data-category="청소년">
+청소년
+</button>
+
+<button class="category-btn"
+data-category="어린이">
+어린이
+</button>
+
+<button class="category-btn"
+data-category="자기개발">
+자기개발
+</button>
+
+<button class="category-btn"
+data-category="기타">
+기타
+</button>
+
+</div>
+
+<div class="count" id="count">
+총 0권
+</div>
 
 <div id="bookList"></div>
 
-<script type="module">
+<div id="detailModal" class="modal">
 
-import { initializeApp }
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+<div class="modal-content">
 
-import {
-getFirestore,
-collection,
-getDocs
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+<span class="close"
+id="closeBtn">
+×
+</span>
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDkf11w1Bu5IZ_sggCT_GqMjTKnFy9fyuE",
-  authDomain: "chilgokbookcafe.firebaseapp.com",
-  projectId: "chilgokbookcafe",
-  storageBucket: "chilgokbookcafe.firebasestorage.app",
-  messagingSenderId: "150579513603",
-  appId: "1:150579513603:web:bc76fe94bbddf244084136"
-};
+<h2 id="detailTitle"></h2>
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
+<div class="book-info">
 
-const bookList =
-document.getElementById("bookList");
+<div id="detailAuthor"></div>
 
-const search =
-document.getElementById("search");
+<div id="detailCategory"></div>
 
-const count =
-document.getElementById("count");
+<div id="detailLocation"></div>
 
-let books = [];
-
-async function loadBooks(){
-
-try{
-
-const snapshot =
-await getDocs(
-collection(db,"books")
-);
-
-books=[];
-
-snapshot.forEach(doc=>{
-
-books.push(doc.data());
-
-});
-
-renderBooks(books);
-
-}catch(error){
-
-bookList.innerHTML=
-"<h3>Firebase 연결 오류</h3>";
-
-console.error(error);
-
-}
-
-}
-
-function renderBooks(data){
-
-bookList.innerHTML="";
-
-count.innerText =
-"총 " + data.length + "권";
-
-data.forEach(book=>{
-
-const div =
-document.createElement("div");
-
-div.className="book";
-
-div.innerHTML=`
-
-<div class="title">
-${book.title || ""}
 </div>
 
-<div class="author">
-저자 : ${book.author || ""}
+<div class="location-title">
+📍 책 위치
 </div>
 
-<div class="status ${
-book.status==="대출가능"
-? "available"
-: "borrowed"
-}">
-${book.status || ""}
+<div id="shelfView"></div>
+
 </div>
 
-`;
+</div>
 
-bookList.appendChild(div);
-
-});
-
-}
-
-search.addEventListener("input",()=>{
-
-const keyword =
-search.value.toLowerCase();
-
-const filtered =
-books.filter(book=>
-
-(book.title || "")
-.toLowerCase()
-.includes(keyword)
-
-);
-
-renderBooks(filtered);
-
-});
-
-loadBooks();
-
-</script>
+<script type="module" src="app.js"></script>
 
 </body>
 </html>
+```
