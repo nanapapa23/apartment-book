@@ -7,109 +7,67 @@
 <title>효성해링턴 2단지 작은도서관</title>
 
 <style>
+
 body{
 margin:0;
+padding:20px;
 font-family:sans-serif;
 background:#f5f5f5;
 }
 
 .header{
-background:#2e7d32;
-color:white;
-padding:18px;
 text-align:center;
-font-size:22px;
-font-weight:bold;
-position:sticky;
-top:0;
-z-index:100;
-}
-
-.lock-btn{
-position:absolute;
-right:15px;
-top:50%;
-transform:translateY(-50%);
-background:none;
-border:none;
-color:white;
 font-size:28px;
-cursor:pointer;
-}
-
-.container{
-max-width:700px;
-margin:auto;
-padding:15px;
-padding-bottom:330px;
-}
-
-.search-box{
-width:100%;
-padding:14px;
-border-radius:10px;
-border:1px solid #ccc;
-font-size:16px;
-margin-bottom:15px;
-box-sizing:border-box;
-}
-
-.book-item{
-background:white;
-padding:15px;
-border-radius:10px;
-margin-bottom:10px;
-box-shadow:0 2px 5px rgba(0,0,0,0.08);
-}
-
-.book-title{font-size:18px;font-weight:bold;}
-.book-author{color:#666;margin-top:5px;}
-.book-location{font-size:13px;color:#555;margin-top:5px;}
-
-.admin{
-display:none;
-background:#fff3e0;
-padding:15px;
-border-radius:10px;
+font-weight:bold;
 margin-bottom:20px;
 }
 
-.admin input,
-.admin select,
-.admin button{
+#search{
 width:100%;
-padding:12px;
-margin-bottom:10px;
+padding:14px;
+font-size:16px;
+border-radius:10px;
+border:1px solid #ccc;
 box-sizing:border-box;
 }
 
-.location-banner{
-position:fixed;
-bottom:-300px;
-left:0;
-right:0;
-background:#222;
-color:white;
+.book{
+background:white;
 padding:15px;
-transition:0.3s;
-border-top-left-radius:20px;
-border-top-right-radius:20px;
-z-index:999;
+margin-top:12px;
+border-radius:12px;
+box-shadow:0 2px 5px rgba(0,0,0,.1);
 }
 
-.location-banner.show{
-bottom:0;
+.title{
+font-size:18px;
+font-weight:bold;
 }
 
-.close-btn{
-width:100%;
-padding:12px;
+.author{
+margin-top:6px;
+color:#666;
+}
+
+.status{
+margin-top:8px;
+font-weight:bold;
+}
+
+.available{
+color:green;
+}
+
+.borrowed{
+color:red;
+}
+
+.count{
 margin-top:15px;
-background:#444;
-border:none;
-color:white;
-border-radius:8px;
+font-size:14px;
+color:#666;
 }
+
 </style>
 </head>
 
@@ -117,138 +75,141 @@ border-radius:8px;
 
 <div class="header">
 📚 효성해링턴 2단지 작은도서관
-<button class="lock-btn" onclick="toggleAdmin()">🔒</button>
 </div>
 
-<div class="container">
+<input
+type="text"
+id="search"
+placeholder="도서명 검색">
 
-<div class="admin" id="adminBox">
-<h3>⚙️ 관리자 모드</h3>
-
-<input id="title" placeholder="도서명">
-<input id="author" placeholder="저자">
-
-<select id="category">
-<option>소설</option><option>경제</option><option>자기계발</option>
-<option>유아</option><option>초등</option>
-</select>
-
-<select id="shelf">
-<option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
-</select>
-
-<select id="floor">
-<option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-</select>
-
-<button onclick="addBook()">📌 도서 등록</button>
-</div>
-
-<input class="search-box" id="search" placeholder="검색">
+<div class="count" id="count"></div>
 
 <div id="bookList"></div>
 
-</div>
+<script type="module">
 
-<div class="location-banner" id="banner">
-<div id="locationText"></div>
-<button class="close-btn" onclick="closeBanner()">닫기</button>
-</div>
+import { initializeApp }
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 
-<!-- 🔥 Firebase (COMPAT 안정버전) -->
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.5/firebase-database-compat.js"></script>
+import {
+getFirestore,
+collection,
+getDocs
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<script>
 const firebaseConfig = {
-apiKey: "AIzaSyCmUeJ5YOmn9gGEWX3B5RJEFN9uvge8HWQ",
-authDomain: "library-app-3dba2.firebaseapp.com",
-projectId: "library-app-3dba2",
-storageBucket: "library-app-3dba2.firebasestorage.app",
-messagingSenderId: "645901694711",
-appId: "1:645901694711:web:f4f4802c3517ecc644c5f2"
+  apiKey: "AIzaSyDkf11w1Bu5IZ_sggCT_GqMjTKnFy9fyuE",
+  authDomain: "chilgokbookcafe.firebaseapp.com",
+  projectId: "chilgokbookcafe",
+  storageBucket: "chilgokbookcafe.firebasestorage.app",
+  messagingSenderId: "150579513603",
+  appId: "1:150579513603:web:bc76fe94bbddf244084136"
 };
 
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+const bookList =
+document.getElementById("bookList");
+
+const search =
+document.getElementById("search");
+
+const count =
+document.getElementById("count");
 
 let books = [];
-let admin = false;
 
-const list = document.getElementById("bookList");
+async function loadBooks(){
 
-/* 📦 실시간 데이터 */
-firebase.database().ref("books").on("value", snap=>{
-books = [];
-snap.forEach(d=>{
-books.push({id:d.key, ...d.val()});
+try{
+
+const snapshot =
+await getDocs(
+collection(db,"books")
+);
+
+books=[];
+
+snapshot.forEach(doc=>{
+
+books.push(doc.data());
+
 });
-render();
-});
 
-/* 📌 책 추가 */
-window.addBook = function(){
-const title = document.getElementById("title").value;
-const author = document.getElementById("author").value;
+renderBooks(books);
 
-if(!title) return alert("제목 입력");
+}catch(error){
 
-firebase.database().ref("books").push({
-title,
-author,
-location: document.getElementById("shelf").value + "책장 " + document.getElementById("floor").value + "단",
-category: document.getElementById("category").value
-});
-};
+bookList.innerHTML=
+"<h3>Firebase 연결 오류</h3>";
 
-/* 📌 렌더 */
-function render(){
-const k = (document.getElementById("search").value || "").toLowerCase();
+console.error(error);
 
-list.innerHTML = "";
-
-books.filter(b =>
-(b.title || "").toLowerCase().includes(k) ||
-(b.author || "").toLowerCase().includes(k)
-).forEach(b => {
-
-const div = document.createElement("div");
-div.className = "book-item";
-
-div.innerHTML = `
-<div class="book-title">${b.title}</div>
-<div class="book-author">${b.author || ""}</div>
-<div class="book-location">📍 ${b.location || ""}</div>
-`;
-
-div.onclick = () => {
-showLocation(b.title, b.location);
-};
-
-list.appendChild(div);
-});
 }
 
-/* 📍 위치 */
-window.showLocation = function(title,location){
-document.getElementById("banner").classList.add("show");
-document.getElementById("locationText").innerHTML =
-"📖 " + title + "<br>" + location;
-};
+}
 
-window.closeBanner = function(){
-document.getElementById("banner").classList.remove("show");
-};
+function renderBooks(data){
 
-/* 🔐 관리자 */
-window.toggleAdmin = function(){
-admin = !admin;
-document.getElementById("adminBox").style.display =
-admin ? "block" : "none";
-};
+bookList.innerHTML="";
 
-/* 🔍 검색 */
-document.getElementById("search").addEventListener("input", render);
+count.innerText =
+"총 " + data.length + "권";
+
+data.forEach(book=>{
+
+const div =
+document.createElement("div");
+
+div.className="book";
+
+div.innerHTML=`
+
+<div class="title">
+${book.title || ""}
+</div>
+
+<div class="author">
+저자 : ${book.author || ""}
+</div>
+
+<div class="status ${
+book.status==="대출가능"
+? "available"
+: "borrowed"
+}">
+${book.status || ""}
+</div>
+
+`;
+
+bookList.appendChild(div);
+
+});
+
+}
+
+search.addEventListener("input",()=>{
+
+const keyword =
+search.value.toLowerCase();
+
+const filtered =
+books.filter(book=>
+
+(book.title || "")
+.toLowerCase()
+.includes(keyword)
+
+);
+
+renderBooks(filtered);
+
+});
+
+loadBooks();
 
 </script>
 
