@@ -116,7 +116,7 @@ document.createElement("div");
 
 div.className="new-book-card";
 
-div.innerHTML=
+div.innerHTML='
 <div class="new-title">
 ${book.title || ""}
 </div>
@@ -124,7 +124,7 @@ ${book.title || ""}
 <div class="new-author">
 ${book.author || ""}
 </div>
-;
+';
 
 div.onclick=()=>showDetail(book);
 
@@ -161,7 +161,7 @@ document.createElement("div");
 
 div.className="book";
 
-div.innerHTML=
+div.innerHTML='
 
 <div class="title">
 ${book.title || ""}
@@ -175,7 +175,7 @@ ${book.title || ""}
 ${book.category || ""}
 </div>
 
-;
+';
 
 div.onclick=()=>showDetail(book);
 
