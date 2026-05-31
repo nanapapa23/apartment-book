@@ -1,22 +1,31 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <title>관리자 도구</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>도서 관리자</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="admin-card">
-        <h3>도서 등록</h3>
-        <input id="title" placeholder="도서명">
-        <input id="author" placeholder="저자">
-        <input id="imageUrl" placeholder="이미지 URL">
+
+<div class="header-wrap">
+    <div class="header">⚙️ 도서 관리</div>
+    <button id="logoutBtn" style="width:auto; position:absolute; right:0; background:#d32f2f;">로그아웃</button>
+</div>
+
+<div class="card">
+    <input id="title" placeholder="도서명">
+    <input id="author" placeholder="저자">
+    <select id="category"><option>성인</option><option>청소년</option><option>어린이</option><option>자기개발</option><option>기타</option></select>
+    <div style="display:flex; gap:10px;">
         <select id="shelf"><option>A</option><option>B</option><option>C</option></select>
-        <select id="slot"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
-        <label><input type="checkbox" id="newbook"> 신간도서</label>
-        <button id="saveBtn">등록하기</button>
+        <select id="slot"><option>1</option><option>2</option><option>3</option></select>
     </div>
-    <button id="exportBtn" style="background:#64748b; margin-bottom:20px;">CSV 다운로드</button>
-    <script type="module" src="admin.js"></script>
+    <label style="display:block; margin-bottom:10px;"><input type="checkbox" id="newbook"> 신간도서로 등록</label>
+    <button id="saveBtn">도서 추가/수정</button>
+</div>
+
+<div id="adminList"></div>
+
+<script type="module" src="admin.js"></script>
 </body>
 </html>
