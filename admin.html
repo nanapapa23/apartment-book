@@ -5,36 +5,31 @@
     <title>도서 관리자 모드</title>
     <link rel="stylesheet" href="style.css">
     <script>
-        if(sessionStorage.getItem("libraryAdmin") !== "true") {
-            alert("관리자 권한이 필요합니다.");
-            window.location.href = "index.html";
-        }
+        if(sessionStorage.getItem("libraryAdmin") !== "true") { alert("권한 없음"); window.location.href = "index.html"; }
     </script>
 </head>
 <body style="background:#f8f9fe; padding:20px;">
     <div style="text-align:right; margin-bottom:10px;"><button id="logoutBtn">로그아웃</button></div>
     
     <div class="admin-card" style="background:white; padding:20px; border-radius:20px; margin-bottom:20px;">
-        <h3>신규 도서 등록</h3>
+        <h3>도서 등록/수정</h3>
         <input id="title" placeholder="책 이름" style="width:100%; padding:10px; margin:10px 0; border-radius:10px; border:1px solid #ccc;">
         <input id="author" placeholder="저자" style="width:100%; padding:10px; margin-bottom:10px; border-radius:10px; border:1px solid #ccc;">
-        <select id="shelf" style="width:48%; padding:10px; border-radius:10px;"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
-        <select id="slot" style="width:48%; padding:10px; border-radius:10px;">
-            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option>
-        </select>
-        <button id="saveBtn" style="width:100%; padding:15px; margin-top:15px; background:#5c6bc0; color:white; border:none; border-radius:15px;">도서 추가</button>
+        <select id="shelf" style="width:48%; padding:10px;"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
+        <select id="slot" style="width:48%; padding:10px;"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
+        <div style="margin:10px 0;"><label><input type="checkbox" id="newbook"> 신간 도서 체크</label></div>
+        <button id="saveBtn" style="width:100%; padding:15px; background:#5c6bc0; color:white; border:none; border-radius:15px;">도서 추가</button>
     </div>
 
     <div class="admin-card" style="background:white; padding:20px; border-radius:20px; margin-bottom:20px;">
         <h3>대용량 데이터 관리</h3>
         <input type="file" id="fileInput" style="display:none">
-        <button onclick="document.getElementById('fileInput').click()" style="width:48%; padding:10px;">업로드 (CSV)</button>
-        <button id="downloadBtn" style="width:48%; padding:10px;">다운로드 (Excel)</button>
+        <button onclick="document.getElementById('fileInput').click()" style="width:48%; padding:10px;">CSV 업로드</button>
+        <button id="downloadBtn" style="width:48%; padding:10px;">CSV 다운로드</button>
     </div>
 
     <h3>도서 목록 관리</h3>
     <div id="adminList"></div>
-
     <script type="module" src="admin.js"></script>
 </body>
 </html>
