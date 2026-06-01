@@ -82,4 +82,11 @@ body { background: #f8f9fe; padding: 20px; }
     background: #fffdf9;
 }
 
+.new-book-card { 
+border: 2px solid #ff7043; background: #fff3e0; 
+} /* 신간 강조 */
+.book-item { 
+border-left: 5px solid #5c6bc0; 
+} /* 카드형 리스트 스타일 */
+
 
