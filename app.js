@@ -1,63 +1,49 @@
 import { db } from "./firebase.js";
 import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// DOM 요소 참조
-const searchInput = document.getElementById("search");
 const bookList = document.getElementById("bookList");
 const newBooks = document.getElementById("newBooks");
 const modal = document.getElementById("detailModal");
-const adminIcon = document.getElementById("adminIcon");
 
-let books = [];
-let currentCategory = "전체";
-
-// 초성 검색 함수
-const CHO = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
-function getChosung(str) {
-    let result = "";
-    for(let char of str) {
-        const code = char.charCodeAt(0) - 44032;
-        if(code >= 0 && code <= 11171) result += CHO[Math.floor(code / 588)];
-        else result += char;
-    }
-    return result;
-}
-
-// 데이터 로드
 async function loadBooks() {
     try {
-        const snapshot = await getDocs(collection(db, "books"));
-        books = snapshot.docs.map(d => ({id: d.id, ...d.data()}));
+        const snap = await getDocs(collection(db, "books"));
+        const books = snap.docs.map(d => ({id: d.id, ...d.data()}));
         
-        // 신간 영역 렌더링
+        // 1. 신간 도서 영역 (이미지, 이름, 저자 포함)
         newBooks.innerHTML = "";
-        books.filter(b => b.newbook).sort((a,b) => (b.date || "").localeCompare(a.date || "")).forEach(b => {
+        books.filter(b => b.newbook).forEach(b => {
             const div = document.createElement("div");
             div.className = "new-book-card";
-            div.innerHTML = `<strong>${b.title}</strong><br><small>${b.author}</small>`;
+            div.style = "text-align:center; padding:10px;";
+            div.innerHTML = `
+                <div style="width:100px; height:140px; background:white; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border-radius:5px; overflow:hidden;">
+                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<small style="color:#aaa; font-size:10px;">이미지 없음</small>'}
+                </div>
+                <div style="font-weight:bold; font-size:14px;">${b.title}</div>
+                <div style="font-size:12px; color:#666;">${b.author}</div>
+            `;
             div.onclick = () => showDetail(b);
             newBooks.appendChild(div);
         });
-        renderBookList(books);
-    } catch(err) { console.error("로드 실패:", err); }
-}
 
-// 리스트 렌더링
-function renderBookList(data) {
-    bookList.innerHTML = "";
-    const sorted = data.filter(b => currentCategory === "전체" || b.category === currentCategory)
-                       .sort((a,b) => b.newbook - a.newbook);
-    sorted.forEach(b => {
-        const div = document.createElement("div");
-        div.className = "book-item";
-        div.innerHTML = `
-            <div class="book-info">
-                <div class="title">${b.title} ${b.newbook ? '<span style="color:red; font-size:12px;">[NEW]</span>' : ''}</div>
-                <div class="author">${b.author} | ${b.category || '기타'} | 등록: ${b.date || ''}</div>
-            </div>`;
-        div.onclick = () => showDetail(b);
-        bookList.appendChild(div);
-    });
+        // 2. 전체 도서 목록 (신간 상단 배치)
+        bookList.innerHTML = "";
+        books.sort((a,b) => b.newbook - a.newbook).forEach(b => {
+            const div = document.createElement("div");
+            div.className = "book-item";
+            div.innerHTML = `
+                <div style="width:50px; height:70px; background:white; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; border-radius:4px; overflow:hidden; flex-shrink:0;">
+                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<small style="font-size:8px; color:#aaa;">없음</small>'}
+                </div>
+                <div style="margin-left:15px; overflow:hidden;">
+                    <div class="title" style="font-weight:bold;">${b.title} ${b.newbook ? '<span style="color:red; font-size:11px;">[NEW]</span>' : ''}</div>
+                    <div class="author" style="font-size:13px; color:#666;">${b.author} | 등록: ${b.date || ''}</div>
+                </div>`;
+            div.onclick = () => showDetail(b);
+            bookList.appendChild(div);
+        });
+    } catch(err) { console.error("데이터 로드 에러:", err); }
 }
 
 function showDetail(b) {
@@ -73,34 +59,6 @@ function showDetail(b) {
     shelfView.appendChild(box);
     modal.style.display = "block";
 }
-
-// 이벤트 연결 (오류 방지 위해 if문 사용)
-if(adminIcon) adminIcon.onclick = () => {
-    const id = prompt("관리자 아이디");
-    const pw = prompt("비밀번호");
-    if(id === "admin" && pw === "1234") {
-        try { sessionStorage.setItem("libraryAdmin", "true"); } catch(e) { alert("저장소 접근이 차단됨"); }
-        window.location.href = "admin.html";
-    }
-};
-
-if(searchInput) searchInput.addEventListener("input", (e) => {
-    const val = e.target.value.toLowerCase();
-    renderBookList(books.filter(b => 
-        b.title.toLowerCase().includes(val) || 
-        b.author.toLowerCase().includes(val) ||
-        getChosung(b.title).includes(val)
-    ));
-});
-
-document.querySelectorAll(".category-item").forEach(item => {
-    item.addEventListener("click", () => {
-        document.querySelectorAll(".category-item").forEach(el => el.classList.remove("active"));
-        item.classList.add("active");
-        currentCategory = item.dataset.category;
-        renderBookList(books);
-    });
-});
 
 document.getElementById("closeBtn").onclick = () => modal.style.display = "none";
 loadBooks();
