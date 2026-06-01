@@ -3,22 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>도서 관리자</title>
+    <title>도서 관리자 모드</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-card { background: white; padding: 20px; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; }
+        .input-group { margin-bottom: 15px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .admin-input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 15px; }
+        .btn-main { width: 100%; padding: 15px; border-radius: 15px; border: none; background: #6b85d9; color: white; font-weight: bold; cursor: pointer; }
+        .flex-row { display: flex; gap: 10px; margin-top: 20px; }
+        .btn-sub { flex: 1; padding: 15px; border-radius: 15px; border: 1px solid #ddd; background: #f8f9fe; cursor: pointer; }
+    </style>
 </head>
-<body>
-    <div class="header">⚙️ 도서 관리자</div>
-    <div class="card">
-        <input id="title" placeholder="도서명">
-        <input id="author" placeholder="저자">
-        <select id="category"><option>성인</option><option>청소년</option><option>어린이</option><option>자기개발</option><option>기타</option></select>
-        <button id="saveBtn" class="btn-primary">도서 등록</button>
-        <hr style="margin:20px 0;">
-        <button id="downloadBtn" class="btn-sub">CSV 다운로드</button>
-        <input type="file" id="uploadFile" accept=".csv" style="margin-top:10px;">
-        <button id="uploadBtn" class="btn-primary" style="margin-top:10px;">CSV 대량 업로드</button>
+<body style="background:#fdfaf7; padding:20px;">
+
+<div style="text-align:center; margin-bottom:20px;">
+    <h2 style="color:#6b85d9;">도서 관리자 모드</h2>
+    <button id="logoutBtn" style="background:none; border:none; color:red; cursor:pointer;">로그아웃</button>
+</div>
+
+<div class="admin-card">
+    <h3 style="margin-bottom:15px;">신규 도서 등록</h3>
+    <div class="input-group"><input type="text" id="title" class="admin-input" placeholder="책 이름"></div>
+    <div class="input-group"><input type="text" id="author" class="admin-input" placeholder="저자"></div>
+    <div class="input-group">
+        <select id="category" class="admin-input">
+            <option>성인</option><option>청소년</option><option>어린이</option><option>자기개발</option><option>기타</option>
+        </select>
     </div>
-    <div id="adminList"></div>
-    <script type="module" src="admin.js"></script>
+    <label><input type="checkbox" id="newbook"> 신간 도서 체크</label>
+    <button id="saveBtn" class="btn-main" style="margin-top:15px;">도서 추가</button>
+</div>
+
+<h3>도서 목록 관리</h3>
+<div id="adminList"></div>
+
+<div class="admin-card">
+    <h3>대용량 데이터 관리</h3>
+    <div class="flex-row">
+        <button class="btn-sub">업로드 (Excel)</button>
+        <button class="btn-sub">다운로드 (Excel)</button>
+    </div>
+</div>
+
+<script type="module" src="admin.js"></script>
 </body>
 </html>
