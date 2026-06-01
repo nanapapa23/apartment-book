@@ -6,26 +6,32 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="header">📚 효성해링턴 도서관</div>
-    <div class="search-wrap"><input type="text" id="search" placeholder="도서명 / 저자 검색"></div>
-    
-    <div class="category-wrap">
-        <button class="category-btn active" data-category="전체">전체</button>
-        <button class="category-btn" data-category="성인">성인</button>
-        <button class="category-btn" data-category="청소년">청소년</button>
-        <button class="category-btn" data-category="어린이">어린이</button>
-        <button class="category-btn" data-category="자기개발">자기개발</button>
-        <button class="category-btn" data-category="기타">기타</button>
+    <div class="search-container">
+        <h2 style="margin-bottom:15px;">도서 검색</h2>
+        <div class="search-box"><input type="text" id="search" placeholder="검색어를 입력하세요..."></div>
     </div>
 
-    <div class="section-title">📚 도서 목록</div>
+    <div class="section-title">📖 신간 도서</div>
+    <div id="newBooks"></div>
+
+    <div class="section-title">📂 도서 카테고리</div>
+    <div class="category-grid">
+        <div class="category-item" data-category="전체">전체</div>
+        <div class="category-item" data-category="성인">성인</div>
+        <div class="category-item" data-category="청소년">청소년</div>
+        <div class="category-item" data-category="어린이">어린이</div>
+        <div class="category-item" data-category="자기개발">자기개발</div>
+        <div class="category-item" data-category="기타">기타</div>
+    </div>
+
+    <div class="section-title" id="listTitle">📚 도서 목록</div>
     <div id="bookList"></div>
 
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <h2 id="detailTitle"></h2>
             <div id="shelfView"></div>
-            <button id="closeBtn" style="width:100%; padding:15px; margin-top:20px; border-radius:10px; border:none; background:#eee;">닫기</button>
+            <button id="closeBtn" style="width:100%; padding:15px; border-radius:15px; border:none; background:#eee;">닫기</button>
         </div>
     </div>
     <script type="module" src="app.js"></script>
