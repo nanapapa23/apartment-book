@@ -7,33 +7,33 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="adminIcon">🔐</div>
+    <div id="adminIcon" style="cursor:pointer; font-size:20px; text-align:right; padding:10px;">🔐</div>
 
-    <div style="margin-top:30px; margin-bottom:15px; display:flex; justify-content:center;">
-        <input id="search" placeholder="도서명 또는 저자 검색..." style="padding:8px; width:90%; font-size:14px;">
+    <div style="margin-top:10px; margin-bottom:20px; display:flex; justify-content:center;">
+        <input id="search" placeholder="도서명 또는 저자 검색..." style="padding:10px; width:90%; font-size:14px; border:1px solid #ddd; border-radius:5px;">
     </div>
 
-    <div class="section-title">신간 도서</div>
-    <div id="newBooks"></div>
+    <div class="section-title" style="font-weight:bold; margin:10px;">신간 도서</div>
+    <div id="newBooks" style="display:flex; overflow-x:auto; padding:10px; gap:10px;"></div>
 
-    <div class="section-title">도서 카테고리</div>
-    <div class="category-grid" id="categoryGrid">
-        <div class="category-item" data-category="전체">전체</div>
-        <div class="category-item" data-category="성인">성인</div>
-        <div class="category-item" data-category="청소년">청소년</div>
-        <div class="category-item" data-category="어린이">어린이</div>
-        <div class="category-item" data-category="자기개발">자기개발</div>
-        <div class="category-item" data-category="희망도서" style="background:#ffcc80;">희망도서</div>
+    <div class="section-title" style="font-weight:bold; margin:10px;">도서 카테고리</div>
+    <div class="category-grid" id="categoryGrid" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:10px; padding:10px;">
+        <div class="category-item" data-category="전체" style="padding:10px; border:1px solid #ddd; text-align:center; cursor:pointer;">전체</div>
+        <div class="category-item" data-category="성인" style="padding:10px; border:1px solid #ddd; text-align:center; cursor:pointer;">성인</div>
+        <div class="category-item" data-category="청소년" style="padding:10px; border:1px solid #ddd; text-align:center; cursor:pointer;">청소년</div>
+        <div class="category-item" data-category="어린이" style="padding:10px; border:1px solid #ddd; text-align:center; cursor:pointer;">어린이</div>
+        <div class="category-item" data-category="자기개발" style="padding:10px; border:1px solid #ddd; text-align:center; cursor:pointer;">자기개발</div>
+        <div class="category-item" data-category="기타" style="padding:10px; border:1px solid #ddd; text-align:center; cursor:pointer;">기타</div>
     </div>
 
     <div id="bookList" style="margin-top:20px;"></div>
 
-    <div id="detailModal" class="modal">
-        <div class="modal-content">
+    <div id="detailModal" class="modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+        <div class="modal-content" style="background:white; margin:15% auto; padding:20px; width:80%; border-radius:10px;">
             <h2 id="detailTitle"></h2>
             <div id="detailAuthor"></div>
-            <div id="shelfView"></div>
-            <button id="closeBtn" style="width:100%; margin-top:20px; padding:10px;">닫기</button>
+            <div id="shelfView" style="margin-top:20px;"></div>
+            <button id="closeBtn" style="width:100%; margin-top:20px; padding:10px; background:#eee; border:none; border-radius:5px;">닫기</button>
         </div>
     </div>
     
