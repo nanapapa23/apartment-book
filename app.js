@@ -5,79 +5,79 @@ const searchInput = document.getElementById("search");
 const bookList = document.getElementById("bookList");
 const newBooks = document.getElementById("newBooks");
 const modal = document.getElementById("detailModal");
-const closeBtn = document.getElementById("closeBtn");
-const adminIcon = document.getElementById("adminIcon");
-
 let books = [];
 let currentCategory = "전체";
 
-// Firebase 데이터 로드
 async function loadBooks() {
-    try {
-        const snapshot = await getDocs(collection(db, "books"));
-        books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        renderNewBooks();
-        renderBooks(books);
-    } catch(err) {
-        console.error("데이터 로드 실패:", err);
-    }
+    const snapshot = await getDocs(collection(db, "books"));
+    books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderNewBooks();
+    renderBookList(books);
 }
 
-// 신간 도서 영역
+// 신간 목록 렌더링
 function renderNewBooks() {
     newBooks.innerHTML = "";
-    books.filter(b => b.newbook === true).forEach(book => {
+    books.filter(b => b.newbook).forEach(b => {
         const div = document.createElement("div");
         div.className = "new-book-card";
-        div.innerHTML = `<div class="new-title">${book.title}</div><div class="new-author">${book.author}</div>`;
-        div.onclick = () => showDetail(book);
+        div.innerHTML = `<strong>${b.title}</strong><br><small>${b.author}</small>`;
+        div.onclick = () => showDetail(b);
         newBooks.appendChild(div);
     });
 }
 
-// 도서 목록 렌더링
-function renderBooks(data) {
+// 도서 목록 카드형 렌더링
+function renderBookList(data) {
     bookList.innerHTML = "";
-    data.forEach(book => {
+    const filtered = data.filter(b => currentCategory === "전체" || b.category === currentCategory);
+    
+    filtered.forEach(b => {
         const div = document.createElement("div");
-        div.className = "book";
+        div.className = "book-item";
         div.innerHTML = `
-            <div class="title">${book.title}</div>
-            <div class="author">저자: ${book.author}</div>
-            <div class="category">${book.category}</div>
+            <div class="book-info">
+                <div class="title">${b.title}</div>
+                <div class="author">${b.author}</div>
+            </div>
+            <i class="fas fa-chevron-right" style="color:#ccc;"></i>
         `;
-        div.onclick = () => showDetail(book);
+        div.onclick = () => showDetail(b);
         bookList.appendChild(div);
     });
 }
 
-// 상세 정보 모달
-function showDetail(book) {
-    document.getElementById("detailTitle").innerText = book.title;
-    document.getElementById("detailAuthor").innerText = "저자: " + book.author;
-    document.getElementById("detailCategory").innerText = "분류: " + book.category;
-    document.getElementById("detailLocation").innerText = `위치: ${book.shelf} 책장 / ${book.slot} 칸`;
-    
-    // 책장 시각화
+// 카테고리 클릭 반응 추가
+document.querySelectorAll(".category-item").forEach(item => {
+    item.addEventListener("click", () => {
+        document.querySelectorAll(".category-item").forEach(el => el.classList.remove("active"));
+        item.classList.add("active");
+        currentCategory = item.dataset.category;
+        renderBookList(books);
+    });
+});
+
+// 검색 기능
+searchInput.addEventListener("input", (e) => {
+    const val = e.target.value.toLowerCase();
+    const filtered = books.filter(b => b.title.toLowerCase().includes(val) || b.author.toLowerCase().includes(val));
+    renderBookList(filtered);
+});
+
+// 상세 보기 모달
+function showDetail(b) {
+    document.getElementById("detailTitle").innerText = b.title;
+    document.getElementById("detailAuthor").innerText = "저자: " + b.author;
     const shelfView = document.getElementById("shelfView");
-    shelfView.innerHTML = `<div class="shelf-box">${[1,2,3,4,5,6,7].map(i => 
-        `<div class="slot ${i == book.slot ? 'active' : ''}">${i}</div>`).join('')}</div>`;
-    
+    shelfView.innerHTML = `<div style="text-align:center; margin:10px;">${b.shelf} 책장</div>`;
+    const box = document.createElement("div");
+    box.className = "shelf-box";
+    for(let i=7; i>=1; i--) {
+        box.innerHTML += `<div class="slot ${i==b.slot?'active':''}"><span>${i}칸</span></div>`;
+    }
+    shelfView.appendChild(box);
     modal.style.display = "block";
 }
 
-// 관리자 접속 이벤트
-adminIcon.addEventListener("click", () => {
-    const id = prompt("관리자 아이디");
-    const pw = prompt("비밀번호");
-    if(id === "admin" && pw === "1234") {
-        sessionStorage.setItem("libraryAdmin", "true");
-        window.location.href = "admin.html";
-    } else {
-        alert("권한이 없습니다.");
-    }
-});
-
-// 검색 및 필터링 로직 생략(기존 동일)
-closeBtn.onclick = () => modal.style.display = "none";
+document.getElementById("closeBtn").onclick = () => modal.style.display = "none";
 loadBooks();
