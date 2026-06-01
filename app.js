@@ -10,15 +10,15 @@ async function loadBooks() {
         const snap = await getDocs(collection(db, "books"));
         const books = snap.docs.map(d => ({id: d.id, ...d.data()}));
         
-        // 1. 신간 도서 영역 (이미지, 이름, 저자 포함)
+        // 1. 신간 영역
         newBooks.innerHTML = "";
         books.filter(b => b.newbook).forEach(b => {
             const div = document.createElement("div");
             div.className = "new-book-card";
-            div.style = "text-align:center; padding:10px;";
+            div.style.cursor = "pointer";
             div.innerHTML = `
-                <div style="width:100px; height:140px; background:white; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; margin:0 auto 10px; border-radius:5px; overflow:hidden;">
-                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<small style="color:#aaa; font-size:10px;">이미지 없음</small>'}
+                <div style="width:100px; height:140px; background:white; border:1px solid #ddd; margin:0 auto 10px; border-radius:5px; overflow:hidden;">
+                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:10px;">이미지 없음</div>'}
                 </div>
                 <div style="font-weight:bold; font-size:14px;">${b.title}</div>
                 <div style="font-size:12px; color:#666;">${b.author}</div>
@@ -27,28 +27,30 @@ async function loadBooks() {
             newBooks.appendChild(div);
         });
 
-        // 2. 전체 도서 목록 (신간 상단 배치)
+        // 2. 전체 도서 목록 (이미지 왼쪽, 정보 오른쪽 배치)
         bookList.innerHTML = "";
         books.sort((a,b) => b.newbook - a.newbook).forEach(b => {
             const div = document.createElement("div");
             div.className = "book-item";
+            div.style = "display:flex; align-items:center; cursor:pointer; padding:10px; border-bottom:1px solid #eee;";
             div.innerHTML = `
-                <div style="width:50px; height:70px; background:white; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; border-radius:4px; overflow:hidden; flex-shrink:0;">
-                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<small style="font-size:8px; color:#aaa;">없음</small>'}
+                <div style="width:60px; height:85px; background:white; border:1px solid #ddd; border-radius:4px; overflow:hidden; flex-shrink:0;">
+                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<div style="height:100%; display:flex; align-items:center; justify-content:center; color:#ccc; font-size:8px;">없음</div>'}
                 </div>
                 <div style="margin-left:15px; overflow:hidden;">
-                    <div class="title" style="font-weight:bold;">${b.title} ${b.newbook ? '<span style="color:red; font-size:11px;">[NEW]</span>' : ''}</div>
-                    <div class="author" style="font-size:13px; color:#666;">${b.author} | 등록: ${b.date || ''}</div>
+                    <div style="font-weight:bold; font-size:16px;">${b.title} ${b.newbook ? '<span style="color:red; font-size:11px;">[NEW]</span>' : ''}</div>
+                    <div style="font-size:13px; color:#666; margin-top:5px;">저자: ${b.author}</div>
+                    <div style="font-size:12px; color:#999; margin-top:2px;">등록일: ${b.date || ''}</div>
                 </div>`;
             div.onclick = () => showDetail(b);
             bookList.appendChild(div);
         });
-    } catch(err) { console.error("데이터 로드 에러:", err); }
+    } catch(err) { console.error("데이터 로드 오류:", err); }
 }
 
 function showDetail(b) {
     document.getElementById("detailTitle").innerText = b.title;
-    document.getElementById("detailAuthor").innerText = "저자: " + b.author + " | " + (b.category || "기타");
+    document.getElementById("detailAuthor").innerText = "저자: " + b.author;
     const shelfView = document.getElementById("shelfView");
     shelfView.innerHTML = `<div style="text-align:center; margin:10px; font-weight:bold;">${b.shelf} 책장</div>`;
     const box = document.createElement("div");
@@ -60,5 +62,16 @@ function showDetail(b) {
     modal.style.display = "block";
 }
 
+// 이벤트 연결
 document.getElementById("closeBtn").onclick = () => modal.style.display = "none";
+const adminIcon = document.getElementById("adminIcon");
+if(adminIcon) adminIcon.onclick = () => {
+    const id = prompt("관리자 아이디");
+    const pw = prompt("비밀번호");
+    if(id === "admin" && pw === "1234") {
+        sessionStorage.setItem("libraryAdmin", "true");
+        window.location.href = "admin.html";
+    }
+};
+
 loadBooks();
