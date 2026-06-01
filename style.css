@@ -29,3 +29,26 @@ body { background: #f8f9fe; padding: 20px; }
 .slot { height: 35px; border-bottom: 1px solid #ccc; display: flex; justify-content: center; align-items: center; }
 .slot.active { background: #4caf50; color: white; }
 #adminIcon { position: fixed; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
+
+/* 추가할 도서 목록 스타일 */
+.book-item {
+    background: white;
+    padding: 18px;
+    border-radius: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border: 1px solid #eee;
+    transition: 0.2s;
+}
+.book-item:hover { background: #f0f4ff; }
+.book-info .title { font-weight: 800; font-size: 17px; margin-bottom: 4px; }
+.book-info .author { font-size: 14px; color: #666; }
+
+/* 카테고리 클릭 시 활성 상태 표시 */
+.category-item.active { background: #5c6bc0; color: white; }
+.category-item.active i { color: white; }
+
