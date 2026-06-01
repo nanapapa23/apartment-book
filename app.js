@@ -3,31 +3,36 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/
 
 const searchInput = document.getElementById("search");
 const bookList = document.getElementById("bookList");
-const newBooks = document.getElementById("newBooks");
 const modal = document.getElementById("detailModal");
+const categoryItems = document.querySelectorAll(".category-item");
+
 let books = [];
 let currentCategory = "전체";
 
+// 1. 초성 검색을 위한 변환 함수
+const CHO = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
+function getChosung(str) {
+    let result = "";
+    for(let char of str) {
+        const code = char.charCodeAt(0) - 44032;
+        if(code >= 0 && code <= 11171) result += CHO[Math.floor(code / 588)];
+        else result += char;
+    }
+    return result;
+}
+
+// 2. Firebase 데이터 로드
 async function loadBooks() {
-    const snapshot = await getDocs(collection(db, "books"));
-    books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-    renderNewBooks();
-    renderBookList(books);
+    try {
+        const snapshot = await getDocs(collection(db, "books"));
+        books = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        renderBookList(books);
+    } catch(err) {
+        console.error("데이터 로드 실패:", err);
+    }
 }
 
-// 신간 목록 렌더링
-function renderNewBooks() {
-    newBooks.innerHTML = "";
-    books.filter(b => b.newbook).forEach(b => {
-        const div = document.createElement("div");
-        div.className = "new-book-card";
-        div.innerHTML = `<strong>${b.title}</strong><br><small>${b.author}</small>`;
-        div.onclick = () => showDetail(b);
-        newBooks.appendChild(div);
-    });
-}
-
-// 도서 목록 카드형 렌더링
+// 3. 도서 목록 렌더링 (카드형)
 function renderBookList(data) {
     bookList.innerHTML = "";
     const filtered = data.filter(b => currentCategory === "전체" || b.category === currentCategory);
@@ -40,44 +45,65 @@ function renderBookList(data) {
                 <div class="title">${b.title}</div>
                 <div class="author">${b.author}</div>
             </div>
-            <i class="fas fa-chevron-right" style="color:#ccc;"></i>
+            <i class="fas fa-chevron-right" style="color:#aaa;"></i>
         `;
         div.onclick = () => showDetail(b);
         bookList.appendChild(div);
     });
 }
 
-// 카테고리 클릭 반응 추가
-document.querySelectorAll(".category-item").forEach(item => {
+// 4. 상세 팝업 (나무 느낌 책장)
+function showDetail(b) {
+    document.getElementById("detailTitle").innerText = b.title;
+    document.getElementById("detailAuthor").innerText = "저자: " + b.author;
+    
+    const shelfView = document.getElementById("shelfView");
+    shelfView.innerHTML = `<div style="text-align:center; margin-bottom:10px; color:#5d4037; font-weight:800;">${b.shelf} 책장</div>`;
+    
+    const box = document.createElement("div");
+    box.className = "shelf-box";
+    for(let i=7; i>=1; i--) {
+        box.innerHTML += `<div class="slot ${i == b.slot ? 'active' : ''}"><span>${i}칸</span></div>`;
+    }
+    shelfView.appendChild(box);
+    modal.style.display = "block";
+}
+
+// 5. 검색 로직 (초성 지원)
+searchInput.addEventListener("input", (e) => {
+    const val = e.target.value.toLowerCase();
+    const filtered = books.filter(b => 
+        b.title.toLowerCase().includes(val) || 
+        b.author.toLowerCase().includes(val) ||
+        getChosung(b.title).includes(val)
+    );
+    renderBookList(filtered);
+});
+
+// 6. 카테고리 클릭 반응
+categoryItems.forEach(item => {
     item.addEventListener("click", () => {
-        document.querySelectorAll(".category-item").forEach(el => el.classList.remove("active"));
+        categoryItems.forEach(el => el.classList.remove("active"));
         item.classList.add("active");
         currentCategory = item.dataset.category;
         renderBookList(books);
     });
 });
 
-// 검색 기능
-searchInput.addEventListener("input", (e) => {
-    const val = e.target.value.toLowerCase();
-    const filtered = books.filter(b => b.title.toLowerCase().includes(val) || b.author.toLowerCase().includes(val));
-    renderBookList(filtered);
-});
-
-// 상세 보기 모달
-function showDetail(b) {
-    document.getElementById("detailTitle").innerText = b.title;
-    document.getElementById("detailAuthor").innerText = "저자: " + b.author;
-    const shelfView = document.getElementById("shelfView");
-    shelfView.innerHTML = `<div style="text-align:center; margin:10px;">${b.shelf} 책장</div>`;
-    const box = document.createElement("div");
-    box.className = "shelf-box";
-    for(let i=7; i>=1; i--) {
-        box.innerHTML += `<div class="slot ${i==b.slot?'active':''}"><span>${i}칸</span></div>`;
+// 7. 관리자 모드 접속
+document.getElementById("adminIcon").onclick = () => {
+    const id = prompt("관리자 아이디");
+    const pw = prompt("비밀번호");
+    if(id === "admin" && pw === "1234") {
+        sessionStorage.setItem("libraryAdmin", "true");
+        window.location.href = "admin.html";
+    } else {
+        alert("권한이 없습니다.");
     }
-    shelfView.appendChild(box);
-    modal.style.display = "block";
-}
+};
 
+// 8. 모달 닫기
 document.getElementById("closeBtn").onclick = () => modal.style.display = "none";
+
+// 초기 로드
 loadBooks();
