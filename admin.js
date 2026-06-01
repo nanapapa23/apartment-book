@@ -1,5 +1,5 @@
 import { db } from "./firebase.js";
-import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const [title, author, imgUrl, regDate, category, shelf, slot, newbook] = 
       ["title", "author", "imgUrl", "regDate", "category", "shelf", "slot", "newbook"].map(id => document.getElementById(id));
@@ -12,7 +12,6 @@ async function loadBooks() {
     snap.forEach(d => {
         const b = d.data();
         const div = document.createElement("div");
-        div.className = "book-item";
         div.style = "display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;";
         div.innerHTML = `<div><strong>${b.title}</strong><br><small>${b.author} | ${b.category || ''}</small></div>
                          <div><button onclick="editBook('${d.id}')">수정</button> <button onclick="deleteBook('${d.id}')">삭제</button></div>`;
@@ -36,6 +35,29 @@ saveBtn.onclick = async () => {
     if(editId) await updateDoc(doc(db, "books", editId), data);
     else await addDoc(collection(db, "books"), data);
     location.reload();
+};
+
+document.getElementById("csvFile").onchange = (e) => {
+    const reader = new FileReader();
+    reader.onload = async (event) => {
+        const batch = writeBatch(db);
+        event.target.result.split('\n').slice(1).forEach(row => {
+            const cols = row.split(',');
+            if(cols.length < 7) return;
+            batch.set(doc(collection(db, "books")), { title:cols[0], author:cols[1], imgUrl:cols[2], date:cols[3], category:cols[4], shelf:cols[5], slot:parseInt(cols[6]), newbook:cols[7] === 'true' });
+        });
+        await batch.commit(); alert("업로드 완료"); location.reload();
+    };
+    reader.readAsText(e.target.files[0], "UTF-8");
+};
+
+document.getElementById("downloadBtn").onclick = async () => {
+    const snap = await getDocs(collection(db, "books"));
+    let csv = "\uFEFF제목,저자,이미지URL,등록일,카테고리,책장,칸,신간\n";
+    snap.forEach(d => { const b = d.data(); csv += `${b.title},${b.author},${b.imgUrl},${b.date},${b.category},${b.shelf},${b.slot},${b.newbook}\n`; });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'}));
+    a.download = "booklist.csv"; a.click();
 };
 
 document.getElementById("logoutBtn").onclick = () => { sessionStorage.removeItem("libraryAdmin"); location.href = "index.html"; };
