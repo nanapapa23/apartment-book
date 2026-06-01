@@ -10,25 +10,39 @@ async function loadBooks() {
 }
 
 function renderList(data) {
-    const bookList = document.getElementById("bookList"), newBooks = document.getElementById("newBooks");
-    bookList.innerHTML = ""; newBooks.innerHTML = "";
+    const bookList = document.getElementById("bookList"), 
+          newBooks = document.getElementById("newBooks");
+    
+    bookList.innerHTML = ""; 
+    newBooks.innerHTML = "";
 
     data.sort((a,b) => b.newbook - a.newbook).forEach(b => {
-        // 신간 영역
+        // 신간 영역 (크기 축소 반영)
         if(b.newbook) {
             const div = document.createElement("div");
             div.className = "new-book-card";
-            div.innerHTML = `<div style="width:100px; height:140px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center;">${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '이미지 없음'}</div>
-                             <div style="font-weight:bold; margin-top:8px;">${b.title}</div><div style="font-size:12px; color:#666;">${b.author}</div>`;
+            div.style = "flex-shrink:0; width:90px; margin-right:10px; cursor:pointer;";
+            div.innerHTML = `
+                <div style="width:85px; height:120px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:4px;">
+                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '이미지 없음'}
+                </div>
+                <div style="font-weight:600; margin-top:6px; font-size:13px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${b.title}</div>
+                <div style="font-size:11px; color:#888; margin-top:2px;">${b.author}</div>`;
             div.onclick = () => showDetail(b);
             newBooks.appendChild(div);
         }
-        // 전체 목록
+        
+        // 전체 목록 (리스트 디자인 최적화)
         const div = document.createElement("div");
-        div.style = "display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; cursor:pointer;";
-        div.innerHTML = `<div style="width:60px; height:85px; border:1px solid #ddd; flex-shrink:0; display:flex; align-items:center; justify-content:center;">${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '없음'}</div>
-                         <div style="margin-left:15px; text-align:left;"><div style="font-weight:bold; font-size:16px;">${b.title} ${b.newbook ? '<span style="color:red; font-size:11px;">[NEW]</span>' : ''}</div>
-                         <div style="font-size:13px; color:#666; margin-top:4px;">저자: ${b.author} | 분류: ${b.category || '기타'}</div><div style="font-size:12px; color:#999; margin-top:2px;">등록: ${b.date || ''}</div></div>`;
+        div.style = "display:flex; align-items:center; padding:12px; border-bottom:1px solid #eee; cursor:pointer;";
+        div.innerHTML = `
+            <div style="width:50px; height:70px; border:1px solid #ddd; flex-shrink:0; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:4px;">
+                ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<span style="font-size:10px; color:#ccc;">없음</span>'}
+            </div>
+            <div style="margin-left:12px; text-align:left;">
+                <div style="font-weight:bold; font-size:15px;">${b.title} ${b.newbook ? '<span style="color:red; font-size:10px; margin-left:4px;">[NEW]</span>' : ''}</div>
+                <div style="font-size:12px; color:#777; margin-top:2px;">저자: ${b.author} | 분류: ${b.category || '기타'}</div>
+            </div>`;
         div.onclick = () => showDetail(b);
         bookList.appendChild(div);
     });
@@ -38,7 +52,6 @@ function showDetail(b) {
     document.getElementById("detailTitle").innerText = b.title;
     document.getElementById("detailAuthor").innerText = "저자: " + b.author + " | " + (b.category || "기타");
     
-    // 세로형 책장 디자인
     const shelfView = document.getElementById("shelfView");
     shelfView.innerHTML = `<div style="text-align:center; margin-bottom:15px;"><span style="background:#424242; color:white; padding:5px 15px; border-radius:20px; font-weight:bold;">${b.shelf} 책장 - ${b.slot}칸</span></div>`;
     
