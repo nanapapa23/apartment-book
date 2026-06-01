@@ -48,7 +48,24 @@ function renderList(data) {
 
 function showDetail(b) {
     document.getElementById("detailTitle").innerText = b.title;
-    document.getElementById("detailAuthor").innerText = "저자: " + b.author;
+    document.getElementById("detailAuthor").innerText = "저자: " + b.author + " | " + (b.category || "기타");
+    
+    // 책장 위치 시각화 추가 부분
+    const shelfView = document.getElementById("shelfView");
+    shelfView.innerHTML = `<div style="text-align:center; margin:10px; font-weight:bold;">${b.shelf} 책장</div>`;
+    
+    const box = document.createElement("div");
+    box.style = "display:flex; justify-content:center; gap:5px; margin-top:10px;";
+    
+    // 7칸부터 1칸까지 역순으로 생성
+    for(let i=7; i>=1; i--) {
+        const slotDiv = document.createElement("div");
+        slotDiv.style = `padding:10px 15px; border:1px solid #ccc; background:${i == b.slot ? '#ff7043' : '#fff'}; color:${i == b.slot ? '#fff' : '#333'}; font-weight:bold; border-radius:4px;`;
+        slotDiv.innerText = i + "칸";
+        box.appendChild(slotDiv);
+    }
+    shelfView.appendChild(box);
+    
     document.getElementById("detailModal").style.display = "block";
 }
 
