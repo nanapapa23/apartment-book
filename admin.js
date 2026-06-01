@@ -6,7 +6,6 @@ const [title, author, imgUrl, regDate, category, shelf, slot, newbook] =
 const saveBtn = document.getElementById("saveBtn");
 let editId = null;
 
-// --- 1. 도서 관리 기능 ---
 async function loadBooks() {
     document.getElementById("adminList").innerHTML = "";
     const snap = await getDocs(collection(db, "books"));
@@ -38,33 +37,6 @@ saveBtn.onclick = async () => {
     location.reload();
 };
 
-// --- 2. 희망도서 관리 기능 ---
-async function loadWishes() {
-    const wishList = document.getElementById("wishList");
-    if(!wishList) return;
-    const snap = await getDocs(collection(db, "wishes"));
-    wishList.innerHTML = "<h3>희망도서 신청 현황</h3>";
-    snap.forEach(d => {
-        const w = d.data();
-        const div = document.createElement("div");
-        div.style = "padding:10px; border-bottom:1px solid #ddd; display:flex; justify-content:space-between; align-items:center;";
-        div.innerHTML = `<div><strong>${w.title}</strong><br><small>저자: ${w.author} | 분류: ${w.category||'기타'}</small></div>
-                         <select onchange="updateStatus('${d.id}', this.value)">
-                            <option value="구매 예정" ${w.status=="구매 예정"?"selected":""}>구매 예정</option>
-                            <option value="구매완료" ${w.status=="구매완료"?"selected":""}>구매완료</option>
-                            <option value="구매불가" ${w.status=="구매불가"?"selected":""}>구매불가</option>
-                         </select>`;
-        wishList.appendChild(div);
-    });
-}
-
-window.updateStatus = async (id, status) => {
-    const reason = status === "구매불가" ? prompt("구매 불가 사유를 입력하세요:") : "";
-    await updateDoc(doc(db, "wishes", id), { status, reason });
-    loadWishes();
-};
-
-// --- 3. 데이터 관리 (CSV) ---
 document.getElementById("csvFile").onchange = (e) => {
     const reader = new FileReader();
     reader.onload = async (event) => {
@@ -89,7 +61,4 @@ document.getElementById("downloadBtn").onclick = async () => {
 };
 
 document.getElementById("logoutBtn").onclick = () => { sessionStorage.removeItem("libraryAdmin"); location.href = "index.html"; };
-
-// 초기화
 loadBooks();
-loadWishes();
