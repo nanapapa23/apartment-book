@@ -4,20 +4,27 @@
     <meta charset="UTF-8">
     <title>도서 관리자 모드</title>
     <link rel="stylesheet" href="style.css">
-    <script>
-        if(sessionStorage.getItem("libraryAdmin") !== "true") { window.location.href = "index.html"; }
-    </script>
 </head>
 <body style="background:#f8f9fe; padding:20px;">
     <div style="text-align:right; margin-bottom:10px;"><button id="logoutBtn">로그아웃</button></div>
-    <div class="admin-card" style="background:white; padding:20px; border-radius:20px;">
+    
+    <div class="admin-card" style="background:white; padding:20px; border-radius:20px; margin-bottom:20px;">
         <h3>도서 등록/수정</h3>
-        <input id="title" placeholder="책 이름" style="width:100%; padding:10px; margin:10px 0;">
-        <input id="author" placeholder="저자" style="width:100%; padding:10px; margin-bottom:10px;">
+        <input id="title" placeholder="책 이름" style="width:100%; padding:10px; margin:5px 0;">
+        <input id="author" placeholder="저자" style="width:100%; padding:10px; margin:5px 0;">
+        <input id="imgUrl" placeholder="책 표지 이미지 URL" style="width:100%; padding:10px; margin:5px 0;">
+        <input type="date" id="regDate" style="width:100%; padding:10px; margin:5px 0;">
         <select id="shelf"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select>
         <select id="slot"><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option><option>6</option><option>7</option></select>
         <label><input type="checkbox" id="newbook"> 신간 도서</label>
-        <button id="saveBtn" style="width:100%; padding:15px; margin-top:15px; background:#5c6bc0; color:white; border:none; border-radius:15px;">도서 추가</button>
+        <button id="saveBtn" style="width:100%; padding:15px; margin-top:10px; background:#5c6bc0; color:white; border:none; border-radius:10px;">저장</button>
+    </div>
+
+    <div class="admin-card" style="background:white; padding:20px; border-radius:20px;">
+        <h3>데이터 관리</h3>
+        <input type="file" id="csvFile" style="display:none">
+        <button onclick="document.getElementById('csvFile').click()">CSV 업로드</button>
+        <button id="downloadBtn">CSV 다운로드</button>
     </div>
     <div id="adminList" style="margin-top:20px;"></div>
     <script type="module" src="admin.js"></script>
