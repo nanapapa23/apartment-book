@@ -10,37 +10,25 @@ async function loadBooks() {
 }
 
 function renderList(data) {
-    const bookList = document.getElementById("bookList");
-    const newBooks = document.getElementById("newBooks");
-    bookList.innerHTML = "";
-    newBooks.innerHTML = "";
+    const bookList = document.getElementById("bookList"), newBooks = document.getElementById("newBooks");
+    bookList.innerHTML = ""; newBooks.innerHTML = "";
 
-    // 신간 정렬
     data.sort((a,b) => b.newbook - a.newbook).forEach(b => {
+        // 신간 영역
         if(b.newbook) {
             const div = document.createElement("div");
             div.className = "new-book-card";
-            div.innerHTML = `
-                <div style="width:100px; height:140px; background:#fff; border:1px solid #ddd; margin:0 auto 10px; display:flex; align-items:center; justify-content:center;">
-                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<span style="font-size:10px; color:#ccc;">이미지 없음</span>'}
-                </div>
-                <div style="font-weight:bold;">${b.title}</div>
-                <div style="font-size:12px; color:#666;">${b.author}</div>`;
+            div.innerHTML = `<div style="width:100px; height:140px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center;">${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '이미지 없음'}</div>
+                             <div style="font-weight:bold; margin-top:8px;">${b.title}</div><div style="font-size:12px; color:#666;">${b.author}</div>`;
             div.onclick = () => showDetail(b);
             newBooks.appendChild(div);
         }
-
+        // 전체 목록
         const div = document.createElement("div");
         div.style = "display:flex; align-items:center; padding:15px; border-bottom:1px solid #eee; cursor:pointer;";
-        div.innerHTML = `
-            <div style="width:60px; height:85px; background:#fff; border:1px solid #ddd; flex-shrink:0; display:flex; align-items:center; justify-content:center;">
-                ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<span style="font-size:9px; color:#ccc;">없음</span>'}
-            </div>
-            <div style="margin-left:15px; text-align:left;">
-                <div style="font-weight:bold; font-size:16px;">${b.title} ${b.newbook ? '<span style="color:red; font-size:11px;">[NEW]</span>' : ''}</div>
-                <div style="font-size:13px; color:#666; margin-top:4px;">저자: ${b.author} | 분류: ${b.category || '기타'}</div>
-                <div style="font-size:12px; color:#999; margin-top:2px;">등록: ${b.date || ''}</div>
-            </div>`;
+        div.innerHTML = `<div style="width:60px; height:85px; border:1px solid #ddd; flex-shrink:0; display:flex; align-items:center; justify-content:center;">${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '없음'}</div>
+                         <div style="margin-left:15px; text-align:left;"><div style="font-weight:bold; font-size:16px;">${b.title} ${b.newbook ? '<span style="color:red; font-size:11px;">[NEW]</span>' : ''}</div>
+                         <div style="font-size:13px; color:#666; margin-top:4px;">저자: ${b.author} | 분류: ${b.category || '기타'}</div><div style="font-size:12px; color:#999; margin-top:2px;">등록: ${b.date || ''}</div></div>`;
         div.onclick = () => showDetail(b);
         bookList.appendChild(div);
     });
@@ -50,22 +38,21 @@ function showDetail(b) {
     document.getElementById("detailTitle").innerText = b.title;
     document.getElementById("detailAuthor").innerText = "저자: " + b.author + " | " + (b.category || "기타");
     
-    // 책장 위치 시각화 추가 부분
+    // 세로형 책장 디자인
     const shelfView = document.getElementById("shelfView");
-    shelfView.innerHTML = `<div style="text-align:center; margin:10px; font-weight:bold;">${b.shelf} 책장</div>`;
+    shelfView.innerHTML = `<div style="text-align:center; margin-bottom:15px;"><span style="background:#424242; color:white; padding:5px 15px; border-radius:20px; font-weight:bold;">${b.shelf} 책장 - ${b.slot}칸</span></div>`;
     
     const box = document.createElement("div");
-    box.style = "display:flex; justify-content:center; gap:5px; margin-top:10px;";
+    box.style = "display:flex; flex-direction:column; align-items:center; margin:0 auto; width:140px; border:8px solid #5D4037; border-radius:8px; background:#8D6E63; padding:5px;";
     
-    // 7칸부터 1칸까지 역순으로 생성
     for(let i=7; i>=1; i--) {
         const slotDiv = document.createElement("div");
-        slotDiv.style = `padding:10px 15px; border:1px solid #ccc; background:${i == b.slot ? '#ff7043' : '#fff'}; color:${i == b.slot ? '#fff' : '#333'}; font-weight:bold; border-radius:4px;`;
+        const isSelected = (i == b.slot);
+        slotDiv.style = `width:120px; height:35px; border-bottom:2px solid #5D4037; display:flex; align-items:center; justify-content:center; background:${isSelected ? '#FFCC80' : '#FFF3E0'}; color:${isSelected ? '#E65100' : '#8D6E63'}; font-weight:${isSelected ? 'bold' : 'normal'}; font-size:13px; transition:all 0.3s;`;
         slotDiv.innerText = i + "칸";
         box.appendChild(slotDiv);
     }
     shelfView.appendChild(box);
-    
     document.getElementById("detailModal").style.display = "block";
 }
 
@@ -74,24 +61,11 @@ document.addEventListener('DOMContentLoaded', () => {
         item.addEventListener("click", () => {
             document.querySelectorAll(".category-item").forEach(el => el.classList.remove("active"));
             item.classList.add("active");
-            const cat = item.dataset.category;
-            renderList(cat === "전체" ? allBooks : allBooks.filter(b => b.category === cat));
+            renderList(item.dataset.category === "전체" ? allBooks : allBooks.filter(b => b.category === item.dataset.category));
         });
     });
-
-    document.getElementById("search").addEventListener("input", (e) => {
-        const val = e.target.value.toLowerCase();
-        renderList(allBooks.filter(b => b.title.toLowerCase().includes(val) || b.author.toLowerCase().includes(val)));
-    });
-
-    document.getElementById("adminIcon").onclick = () => {
-        const id = prompt("아이디");
-        if(id === "admin") {
-            const pw = prompt("비밀번호");
-            if(pw === "1234") { sessionStorage.setItem("libraryAdmin", "true"); location.href = "admin.html"; }
-            else alert("비밀번호 불일치");
-        } else alert("아이디 불일치");
-    };
+    document.getElementById("search").addEventListener("input", (e) => renderList(allBooks.filter(b => b.title.toLowerCase().includes(e.target.value.toLowerCase()))));
+    document.getElementById("adminIcon").onclick = () => { if(prompt("아이디") === "admin" && prompt("비밀번호") === "1234") { sessionStorage.setItem("libraryAdmin", "true"); location.href = "admin.html"; } else alert("로그인 실패"); };
 });
 
 document.getElementById("closeBtn").onclick = () => document.getElementById("detailModal").style.display = "none";
