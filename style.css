@@ -52,3 +52,34 @@ body { background: #f8f9fe; padding: 20px; }
 .category-item.active { background: #5c6bc0; color: white; }
 .category-item.active i { color: white; }
 
+/* 기존 디자인 유지 + 상세 팝업 디자인 강화 */
+.shelf-box { 
+    width: 110px; 
+    margin: 15px auto; 
+    display: flex; 
+    flex-direction: column-reverse; 
+    border: 6px solid #5d4037; 
+    background: #d7ccc8;
+    border-radius: 5px;
+    padding: 3px;
+}
+.slot { 
+    height: 40px; 
+    border-bottom: 2px solid #a1887f; 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    background: #efebe9;
+    color: #5d4037;
+    font-weight: 700;
+}
+.slot.active { 
+    background: #ff7043 !important; 
+    color: white; 
+}
+.modal-content { 
+    border: 2px solid #5d4037;
+    background: #fffdf9;
+}
+
+
