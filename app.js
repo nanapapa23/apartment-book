@@ -17,22 +17,22 @@ function renderList(data) {
     newBooks.innerHTML = "";
 
     data.sort((a,b) => b.newbook - a.newbook).forEach(b => {
-        // 신간 영역 (크기 축소 반영)
+        // [수정] 신간 영역 UI
         if(b.newbook) {
             const div = document.createElement("div");
             div.className = "new-book-card";
-            div.style = "flex-shrink:0; width:90px; margin-right:10px; cursor:pointer;";
+            div.style = "flex-shrink:0; width:90px; margin-right:15px; cursor:pointer; display:flex; flex-direction:column;";
             div.innerHTML = `
-                <div style="width:85px; height:120px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:4px;">
-                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '이미지 없음'}
+                <div style="width:90px; height:120px; border:1px solid #ddd; display:flex; align-items:center; justify-content:center; overflow:hidden; border-radius:4px; background:#f9f9f9;">
+                    ${b.imgUrl ? `<img src="${b.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : '<span style="font-size:10px; color:#ccc;">이미지 없음</span>'}
                 </div>
-                <div style="font-weight:600; margin-top:6px; font-size:13px; line-height:1.2; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${b.title}</div>
-                <div style="font-size:11px; color:#888; margin-top:2px;">${b.author}</div>`;
+                <div style="font-weight:700; margin-top:8px; font-size:13px; line-height:1.3; overflow:hidden; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;">${b.title}</div>
+                <div style="font-size:11px; color:#777; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${b.author}</div>`;
             div.onclick = () => showDetail(b);
             newBooks.appendChild(div);
         }
         
-        // 전체 목록 (리스트 디자인 최적화)
+        // 전체 목록
         const div = document.createElement("div");
         div.style = "display:flex; align-items:center; padding:12px; border-bottom:1px solid #eee; cursor:pointer;";
         div.innerHTML = `
