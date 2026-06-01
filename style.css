@@ -14,18 +14,23 @@ body { background: #f8f9fe; padding: 20px; }
 
 /* 신간 도서 */
 #newBooks { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
-.new-book-card { min-width: 120px; background: white; padding: 10px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+.new-book-card { min-width: 130px; background: white; padding: 15px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
 /* 카테고리 그리드 */
-.category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+.category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px; }
 .category-item { background: #e8eaf6; padding: 20px 10px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; }
 .category-item i { font-size: 30px; color: #3f51b5; margin-bottom: 10px; display: block; }
 .category-item:hover { background: #c5cae9; }
 
-/* 기타 디자인 유지 */
+/* 도서 목록 리스트 (개선됨) */
+.book-card { background: white; padding: 18px; border-radius: 15px; margin-bottom: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.03); display: flex; justify-content: space-between; align-items: center; cursor: pointer; border: 1px solid #eee; }
+.book-info .title { font-weight: 800; font-size: 17px; margin-bottom: 5px; }
+.book-info .author { font-size: 14px; color: #666; }
+
+/* 모달 및 책장 */
 .modal { display:none; position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,.6); z-index:999; }
 .modal-content { background:white; width:90%; max-width:400px; margin:50px auto; padding:25px; border-radius:20px; }
-.shelf-box { width: 100px; margin: auto; display: flex; flex-direction: column-reverse; border: 2px solid #5d4037; }
-.slot { height: 35px; border-bottom: 1px solid #ccc; display: flex; justify-content: center; align-items: center; }
-.slot.active { background: #4caf50; color: white; }
-#adminIcon { position: fixed; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
+.shelf-box { width: 120px; margin: 20px auto; display: flex; flex-direction: column-reverse; border: 3px solid #5d4037; border-radius: 8px; overflow: hidden; }
+.slot { height: 40px; border-bottom: 1px solid #d7ccc8; display: flex; justify-content: center; align-items: center; font-size: 14px; color: #5d4037; }
+.slot.active { background: #ff7043; color: white; font-weight: bold; }
+#adminIcon { position: fixed; top: 20px; right: 20px; font-size: 24px; cursor: pointer; z-index: 100; }
