@@ -6,6 +6,7 @@ const [title, author, imgUrl, regDate, category, shelf, slot, newbook] =
 const saveBtn = document.getElementById("saveBtn");
 let editId = null;
 
+// [기존] 도서 목록 로드
 async function loadBooks() {
     document.getElementById("adminList").innerHTML = "";
     const snap = await getDocs(collection(db, "books"));
@@ -18,6 +19,34 @@ async function loadBooks() {
         document.getElementById("adminList").appendChild(div);
     });
 }
+
+// [신규] 희망도서 목록 로드
+async function loadWishes() {
+    const wishList = document.getElementById("wishList");
+    if(!wishList) return;
+    const snap = await getDocs(collection(db, "wishes"));
+    wishList.innerHTML = "";
+    snap.forEach(d => {
+        const w = d.data();
+        const div = document.createElement("div");
+        div.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;";
+        div.innerHTML = `<div><strong>${w.title}</strong><br><small>저자: ${w.author}</small></div>
+                         <select onchange="updateStatus('${d.id}', this.value)">
+                            <option value="구매 예정" ${w.status=="구매 예정"?"selected":""}>구매 예정</option>
+                            <option value="구매완료" ${w.status=="구매완료"?"selected":""}>구매완료</option>
+                            <option value="구매불가" ${w.status=="구매불가"?"selected":""}>구매불가</option>
+                         </select>`;
+        wishList.appendChild(div);
+    });
+}
+
+// [신규] 상태 업데이트
+window.updateStatus = async (id, status) => {
+    let reason = "";
+    if(status === "구매불가") reason = prompt("구매 불가 사유를 입력하세요.");
+    await updateDoc(doc(db, "wishes", id), { status, reason });
+    loadWishes();
+};
 
 window.editBook = async (id) => {
     const snap = await getDocs(collection(db, "books"));
@@ -61,4 +90,7 @@ document.getElementById("downloadBtn").onclick = async () => {
 };
 
 document.getElementById("logoutBtn").onclick = () => { sessionStorage.removeItem("libraryAdmin"); location.href = "index.html"; };
+
+// 초기 실행
 loadBooks();
+loadWishes();
