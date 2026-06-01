@@ -1,39 +1,44 @@
+
 <!DOCTYPE html>
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>효성해링턴 작은도서관</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="adminIcon" style="position:fixed; top:20px; right:20px; cursor:pointer; font-size:24px; z-index:1000;">🔐</div>
-
+    <div id="adminIcon">🔐</div>
+    
     <div class="search-container">
         <h2>도서 검색</h2>
-        <div class="search-box"><input type="text" id="search" placeholder="검색어를 입력하세요..."></div>
+        <div class="search-box">
+            <i class="fas fa-search"></i>
+            <input type="text" id="search" placeholder="검색어를 입력하세요...">
+        </div>
     </div>
 
-    <div class="section-title">📖 신간 도서</div>
+    <div class="section-title">신간 도서</div>
     <div id="newBooks"></div>
 
-    <div class="section-title">📂 도서 카테고리</div>
-    <div class="category-grid">
-        <div class="category-item" data-category="전체">전체</div>
-        <div class="category-item" data-category="성인">성인</div>
-        <div class="category-item" data-category="청소년">청소년</div>
-        <div class="category-item" data-category="어린이">어린이</div>
-        <div class="category-item" data-category="자기개발">자기개발</div>
-        <div class="category-item" data-category="기타">기타</div>
+    <div class="section-title">도서 카테고리</div>
+    <div class="category-grid" id="categoryGrid">
+        <div class="category-item" data-category="전체"><i class="fas fa-book-reader"></i>전체</div>
+        <div class="category-item" data-category="성인"><i class="fas fa-user-tie"></i>성인</div>
+        <div class="category-item" data-category="청소년"><i class="fas fa-user-graduate"></i>청소년</div>
+        <div class="category-item" data-category="어린이"><i class="fas fa-child"></i>어린이</div>
+        <div class="category-item" data-category="자기개발"><i class="fas fa-lightbulb"></i>자기개발</div>
+        <div class="category-item" data-category="기타"><i class="fas fa-ellipsis-h"></i>기타</div>
     </div>
 
-    <div class="section-title">📚 도서 목록</div>
-    <div id="bookList"></div>
+    <div id="bookList" style="margin-top:20px;"></div>
 
     <div id="detailModal" class="modal">
         <div class="modal-content">
             <h2 id="detailTitle"></h2>
+            <div id="detailAuthor"></div>
             <div id="shelfView"></div>
-            <button id="closeBtn" style="width:100%; padding:15px; border-radius:15px; border:none; background:#eee;">닫기</button>
+            <button id="closeBtn" style="width:100%; margin-top:20px; padding:10px;">닫기</button>
         </div>
     </div>
     <script type="module" src="app.js"></script>
