@@ -3,6 +3,16 @@ import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/
 
 let allBooks = [];
 
+// [기능 추가] 초성 변환 함수
+const getInitialSound = (str) => {
+    const onset = ["ㄱ", "ㄲ", "ㄴ", "ㄷ", "ㄸ", "ㄹ", "ㅁ", "ㅂ", "ㅃ", "ㅅ", "ㅆ", "ㅇ", "ㅈ", "ㅉ", "ㅊ", "ㅋ", "ㅌ", "ㅍ", "ㅎ"];
+    return str.split('').map(char => {
+        const code = char.charCodeAt(0) - 44032;
+        if (code > -1 && code < 11172) return onset[Math.floor(code / 588)];
+        return char;
+    }).join('');
+};
+
 async function loadBooks() {
     const snap = await getDocs(collection(db, "books"));
     allBooks = snap.docs.map(d => ({id: d.id, ...d.data()}));
@@ -17,7 +27,7 @@ function renderList(data) {
     newBooks.innerHTML = "";
 
     data.sort((a,b) => b.newbook - a.newbook).forEach(b => {
-        // [수정] 신간 영역 UI
+        // [신간 UI 개선]
         if(b.newbook) {
             const div = document.createElement("div");
             div.className = "new-book-card";
@@ -70,6 +80,7 @@ function showDetail(b) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // 카테고리 필터
     document.querySelectorAll(".category-item").forEach(item => {
         item.addEventListener("click", () => {
             document.querySelectorAll(".category-item").forEach(el => el.classList.remove("active"));
@@ -77,9 +88,26 @@ document.addEventListener('DOMContentLoaded', () => {
             renderList(item.dataset.category === "전체" ? allBooks : allBooks.filter(b => b.category === item.dataset.category));
         });
     });
-    document.getElementById("search").addEventListener("input", (e) => renderList(allBooks.filter(b => b.title.toLowerCase().includes(e.target.value.toLowerCase()))));
-    document.getElementById("adminIcon").onclick = () => { if(prompt("아이디") === "admin" && prompt("비밀번호") === "1234") { sessionStorage.setItem("libraryAdmin", "true"); location.href = "admin.html"; } else alert("로그인 실패"); };
+
+    // [검색 이벤트] 제목 + 초성 검색 통합
+    document.getElementById("search").addEventListener("input", (e) => {
+        const val = e.target.value.toLowerCase();
+        const filtered = allBooks.filter(b => {
+            const title = b.title.toLowerCase();
+            const initial = getInitialSound(b.title);
+            return title.includes(val) || initial.includes(val);
+        });
+        renderList(filtered);
+    });
+
+    document.getElementById("adminIcon").onclick = () => { 
+        if(prompt("아이디") === "admin" && prompt("비밀번호") === "1234") { 
+            sessionStorage.setItem("libraryAdmin", "true"); 
+            location.href = "admin.html"; 
+        } else alert("로그인 실패"); 
+    };
 });
 
 document.getElementById("closeBtn").onclick = () => document.getElementById("detailModal").style.display = "none";
+
 loadBooks();
