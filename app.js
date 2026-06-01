@@ -57,11 +57,11 @@ function renderBooks(data) {
     }
     data.forEach(book => {
         const div = document.createElement("div");
-        div.className = "book-card";
+        div.className = "book";
         div.innerHTML = `
             <div class="title">${book.title || ""}</div>
             <div class="author">저자: ${book.author || ""}</div>
-            <div class="category">분류: ${book.category || ""}</div>
+            <div class="category">${book.category || ""}</div>
         `;
         div.onclick = () => showDetail(book);
         bookList.appendChild(div);
@@ -74,8 +74,7 @@ function filterBooks() {
     let filtered = books.filter(book => {
         const title = (book.title || "").toLowerCase();
         const author = (book.author || "").toLowerCase();
-        const choTitle = getChosung(book.title || "");
-        const searchMatch = title.includes(keyword) || author.includes(keyword) || choTitle.includes(getChosung(keyword));
+        const searchMatch = title.includes(keyword) || author.includes(keyword) || getChosung(title).includes(getChosung(keyword));
         const categoryMatch = currentCategory === "전체" || book.category === currentCategory;
         return searchMatch && categoryMatch;
     });
@@ -84,17 +83,15 @@ function filterBooks() {
 
 searchInput.addEventListener("input", filterBooks);
 
-/* --------------------- 카테고리 버튼 --------------------- */
-document.querySelectorAll(".category-btn").forEach(btn => {
-    btn.addEventListener("click", () => {
-        document.querySelectorAll(".category-btn").forEach(b => b.classList.remove("active"));
-        btn.classList.add("active");
-        currentCategory = btn.dataset.category;
+/* --------------------- 카테고리 클릭 로직 --------------------- */
+document.querySelectorAll(".category-item").forEach(item => {
+    item.addEventListener("click", () => {
+        currentCategory = item.dataset.category;
         filterBooks();
     });
 });
 
-/* --------------------- 상세 팝업 및 책장 시각화 --------------------- */
+/* --------------------- 상세 팝업 및 책장 --------------------- */
 function showDetail(book) {
     document.getElementById("detailTitle").innerText = book.title || "";
     document.getElementById("detailAuthor").innerText = "저자: " + (book.author || "");
@@ -102,15 +99,11 @@ function showDetail(book) {
     modal.style.display = "block";
 }
 
-// 중복 에러를 방지하기 위해 drawShelf 함수는 여기서 딱 한 번만 선언합니다.
 function drawShelf(book) {
     const shelf = document.getElementById("shelfView");
     shelf.innerHTML = `<div style="text-align:center; margin:10px 0; font-weight:bold;">${book.shelf || ""} 책장</div>`;
-    
     const box = document.createElement("div");
     box.className = "shelf-box";
-    
-    // 7칸을 아래에서 위로(1~7) 쌓는 구조
     for(let i = 1; i <= 7; i++) {
         const div = document.createElement("div");
         div.className = "slot" + (String(i) === String(book.slot) ? " active" : "");
