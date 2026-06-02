@@ -8,147 +8,207 @@ font-family:Pretendard,sans-serif;
 body{
 background:#f4f7fb;
 padding:20px;
-padding-bottom:100px;
+padding-bottom:90px;
+color:#222;
 }
 
-/* 관리자 */
-
-.admin-icon{
-position:fixed;
-top:15px;
-right:15px;
-font-size:24px;
-cursor:pointer;
-z-index:100;
-}
-
-/* 헤더 */
+/* =====================
+   입주민 메인
+===================== */
 
 .top-header{
-background:linear-gradient(
-135deg,
-#5e7ff5,
-#7aa4ff
-);
+
+background:white;
 
 padding:25px;
+
 border-radius:25px;
-color:white;
+
 margin-bottom:25px;
 
 box-shadow:
-0 10px 20px rgba(0,0,0,.08);
+0 4px 12px rgba(0,0,0,.05);
+
 }
 
 .top-header h1{
-font-size:30px;
+
+font-size:28px;
+
 margin-bottom:15px;
+
+color:#222;
+
+font-weight:800;
+
 }
 
 .search-box{
-background:white;
+
+background:#f8f9fe;
+
+border:2px solid #e5e7eb;
+
 padding:14px 18px;
+
 border-radius:30px;
 
 display:flex;
+
 align-items:center;
+
 gap:10px;
+
 }
 
 .search-box i{
-color:#5e7ff5;
+color:#666;
 }
 
 .search-box input{
-border:none;
-outline:none;
-width:100%;
-font-size:16px;
-}
 
-/* 제목 */
+border:none;
+
+outline:none;
+
+width:100%;
+
+font-size:16px;
+
+background:transparent;
+
+color:#222;
+
+}
 
 .section-title{
-font-size:28px;
+
+font-size:22px;
+
 font-weight:800;
+
 margin:25px 0 15px;
+
+color:#222;
+
 }
 
-/* 신간도서 */
+/* =====================
+   신간도서
+===================== */
 
 #newBooks{
+
 display:flex;
+
 overflow-x:auto;
+
 gap:15px;
+
 padding-bottom:10px;
+
 }
 
 .new-book-card{
+
 min-width:120px;
+
 background:white;
+
 border-radius:18px;
+
 padding:10px;
 
 box-shadow:
-0 4px 12px rgba(0,0,0,.08);
+0 4px 12px rgba(0,0,0,.05);
+
+cursor:pointer;
+
 }
 
-/* 카테고리 */
+/* =====================
+   카테고리
+===================== */
 
 .category-grid{
+
 display:grid;
+
 grid-template-columns:repeat(3,1fr);
+
 gap:15px;
+
 }
 
 .category-item{
 
 background:white;
 
-border-radius:22px;
+border-radius:20px;
 
-padding:20px 10px;
+padding:18px 10px;
 
 text-align:center;
 
 cursor:pointer;
 
 box-shadow:
-0 4px 12px rgba(0,0,0,.05);
+0 4px 10px rgba(0,0,0,.05);
 
 transition:.2s;
+
+}
+
+.category-item:hover{
+
+transform:translateY(-2px);
+
 }
 
 .category-item i{
-font-size:34px;
-margin-bottom:10px;
+
+font-size:30px;
+
+margin-bottom:8px;
+
 display:block;
+
 color:#5e7ff5;
+
 }
 
 .category-item span{
-font-size:16px;
+
+font-size:15px;
+
 font-weight:700;
+
 }
 
 .category-item.active{
 
 background:#5e7ff5;
+
 color:white;
 
 }
 
 .category-item.active i{
+
 color:white;
+
 }
 
-/* 목록 */
+/* =====================
+   도서목록
+===================== */
 
 #bookList{
 margin-top:15px;
 }
 
 .book-item{
+
 background:white;
 
 border-radius:18px;
@@ -158,23 +218,34 @@ padding:14px;
 margin-bottom:12px;
 
 display:flex;
+
 align-items:center;
 
 box-shadow:
 0 4px 10px rgba(0,0,0,.05);
+
 }
 
-/* 팝업 */
+/* =====================
+   상세팝업
+===================== */
 
 .modal{
+
 display:none;
+
 position:fixed;
+
 left:0;
 top:0;
+
 width:100%;
 height:100%;
+
 background:rgba(0,0,0,.5);
+
 z-index:999;
+
 }
 
 .modal-content{
@@ -182,6 +253,7 @@ z-index:999;
 background:white;
 
 width:90%;
+
 max-width:450px;
 
 margin:80px auto;
@@ -189,6 +261,7 @@ margin:80px auto;
 padding:25px;
 
 border-radius:25px;
+
 }
 
 #closeBtn{
@@ -206,9 +279,66 @@ color:white;
 border-radius:15px;
 
 margin-top:20px;
+
+cursor:pointer;
+
 }
 
-/* 하단메뉴 */
+/* =====================
+   책장
+===================== */
+
+.shelf-box{
+
+width:120px;
+
+margin:auto;
+
+display:flex;
+
+flex-direction:column-reverse;
+
+border:6px solid #5d4037;
+
+background:#d7ccc8;
+
+border-radius:6px;
+
+padding:3px;
+
+}
+
+.slot{
+
+height:40px;
+
+border-bottom:2px solid #a1887f;
+
+display:flex;
+
+justify-content:center;
+
+align-items:center;
+
+background:#efebe9;
+
+color:#5d4037;
+
+font-weight:700;
+
+}
+
+.slot.active{
+
+background:#ff7043;
+
+color:white;
+
+}
+
+/* =====================
+   하단 메뉴
+===================== */
 
 .bottom-nav{
 
@@ -225,34 +355,54 @@ display:flex;
 
 justify-content:space-around;
 
-padding:12px 0;
+align-items:center;
+
+padding:10px 0;
 
 box-shadow:
-0 -2px 15px rgba(0,0,0,.08);
+0 -2px 10px rgba(0,0,0,.08);
+
+z-index:999;
+
 }
 
 .nav-item{
 
 display:flex;
+
 flex-direction:column;
 
 align-items:center;
 
+text-decoration:none;
+
+color:#666;
+
 font-size:12px;
 
-color:#777;
+font-weight:500;
+
 }
 
 .nav-item i{
+
 font-size:20px;
-margin-bottom:5px;
+
+margin-bottom:4px;
+
 }
 
 .nav-item.active{
+
 color:#5e7ff5;
+
+font-weight:bold;
+
 }
 
-/* 관리자 */
+/* =====================
+   관리자
+===================== */
 
 .admin-header{
 
@@ -279,12 +429,17 @@ margin-bottom:20px;
 }
 
 .admin-header h1{
+
 font-size:28px;
+
 }
 
 .admin-header p{
+
 opacity:.9;
+
 margin-top:5px;
+
 }
 
 .logout-btn{
@@ -302,6 +457,9 @@ border-radius:12px;
 font-weight:bold;
 
 cursor:pointer;
+
+text-decoration:none;
+
 }
 
 .admin-card{
@@ -324,6 +482,7 @@ box-shadow:
 margin-bottom:15px;
 
 font-size:20px;
+
 }
 
 .admin-card input,
@@ -340,6 +499,7 @@ border-radius:12px;
 margin-bottom:10px;
 
 font-size:15px;
+
 }
 
 .row{
@@ -347,6 +507,7 @@ font-size:15px;
 display:flex;
 
 gap:10px;
+
 }
 
 .newbook-check{
@@ -358,6 +519,7 @@ align-items:center;
 gap:8px;
 
 margin:10px 0;
+
 }
 
 .save-btn{
@@ -379,6 +541,7 @@ font-size:16px;
 font-weight:bold;
 
 cursor:pointer;
+
 }
 
 .upload-btn,
@@ -399,21 +562,28 @@ cursor:pointer;
 font-size:15px;
 
 font-weight:bold;
+
 }
 
 .upload-btn{
 
 background:#5e7ff5;
+
 color:white;
+
 }
 
 .download-btn{
 
 background:#eef3ff;
+
 color:#5e7ff5;
+
 }
 
-/* 관리자 목록 */
+/* =====================
+   관리자 목록
+===================== */
 
 #adminList > div{
 
@@ -426,6 +596,7 @@ padding:15px;
 margin-bottom:10px;
 
 border:1px solid #eee;
+
 }
 
 #adminList button{
@@ -437,24 +608,44 @@ padding:8px 12px;
 border-radius:10px;
 
 cursor:pointer;
+
 }
 
+/* =====================
+   희망도서
+===================== */
+
 .request-card{
+
 background:white;
+
 border-radius:15px;
+
 padding:15px;
+
 margin-bottom:12px;
-box-shadow:0 4px 10px rgba(0,0,0,.05);
+
+box-shadow:
+0 4px 10px rgba(0,0,0,.05);
+
 }
 
 .status{
+
 display:inline-block;
+
 padding:5px 10px;
+
 border-radius:20px;
+
 font-size:12px;
+
 font-weight:bold;
+
 color:white;
+
 margin-top:8px;
+
 }
 
 .status-pending{
@@ -471,54 +662,4 @@ background:#4caf50;
 
 .status-rejected{
 background:#f44336;
-}
-
-.bottom-nav{
-
-position:fixed;
-
-bottom:0;
-left:0;
-
-width:100%;
-
-background:white;
-
-display:flex;
-
-justify-content:space-around;
-
-padding:10px 0;
-
-box-shadow:
-0 -2px 10px rgba(0,0,0,.08);
-
-z-index:999;
-}
-
-.nav-item{
-
-display:flex;
-
-flex-direction:column;
-
-align-items:center;
-
-text-decoration:none;
-
-color:#666;
-
-font-size:12px;
-}
-
-.nav-item i{
-
-font-size:20px;
-
-margin-bottom:4px;
-}
-
-body{
-
-padding-bottom:80px;
 }
