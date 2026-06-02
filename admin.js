@@ -27,17 +27,147 @@ const [title, author, imgUrl, regDate, category, shelf, slot, newbook] =
 const saveBtn = document.getElementById("saveBtn");
 let editId = null;
 
+function renderStats(books){
+
+let total =
+books.length;
+
+let adult = 0;
+let teen = 0;
+let child = 0;
+let selfdev = 0;
+let etc = 0;
+let newCount = 0;
+
+books.forEach(b=>{
+
+if(b.category==="성인")
+adult++;
+
+else if(
+b.category==="청소년"
+)
+teen++;
+
+else if(
+b.category==="어린이"
+)
+child++;
+
+else if(
+b.category==="자기개발"
+)
+selfdev++;
+
+else
+etc++;
+
+if(b.newbook)
+newCount++;
+
+});
+
+document.getElementById(
+"bookStats"
+).innerHTML = `
+
+<div class="stats-grid">
+
+<div class="stat-box">
+<div class="stat-count">
+${total}
+</div>
+<div class="stat-label">
+전체
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-count">
+${adult}
+</div>
+<div class="stat-label">
+성인
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-count">
+${teen}
+</div>
+<div class="stat-label">
+청소년
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-count">
+${child}
+</div>
+<div class="stat-label">
+어린이
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-count">
+${selfdev}
+</div>
+<div class="stat-label">
+자기개발
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-count">
+${etc}
+</div>
+<div class="stat-label">
+기타
+</div>
+</div>
+
+<div class="stat-box">
+<div class="stat-count">
+${newCount}
+</div>
+<div class="stat-label">
+신간
+</div>
+</div>
+
+</div>
+
+`;
+
+}
+
 async function loadBooks() {
+
     document.getElementById("adminList").innerHTML = "";
-    const snap = await getDocs(collection(db, "books"));
+
+    const snap =
+    await getDocs(
+        collection(db, "books")
+    );
+
+    const books = [];
+
     snap.forEach(d => {
+
         const b = d.data();
+
+        books.push(b);
         const div = document.createElement("div");
         div.style = "display:flex; justify-content:space-between; padding:10px; border-bottom:1px solid #eee;";
         div.innerHTML = `<div><strong>${b.title}</strong><br><small>${b.author} | ${b.category || ''}</small></div>
                          <div><button onclick="editBook('${d.id}')">수정</button> <button onclick="deleteBook('${d.id}')">삭제</button></div>`;
         document.getElementById("adminList").appendChild(div);
+
     });
+
+    renderStats(books);
+
 }
 
 window.editBook = async (id) => {
