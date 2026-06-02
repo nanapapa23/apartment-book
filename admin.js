@@ -51,11 +51,85 @@ window.editBook = async (id) => {
 window.deleteBook = async (id) => { if(confirm("삭제하시겠습니까?")) { await deleteDoc(doc(db, "books", id)); location.reload(); } };
 
 saveBtn.onclick = async () => {
-    if(!category.value) { alert("카테고리를 선택하세요."); return; }
-    const data = { title:title.value, author:author.value, imgUrl:imgUrl.value, date:regDate.value, category:category.value, shelf:shelf.value, slot:parseInt(slot.value), newbook:newbook.checked };
-    if(editId) await updateDoc(doc(db, "books", editId), data);
-    else await addDoc(collection(db, "books"), data);
+
+    if(!category.value){
+        alert("카테고리를 선택하세요.");
+        return;
+    }
+
+    const titleValue =
+    title.value.trim();
+
+    const authorValue =
+    author.value.trim();
+
+    const snap =
+    await getDocs(
+        collection(db,"books")
+    );
+
+    let duplicated = false;
+
+    snap.forEach(d=>{
+
+        if(
+            editId &&
+            d.id === editId
+        ){
+            return;
+        }
+
+        const b = d.data();
+
+        if(
+            (b.title || "").trim() === titleValue &&
+            (b.author || "").trim() === authorValue
+        ){
+            duplicated = true;
+        }
+
+    });
+
+    if(duplicated){
+
+        alert(
+            "동일한 제목/저자의 도서가 이미 등록되어 있습니다."
+        );
+
+        return;
+    }
+
+    const data = {
+
+        title:titleValue,
+        author:authorValue,
+        imgUrl:imgUrl.value,
+        date:regDate.value,
+        category:category.value,
+        shelf:shelf.value,
+        slot:parseInt(slot.value),
+        newbook:newbook.checked
+
+    };
+
+    if(editId){
+
+        await updateDoc(
+            doc(db,"books",editId),
+            data
+        );
+
+    }else{
+
+        await addDoc(
+            collection(db,"books"),
+            data
+        );
+
+    }
+
     location.reload();
+
 };
 
 document.getElementById("csvFile").onchange = async (e) => {
