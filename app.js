@@ -460,44 +460,35 @@ e=>{
 });
 
 document
-.getElementById("adminIcon")
+.getElementById("bottomAdmin")
 .onclick = ()=>{
 
-    const id =
-    prompt("아이디");
+const id =
+prompt("아이디");
 
-    if(id===null) return;
+if(id===null) return;
 
-    const pw =
-    prompt("비밀번호");
+const pw =
+prompt("비밀번호");
 
-    if(pw===null) return;
+if(pw===null) return;
 
-    if(
-        id==="admin"
-        &&
-        pw==="1234"
-    ){
+if(
+id==="admin"
+&&
+pw==="1234"
+){
 
-        sessionStorage.setItem(
-            "libraryAdmin",
-            "true"
-        );
+location.href =
+"admin-select.html";
 
-        location.href =
-        "admin.html";
+}else{
 
-    }else{
+alert("로그인 실패");
 
-        alert(
-            "로그인 실패"
-        );
-
-    }
+}
 
 };
-
-});
 
 document
 .getElementById("closeBtn")
