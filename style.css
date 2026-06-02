@@ -1,112 +1,253 @@
-@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css');
-
-* { margin:0; padding:0; box-sizing:border-box; font-family: 'Pretendard', sans-serif; }
-body { background: #f8f9fe; padding: 20px; }
-
-/* 검색 바 영역 */
-.search-container { background: #5c6bc0; padding: 20px; border-radius: 20px; margin-bottom: 20px; color: white; }
-.search-container h2 { margin-bottom: 10px; font-size: 20px; }
-.search-box { background: white; padding: 12px; border-radius: 12px; display: flex; align-items: center; color: #333; }
-.search-box input { border: none; outline: none; width: 100%; margin-left: 10px; font-size: 16px; }
-
-/* 섹션 타이틀 */
-.section-title { font-size: 22px; font-weight: 800; margin: 20px 0; }
-
-/* 신간 도서 */
-#newBooks { display: flex; gap: 15px; overflow-x: auto; padding-bottom: 10px; }
-.new-book-card { min-width: 120px; background: white; padding: 10px; border-radius: 15px; text-align: center; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
-/* 카테고리 그리드 */
-.category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
-.category-item { background: #e8eaf6; padding: 20px 10px; border-radius: 20px; text-align: center; cursor: pointer; transition: 0.3s; }
-.category-item i { font-size: 30px; color: #3f51b5; margin-bottom: 10px; display: block; }
-.category-item:hover { background: #c5cae9; }
-
-/* 기타 디자인 유지 */
-.modal { display:none; position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,.6); z-index:999; }
-.modal-content { background:white; width:90%; max-width:400px; margin:50px auto; padding:25px; border-radius:20px; }
-.shelf-box { width: 100px; margin: auto; display: flex; flex-direction: column-reverse; border: 2px solid #5d4037; }
-.slot { height: 35px; border-bottom: 1px solid #ccc; display: flex; justify-content: center; align-items: center; }
-.slot.active { background: #4caf50; color: white; }
-#adminIcon { position: fixed; top: 20px; right: 20px; font-size: 24px; cursor: pointer; }
-
-/* 추가할 도서 목록 스타일 */
-.book-item {
-    background: white;
-    padding: 18px;
-    border-radius: 15px;
-    margin-bottom: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    cursor: pointer;
-    border: 1px solid #eee;
-    transition: 0.2s;
-}
-.book-item:hover { background: #f0f4ff; }
-.book-info .title { font-weight: 800; font-size: 17px; margin-bottom: 4px; }
-.book-info .author { font-size: 14px; color: #666; }
-
-/* 카테고리 클릭 시 활성 상태 표시 */
-.category-item.active { background: #5c6bc0; color: white; }
-.category-item.active i { color: white; }
-
-/* 기존 디자인 유지 + 상세 팝업 디자인 강화 */
-.shelf-box { 
-    width: 110px; 
-    margin: 15px auto; 
-    display: flex; 
-    flex-direction: column-reverse; 
-    border: 6px solid #5d4037; 
-    background: #d7ccc8;
-    border-radius: 5px;
-    padding: 3px;
-}
-.slot { 
-    height: 40px; 
-    border-bottom: 2px solid #a1887f; 
-    display: flex; 
-    justify-content: center; 
-    align-items: center; 
-    background: #efebe9;
-    color: #5d4037;
-    font-weight: 700;
-}
-.slot.active { 
-    background: #ff7043 !important; 
-    color: white; 
-}
-.modal-content { 
-    border: 2px solid #5d4037;
-    background: #fffdf9;
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Pretendard,sans-serif;
 }
 
-.new-book-card { 
-border: 2px solid #ff7043; background: #fff3e0; 
-} /* 신간 강조 */
-.book-item { 
-border-left: 5px solid #5c6bc0; 
-} /* 카드형 리스트 스타일 */
-
-/* 이미지 박스 디자인 */
-.new-book-card img { width: 100%; height: 100%; object-fit: cover; }
-.book-item img { width: 100%; height: 100%; object-fit: cover; }
-
-/* 네이버 스타일 검색창 */
-#search {
-    width: 100%;
-    padding: 12px 20px;
-    border: 2px solid #03c75a; /* 네이버 그린 */
-    border-radius: 25px; /* 둥근 모서리 */
-    outline: none;
-    font-size: 16px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    transition: box-shadow 0.3s;
-}
-#search:focus {
-    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+body{
+background:#f4f7fb;
+padding:20px;
+padding-bottom:100px;
 }
 
+/* 관리자 */
 
+.admin-icon{
+position:fixed;
+top:15px;
+right:15px;
+font-size:24px;
+cursor:pointer;
+z-index:100;
+}
 
+/* 헤더 */
+
+.top-header{
+background:linear-gradient(
+135deg,
+#5e7ff5,
+#7aa4ff
+);
+
+padding:25px;
+border-radius:25px;
+color:white;
+margin-bottom:25px;
+
+box-shadow:
+0 10px 20px rgba(0,0,0,.08);
+}
+
+.top-header h1{
+font-size:30px;
+margin-bottom:15px;
+}
+
+.search-box{
+background:white;
+padding:14px 18px;
+border-radius:30px;
+
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.search-box i{
+color:#5e7ff5;
+}
+
+.search-box input{
+border:none;
+outline:none;
+width:100%;
+font-size:16px;
+}
+
+/* 제목 */
+
+.section-title{
+font-size:28px;
+font-weight:800;
+margin:25px 0 15px;
+}
+
+/* 신간도서 */
+
+#newBooks{
+display:flex;
+overflow-x:auto;
+gap:15px;
+padding-bottom:10px;
+}
+
+.new-book-card{
+min-width:120px;
+background:white;
+border-radius:18px;
+padding:10px;
+
+box-shadow:
+0 4px 12px rgba(0,0,0,.08);
+}
+
+/* 카테고리 */
+
+.category-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:15px;
+}
+
+.category-item{
+
+background:white;
+
+border-radius:22px;
+
+padding:20px 10px;
+
+text-align:center;
+
+cursor:pointer;
+
+box-shadow:
+0 4px 12px rgba(0,0,0,.05);
+
+transition:.2s;
+}
+
+.category-item i{
+font-size:34px;
+margin-bottom:10px;
+display:block;
+color:#5e7ff5;
+}
+
+.category-item span{
+font-size:16px;
+font-weight:700;
+}
+
+.category-item.active{
+
+background:#5e7ff5;
+color:white;
+
+}
+
+.category-item.active i{
+color:white;
+}
+
+/* 목록 */
+
+#bookList{
+margin-top:15px;
+}
+
+.book-item{
+background:white;
+
+border-radius:18px;
+
+padding:14px;
+
+margin-bottom:12px;
+
+display:flex;
+align-items:center;
+
+box-shadow:
+0 4px 10px rgba(0,0,0,.05);
+}
+
+/* 팝업 */
+
+.modal{
+display:none;
+position:fixed;
+left:0;
+top:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,.5);
+z-index:999;
+}
+
+.modal-content{
+
+background:white;
+
+width:90%;
+max-width:450px;
+
+margin:80px auto;
+
+padding:25px;
+
+border-radius:25px;
+}
+
+#closeBtn{
+
+width:100%;
+
+padding:14px;
+
+border:none;
+
+background:#5e7ff5;
+
+color:white;
+
+border-radius:15px;
+
+margin-top:20px;
+}
+
+/* 하단메뉴 */
+
+.bottom-nav{
+
+position:fixed;
+
+bottom:0;
+left:0;
+
+width:100%;
+
+background:white;
+
+display:flex;
+
+justify-content:space-around;
+
+padding:12px 0;
+
+box-shadow:
+0 -2px 15px rgba(0,0,0,.08);
+}
+
+.nav-item{
+
+display:flex;
+flex-direction:column;
+
+align-items:center;
+
+font-size:12px;
+
+color:#777;
+}
+
+.nav-item i{
+font-size:20px;
+margin-bottom:5px;
+}
+
+.nav-item.active{
+color:#5e7ff5;
+}
