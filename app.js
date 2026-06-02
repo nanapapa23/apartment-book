@@ -460,37 +460,6 @@ e=>{
 });
 
 document
-.getElementById("bottomAdmin")
-.onclick = ()=>{
-
-const id =
-prompt("아이디");
-
-if(id===null) return;
-
-const pw =
-prompt("비밀번호");
-
-if(pw===null) return;
-
-if(
-id==="admin"
-&&
-pw==="1234"
-){
-
-location.href =
-"admin-select.html";
-
-}else{
-
-alert("로그인 실패");
-
-}
-
-};
-
-document
 .getElementById("closeBtn")
 .onclick = ()=>{
 
@@ -505,4 +474,3 @@ document
 
 loadBooks();
 });
-
