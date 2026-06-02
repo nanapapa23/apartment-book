@@ -1,0 +1,39 @@
+<h1>관리자 메뉴</h1>
+
+<button onclick="
+location.href='admin.html'
+">
+도서 관리
+</button>
+
+<button onclick="
+location.href='request-admin.html'
+">
+희망도서 관리
+</button>
+
+<button id="logoutBtn">
+로그아웃
+</button>
+
+<script type="module">
+
+import { auth } from "./firebase.js";
+
+import {
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+document
+.getElementById("logoutBtn")
+.onclick = async ()=>{
+
+await signOut(auth);
+
+location.href =
+"index.html";
+
+};
+
+</script>
