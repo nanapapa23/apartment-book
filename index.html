@@ -1,164 +1,74 @@
-<!DOCTYPE html>
-<html lang="ko">
+<!DOCTYPE html><html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>효성해링턴 작은도서관</title>
-
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
-</head>
-
-<body>
-
-<div id="adminIcon" class="admin-icon">
-⚙️
-</div>
-
-<!-- 상단 헤더 -->
-
-<div class="top-header">
-
-<h1>도서 검색</h1>
-
-<div class="search-box">
-<i class="fa-solid fa-magnifying-glass"></i>
+<title>효성해링턴 작은도서관</title><link rel="stylesheet" href="style.css"><link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></head><body><!-- 상단 헤더 --><div class="top-header"><h1>도서 검색</h1><div class="search-box"><i class="fa-solid fa-magnifying-glass"></i>
 
 <input
 id="search"
 type="text"
 placeholder="검색어를 입력하세요..."
->
 
-</div>
+«»
 
-</div>
-
-<!-- 신간도서 -->
-
-<div class="section-title">
+</div></div><!-- 신간도서 --><div class="section-title">
 신간 도서
-</div>
-
-<div id="newBooks"></div>
-
-<!-- 카테고리 -->
-
-<div class="section-title">
+</div><div id="newBooks"></div><!-- 카테고리 --><div class="section-title">
 도서 카테고리
-</div>
-
-<div class="category-grid">
-
-<div class="category-item active"
-data-category="전체">
-
-<i class="fa-solid fa-book"></i>
+</div><div class="category-grid"><div class="category-item active"
+data-category="전체"><i class="fa-solid fa-book"></i>
 <span>전체</span>
 
-</div>
-
-<div class="category-item"
-data-category="성인">
-
-<i class="fa-solid fa-user"></i>
+</div><div class="category-item"
+data-category="성인"><i class="fa-solid fa-user"></i>
 <span>성인</span>
 
-</div>
-
-<div class="category-item"
-data-category="청소년">
-
-<i class="fa-solid fa-user-group"></i>
+</div><div class="category-item"
+data-category="청소년"><i class="fa-solid fa-user-group"></i>
 <span>청소년</span>
 
-</div>
-
-<div class="category-item"
-data-category="어린이">
-
-<i class="fa-solid fa-child"></i>
+</div><div class="category-item"
+data-category="어린이"><i class="fa-solid fa-child"></i>
 <span>어린이</span>
 
-</div>
-
-<div class="category-item"
-data-category="자기개발">
-
-<i class="fa-solid fa-seedling"></i>
+</div><div class="category-item"
+data-category="자기개발"><i class="fa-solid fa-seedling"></i>
 <span>자기개발</span>
 
-</div>
-<div class="category-item"
-onclick="location.href='request.html'">
-
-📚 희망도서
-</div>
-
-<i class="fa-solid fa-layer-group"></i>
+</div><div class="category-item"
+data-category="기타"><i class="fa-solid fa-layer-group"></i>
 <span>기타</span>
 
-</div>
-
-</div>
-
-<!-- 도서목록 -->
-
-<div class="section-title">
+</div></div><!-- 도서목록 --><div class="section-title">
 도서 목록
-</div>
-
-<div id="bookList"></div>
-
-<!-- 상세팝업 -->
-
-<div id="detailModal" class="modal">
-
-<div class="modal-content">
-
-<h2 id="detailTitle"></h2>
-
-<div id="detailAuthor"></div>
-
-<div id="shelfView"></div>
-
-<button id="closeBtn">
+</div><div id="bookList"></div><!-- 상세 팝업 --><div id="detailModal" class="modal"><div class="modal-content"><h2 id="detailTitle"></h2><div id="detailAuthor"></div><div id="shelfView"></div><button id="closeBtn">
 닫기
-</button>
+</button></div></div><!-- 하단 메뉴 --><div class="bottom-nav"><a href="index.html"
+class="nav-item active">
 
-</div>
-
-</div>
-
-<!-- 하단 메뉴 -->
-
-<div class="bottom-nav">
-
-<div class="nav-item active">
 <i class="fa-solid fa-house"></i>
 <span>홈</span>
-</div>
 
-<div class="nav-item">
+</a><a href="#"
+class="nav-item"
+id="bottomSearch">
+
 <i class="fa-solid fa-magnifying-glass"></i>
 <span>검색</span>
-</div>
 
-<div class="nav-item">
-<i class="fa-solid fa-book"></i>
-<span>내 서재</span>
-</div>
+</a><a href="request.html"
+class="nav-item">
 
-<div class="nav-item">
-<i class="fa-solid fa-user"></i>
-<span>마이페이지</span>
-</div>
+<i class="fa-solid fa-book-bookmark"></i>
+<span>희망도서</span>
 
-</div>
+</a><a href="#"
+class="nav-item"
+id="bottomAdmin">
 
-<script type="module" src="app.js"></script>
+<i class="fa-solid fa-user-shield"></i>
+<span>관리자</span>
 
-</body>
+</a></div><script type="module" src="app.js"></script></body>
 </html>
