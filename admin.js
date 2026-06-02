@@ -1,5 +1,26 @@
-import { db } from "./firebase.js";
+import { db, auth } from "./firebase.js";
+
+import {
+onAuthStateChanged,
+signOut
+}
+from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+onAuthStateChanged(auth, async (user) => {
+
+    if (!user) {
+
+        alert("관리자 로그인이 필요합니다.");
+
+        location.href = "admin-login.html";
+
+        return;
+    }
+
+    await loadBooks();
+
+});
 
 const [title, author, imgUrl, regDate, category, shelf, slot, newbook] = 
       ["title", "author", "imgUrl", "regDate", "category", "shelf", "slot", "newbook"].map(id => document.getElementById(id));
@@ -60,5 +81,10 @@ document.getElementById("downloadBtn").onclick = async () => {
     a.download = "booklist.csv"; a.click();
 };
 
-document.getElementById("logoutBtn").onclick = () => { sessionStorage.removeItem("libraryAdmin"); location.href = "index.html"; };
-loadBooks();
+document.getElementById("logoutBtn").onclick = async () => {
+
+    await signOut(auth);
+
+    location.href = "index.html";
+
+};
