@@ -2,18 +2,135 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>관리자 로그인</title>
+
+<link rel="stylesheet" href="style.css">
+
+<style>
+
+.login-wrap{
+max-width:420px;
+margin:80px auto;
+}
+
+.login-header{
+
+background:linear-gradient(
+135deg,
+#5e7ff5,
+#7aa4ff
+);
+
+padding:30px;
+border-radius:25px;
+color:white;
+text-align:center;
+margin-bottom:20px;
+}
+
+.login-header h1{
+font-size:30px;
+margin-bottom:10px;
+}
+
+.login-card{
+
+background:white;
+padding:25px;
+border-radius:25px;
+
+box-shadow:
+0 4px 12px rgba(0,0,0,.08);
+}
+
+.login-card input{
+
+width:100%;
+padding:14px;
+
+border:1px solid #ddd;
+border-radius:15px;
+
+margin-bottom:12px;
+font-size:15px;
+}
+
+.login-btn{
+
+width:100%;
+padding:15px;
+
+border:none;
+border-radius:15px;
+
+background:#5e7ff5;
+color:white;
+
+font-size:16px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.back-btn{
+
+width:100%;
+padding:15px;
+
+border:none;
+border-radius:15px;
+
+background:#eceff7;
+margin-top:10px;
+cursor:pointer;
+}
+
+</style>
+
 </head>
+
 <body>
 
-<h2>관리자 로그인</h2>
+<div class="login-wrap">
 
-<input id="email" placeholder="이메일">
-<input id="password" type="password" placeholder="비밀번호">
+<div class="login-header">
 
-<button id="loginBtn">
+<h1>🔐 관리자</h1>
+<p>효성해링턴 작은도서관</p>
+
+</div>
+
+<div class="login-card">
+
+<input
+type="email"
+id="email"
+placeholder="관리자 이메일">
+
+<input
+type="password"
+id="password"
+placeholder="비밀번호">
+
+<button
+id="loginBtn"
+class="login-btn">
+
 로그인
+
 </button>
+
+<button
+onclick="location.href='index.html'"
+class="back-btn">
+
+입주민 화면
+
+</button>
+
+</div>
+
+</div>
 
 <script type="module" src="admin-login.js"></script>
 
