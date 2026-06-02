@@ -58,27 +58,161 @@ saveBtn.onclick = async () => {
     location.reload();
 };
 
-document.getElementById("csvFile").onchange = (e) => {
-    const reader = new FileReader();
-    reader.onload = async (event) => {
-        const batch = writeBatch(db);
-        event.target.result.split('\n').slice(1).forEach(row => {
-            const cols = row.split(',');
-            if(cols.length < 7) return;
-            batch.set(doc(collection(db, "books")), { title:cols[0], author:cols[1], imgUrl:cols[2], date:cols[3], category:cols[4], shelf:cols[5], slot:parseInt(cols[6]), newbook:cols[7] === 'true' });
-        });
-        await batch.commit(); alert("업로드 완료"); location.reload();
-    };
-    reader.readAsText(e.target.files[0], "UTF-8");
+document.getElementById("csvFile").onchange = async (e) => {
+
+const snap =
+await getDocs(
+collection(db,"books")
+);
+
+const existSet =
+new Set();
+
+snap.forEach(doc=>{
+
+const b = doc.data();
+
+existSet.add(
+`${(b.title||"").trim()}_${(b.author||"").trim()}`
+);
+
+});
+
+const reader =
+new FileReader();
+
+reader.onload = async (event) => {
+
+const batch =
+writeBatch(db);
+
+let addCount = 0;
+let skipCount = 0;
+
+event.target.result
+.split("\n")
+.slice(1)
+.forEach(row=>{
+
+const cols =
+row.split(",");
+
+if(cols.length < 7) return;
+
+const title =
+(cols[0]||"").trim();
+
+const author =
+(cols[1]||"").trim();
+
+const key =
+`${title}_${author}`;
+
+if(existSet.has(key)){
+
+skipCount++;
+
+return;
+
+}
+
+existSet.add(key);
+
+batch.set(
+doc(
+collection(db,"books")
+),
+{
+title,
+author,
+imgUrl:cols[2],
+date:cols[3],
+category:cols[4],
+shelf:cols[5],
+slot:parseInt(cols[6]),
+newbook:cols[7] === "true"
+}
+);
+
+addCount++;
+
+});
+
+await batch.commit();
+
+alert(
+`업로드 완료\n추가 : ${addCount}건\n중복제외 : ${skipCount}건`
+);
+
+location.reload();
+
 };
 
-document.getElementById("downloadBtn").onclick = async () => {
-    const snap = await getDocs(collection(db, "books"));
-    let csv = "\uFEFF제목,저자,이미지URL,등록일,카테고리,책장,칸,신간\n";
-    snap.forEach(d => { const b = d.data(); csv += `${b.title},${b.author},${b.imgUrl},${b.date},${b.category},${b.shelf},${b.slot},${b.newbook}\n`; });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(new Blob([csv], {type: 'text/csv;charset=utf-8'}));
-    a.download = "booklist.csv"; a.click();
+reader.readAsText(
+e.target.files[0],
+"UTF-8"
+);
+
+};
+
+document.getElementById("downloadBtn").onclick = async ()=>{
+
+    const snap =
+    await getDocs(
+        collection(db,"books")
+    );
+
+    let csv =
+    "\uFEFF제목,저자,이미지URL,등록일,카테고리,책장,칸,신간\n";
+
+    snap.forEach(d=>{
+
+        const b = d.data();
+
+        csv +=
+        `${b.title || ""},${b.author || ""},${b.imgUrl || ""},${b.date || ""},${b.category || ""},${b.shelf || ""},${b.slot || ""},${b.newbook || false}\n`;
+
+    });
+
+    const blob =
+    new Blob(
+        [csv],
+        {
+            type:"text/csv;charset=utf-8"
+        }
+    );
+
+    const a =
+    document.createElement("a");
+
+    a.href =
+    URL.createObjectURL(blob);
+
+    const today =
+    new Date();
+
+    const y =
+    today.getFullYear();
+
+    const m =
+    String(
+        today.getMonth()+1
+    ).padStart(2,"0");
+
+    const d =
+    String(
+        today.getDate()
+    ).padStart(2,"0");
+
+    a.download =
+    `${y}${m}${d}_booklist.csv`;
+
+    document.body.appendChild(a);
+
+    a.click();
+
+    document.body.removeChild(a);
+
 };
 
 document.getElementById("logoutBtn").onclick = async () => {
