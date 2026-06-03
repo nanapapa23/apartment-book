@@ -61,6 +61,7 @@ function renderList() {
         const matchSearch = (
             (b.title || "").toLowerCase().includes(searchQuery) || 
             (b.author || "").toLowerCase().includes(searchQuery) ||
+            (b.publisher || "").toLowerCase().includes(searchQuery) || // 검색에 출판사 추가
             getInitialSound(b.title || "").includes(searchQuery)
         );
         return matchCat && matchSearch;
@@ -69,7 +70,7 @@ function renderList() {
     filtered.forEach(b => {
         const div = document.createElement("div");
         div.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
-        div.innerHTML = `<div><strong>${b.title}</strong> (${b.shelf}-${b.slot}칸)<br><small>${b.author} | ${b.category || ''}</small></div>
+        div.innerHTML = `<div><strong>${b.title}</strong> (${b.shelf}-${b.slot}칸)<br><small>${b.author} | ${b.publisher || '출판사없음'} | ${b.category || ''}</small></div>
                          <div><button onclick="editBook('${b.id}')">수정</button> <button onclick="deleteBook('${b.id}')">삭제</button></div>`;
         listDiv.appendChild(div);
     });
@@ -86,6 +87,7 @@ document.getElementById("saveBtn").onclick = async () => {
     const data = {
         title: document.getElementById("title").value.trim(),
         author: document.getElementById("author").value.trim(),
+        publisher: document.getElementById("publisher").value.trim(), // 출판사 저장
         imgUrl: document.getElementById("imgUrl").value,
         date: document.getElementById("regDate").value,
         category: document.getElementById("category").value,
@@ -102,6 +104,7 @@ window.editBook = (id) => {
     const b = allBooks.find(i => i.id === id);
     document.getElementById("title").value = b.title;
     document.getElementById("author").value = b.author;
+    document.getElementById("publisher").value = b.publisher || ""; // 출판사 불러오기
     document.getElementById("imgUrl").value = b.imgUrl || "";
     document.getElementById("regDate").value = b.date || "";
     document.getElementById("category").value = b.category || "";
@@ -115,9 +118,9 @@ window.editBook = (id) => {
 window.deleteBook = async (id) => { if(confirm("삭제하시겠습니까?")) { await deleteDoc(doc(db, "books", id)); location.reload(); } };
 
 document.getElementById("downloadBtn").onclick = async () => {
-    let csv = "\uFEFF제목,저자,이미지URL,등록일,카테고리,책장,칸,신간\n";
+    let csv = "\uFEFF제목,저자,출판사,이미지URL,등록일,카테고리,책장,칸,신간\n"; // 헤더에 출판사 추가
     allBooks.forEach(b => {
-        csv += `${b.title || ""},${b.author || ""},${b.imgUrl || ""},${b.date || ""},${b.category || ""},${b.shelf || ""},${b.slot || ""},${b.newbook || false}\n`;
+        csv += `${b.title || ""},${b.author || ""},${b.publisher || ""},${b.imgUrl || ""},${b.date || ""},${b.category || ""},${b.shelf || ""},${b.slot || ""},${b.newbook || false}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
