@@ -16,15 +16,17 @@ onAuthStateChanged(auth, async (user) => {
     await loadBooks();
 });
 
-// [핵심] 신간 > 최근등록일 > 가나다순 정렬 함수
+// [수정된 정렬 로직] 날짜를 문자열 그대로 비교(YYYY-MM-DD 형식)하여 정확한 최신순 정렬
 function sortBooks(data) {
     return data.sort((a, b) => {
-        // 1. 신간 우선 (true가 앞으로)
+        // 1. 신간 우선 (true가 앞)
         if (!!a.newbook !== !!b.newbook) return (b.newbook ? 1 : 0) - (a.newbook ? 1 : 0);
-        // 2. 등록일 최신순 (날짜가 없으면 0으로 처리)
-        const dateA = a.date ? new Date(a.date).getTime() : 0;
-        const dateB = b.date ? new Date(b.date).getTime() : 0;
-        if (dateA !== dateB) return dateB - dateA;
+        
+        // 2. 등록일 최신순 (날짜 문자열 비교: 2026-06-03이 2022-01-01보다 크므로 내림차순 정렬)
+        const dateA = a.date || "0000-00-00";
+        const dateB = b.date || "0000-00-00";
+        if (dateA !== dateB) return dateB.localeCompare(dateA);
+        
         // 3. 제목 가나다순
         return (a.title || "").localeCompare(b.title || "", "ko");
     });
@@ -56,11 +58,10 @@ function renderList() {
         return matchCat && matchSearch;
     });
 
-    // 정렬 적용
     sortBooks(filtered).forEach(b => {
         const div = document.createElement("div");
         div.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
-        div.innerHTML = `<div><strong>${b.title}</strong><br><small>${b.author} | ${b.publisher || '정보없음'} | ${b.category || ''}</small></div>
+        div.innerHTML = `<div><strong>${b.title}</strong><br><small>${b.author} | ${b.publisher || '정보없음'} | ${b.category || ''} | ${b.date || '날짜없음'}</small></div>
                          <div><button onclick="editBook('${b.id}')">수정</button> <button onclick="deleteBook('${b.id}')">삭제</button></div>`;
         listDiv.appendChild(div);
     });
@@ -118,10 +119,8 @@ document.getElementById("csvFile").onchange = async (e) => {
     reader.readAsText(e.target.files[0], "UTF-8");
 };
 
-// [핵심] 다운로드 파일명 및 정렬 적용
 document.getElementById("downloadBtn").onclick = () => {
     let csv = "\uFEFF제목,저자,출판사,이미지URL,등록일,카테고리,책장,칸,신간\n";
-    // 다운로드 시에도 정렬 적용
     sortBooks([...allBooks]).forEach(b => {
         csv += `${b.title},${b.author},${b.publisher||""},${b.imgUrl||""},${b.date||""},${b.category||""},${b.shelf||""},${b.slot||0},${!!b.newbook}\n`;
     });
@@ -129,13 +128,11 @@ document.getElementById("downloadBtn").onclick = () => {
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
     
-    // 파일명 형식: yyMMdd_booklist
     const now = new Date();
     const y = String(now.getFullYear()).slice(-2);
     const m = String(now.getMonth() + 1).padStart(2, '0');
     const d = String(now.getDate()).padStart(2, '0');
     a.download = `${y}${m}${d}_booklist.csv`;
-    
     a.click();
 };
 
