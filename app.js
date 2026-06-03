@@ -38,12 +38,21 @@ function renderList(data){
     bookList.innerHTML = "";
     newBooks.innerHTML = "";
 
-    // 정렬: 신간 우선 > 최근 등록일순 > 가나다순
+    // 정렬: 1.신간 우선(true) > 2.등록일 최신순 > 3.제목 가나다순
     data.sort((a, b) => {
-        if (!!a.newbook !== !!b.newbook) return !!b.newbook - !!a.newbook;
-        const dateA = a.date || "0000-00-00";
-        const dateB = b.date || "0000-00-00";
-        if (dateA !== dateB) return dateB.localeCompare(dateA);
+        // 1. 신간 우선
+        if (!!a.newbook !== !!b.newbook) {
+            return (b.newbook ? 1 : 0) - (a.newbook ? 1 : 0);
+        }
+        
+        // 2. 등록일 최신순 (Date 객체로 변환하여 비교)
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        if (dateA !== dateB) {
+            return dateB - dateA; // 큰 값(최신)이 앞으로
+        }
+        
+        // 3. 제목 가나다순
         return (a.title || "").localeCompare(b.title || "", "ko");
     })
     .forEach(book=>{
@@ -96,7 +105,6 @@ function showDetail(book){
         </div>
     `;
 
-    // 어린이전용 카테고리일 경우 사각 박스 처리
     if (book.category === "어린이전용") {
         shelfView.innerHTML = `<div style="text-align:center; margin-bottom:15px; font-weight:bold; color:#5D4037;">어린이전용 책장</div>`;
         const box = document.createElement("div");
@@ -104,7 +112,6 @@ function showDetail(book){
         box.innerText = "어린이전용";
         shelfView.appendChild(box);
     } else {
-        // 일반 도서 (6칸 책장)
         const box = document.createElement("div");
         box.style = `display:flex; flex-direction:column; align-items:center; margin:auto; width:140px; border:8px solid #5D4037; border-radius:8px; background:#8D6E63; padding:5px;`;
         for(let i=6; i>=1; i--){
