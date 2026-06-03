@@ -130,6 +130,26 @@ document.getElementById("downloadBtn").onclick = () => {
     a.click();
 };
 
+// 전체 데이터 삭제
+const delAllBtn = document.getElementById("deleteAllBtn");
+if (delAllBtn) {
+    delAllBtn.onclick = async () => {
+        if (!confirm("⚠️ 경고: 모든 도서 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) return;
+        if (!confirm("정말 모든 데이터를 삭제하시겠습니까? 최종 확인입니다.")) return;
+
+        try {
+            const batch = writeBatch(db);
+            allBooks.forEach(b => batch.delete(doc(db, "books", b.id)));
+            await batch.commit();
+            alert("모든 데이터가 삭제되었습니다.");
+            location.reload();
+        } catch (e) {
+            console.error("삭제 실패:", e);
+            alert("삭제 중 오류가 발생했습니다.");
+        }
+    };
+}
+
 // 기타 이벤트
 window.editBook = (id) => {
     const b = allBooks.find(i => i.id === id);
