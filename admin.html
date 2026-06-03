@@ -7,12 +7,20 @@
 content="width=device-width, initial-scale=1.0">
 
 <title>관리자 모드</title>
-<div class="search-box admin-search">
-    <i class="fa-solid fa-magnifying-glass"></i>
-    <input
-        id="adminSearch"
-        type="text"
-        placeholder="도서명, 저자 검색">
+<div class="admin-card">
+    <h2>도서 검색 및 필터</h2>
+    <input type="text" id="adminSearch" placeholder="제목/저자 검색...">
+    <div style="display:flex; gap:5px; overflow-x:auto; margin-top:10px;">
+        <button class="cat-filter" data-cat="전체">전체</button>
+        <button class="cat-filter" data-cat="성인">성인</button>
+        <button class="cat-filter" data-cat="청소년">청소년</button>
+        <button class="cat-filter" data-cat="어린이">어린이</button>
+        <button class="cat-filter" data-cat="자기개발">자기개발</button>
+    </div>
+</div>
+<div class="admin-card">
+    <h2>도서 목록</h2>
+    <div id="adminList"></div>
 </div>
 
 <div id="adminCategoryStats"></div>
