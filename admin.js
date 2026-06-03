@@ -21,7 +21,6 @@ onAuthStateChanged(auth, async (user) => {
     await loadBooks();
 });
 
-// 검색 및 필터 이벤트
 document.getElementById("adminSearch").addEventListener("input", (e) => {
     searchQuery = e.target.value.toLowerCase();
     renderList();
@@ -32,8 +31,22 @@ window.filterList = (cat) => {
     renderList();
 };
 
+// 정렬 함수 (공통 사용)
+function sortBooks(data) {
+    return data.sort((a, b) => {
+        // 1. 신간 우선 (true가 앞)
+        if (!!a.newbook !== !!b.newbook) return (b.newbook ? 1 : 0) - (a.newbook ? 1 : 0);
+        // 2. 등록일 최신순
+        const dateA = a.date ? new Date(a.date).getTime() : 0;
+        const dateB = b.date ? new Date(b.date).getTime() : 0;
+        if (dateA !== dateB) return dateB - dateA;
+        // 3. 제목 가나다순
+        return (a.title || "").localeCompare(b.title || "", "ko");
+    });
+}
+
 function renderStats(books) {
-    let counts = { "전체": books.length, "성인": 0, "청소년": 0, "어린이": 0, "자기개발": 0, "기타": 0, "신간": 0 };
+    let counts = { "전체": books.length, "성인": 0, "청소년": 0, "어린이": 0, "어린이전용": 0, "자기개발": 0, "기타": 0, "신간": 0 };
     books.forEach(b => {
         if (counts.hasOwnProperty(b.category)) counts[b.category]++;
         else counts["기타"]++;
@@ -56,18 +69,19 @@ function renderList() {
     const listDiv = document.getElementById("adminList");
     listDiv.innerHTML = "";
     
-    const filtered = allBooks.filter(b => {
+    let filtered = allBooks.filter(b => {
         const matchCat = (currentCategory === "전체" || (currentCategory === "신간" ? b.newbook : b.category === currentCategory));
         const matchSearch = (
             (b.title || "").toLowerCase().includes(searchQuery) || 
             (b.author || "").toLowerCase().includes(searchQuery) ||
-            (b.publisher || "").toLowerCase().includes(searchQuery) || // 검색에 출판사 추가
+            (b.publisher || "").toLowerCase().includes(searchQuery) ||
             getInitialSound(b.title || "").includes(searchQuery)
         );
         return matchCat && matchSearch;
     });
 
-    filtered.forEach(b => {
+    // 정렬 적용
+    sortBooks(filtered).forEach(b => {
         const div = document.createElement("div");
         div.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
         div.innerHTML = `<div><strong>${b.title}</strong> (${b.shelf}-${b.slot}칸)<br><small>${b.author} | ${b.publisher || '출판사없음'} | ${b.category || ''}</small></div>
@@ -87,7 +101,7 @@ document.getElementById("saveBtn").onclick = async () => {
     const data = {
         title: document.getElementById("title").value.trim(),
         author: document.getElementById("author").value.trim(),
-        publisher: document.getElementById("publisher").value.trim(), // 출판사 저장
+        publisher: document.getElementById("publisher").value.trim(),
         imgUrl: document.getElementById("imgUrl").value,
         date: document.getElementById("regDate").value,
         category: document.getElementById("category").value,
@@ -104,7 +118,7 @@ window.editBook = (id) => {
     const b = allBooks.find(i => i.id === id);
     document.getElementById("title").value = b.title;
     document.getElementById("author").value = b.author;
-    document.getElementById("publisher").value = b.publisher || ""; // 출판사 불러오기
+    document.getElementById("publisher").value = b.publisher || "";
     document.getElementById("imgUrl").value = b.imgUrl || "";
     document.getElementById("regDate").value = b.date || "";
     document.getElementById("category").value = b.category || "";
@@ -118,19 +132,17 @@ window.editBook = (id) => {
 window.deleteBook = async (id) => { if(confirm("삭제하시겠습니까?")) { await deleteDoc(doc(db, "books", id)); location.reload(); } };
 
 document.getElementById("downloadBtn").onclick = async () => {
-    let csv = "\uFEFF제목,저자,출판사,이미지URL,등록일,카테고리,책장,칸,신간\n"; // 헤더에 출판사 추가
-    allBooks.forEach(b => {
+    let csv = "\uFEFF제목,저자,출판사,이미지URL,등록일,카테고리,책장,칸,신간\n";
+    // 다운로드 시에도 정렬 적용
+    sortBooks([...allBooks]).forEach(b => {
         csv += `${b.title || ""},${b.author || ""},${b.publisher || ""},${b.imgUrl || ""},${b.date || ""},${b.category || ""},${b.shelf || ""},${b.slot || ""},${b.newbook || false}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     const today = new Date();
-    const y = String(today.getFullYear()).slice(-2);
-    const m = String(today.getMonth() + 1).padStart(2, "0");
-    const d = String(today.getDate()).padStart(2, "0");
     a.href = url;
-    a.download = `${y}${m}${d}_booklist.csv`;
+    a.download = `${String(today.getFullYear()).slice(-2)}${String(today.getMonth() + 1).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}_booklist.csv`;
     a.click();
     URL.revokeObjectURL(url);
 };
