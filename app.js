@@ -38,7 +38,21 @@ function renderList(data){
     bookList.innerHTML = "";
     newBooks.innerHTML = "";
 
-    data.sort((a,b) => (b.newbook ? 1 : 0) - (a.newbook ? 1 : 0))
+    // 정렬 로직: 신간 우선 > 최근 등록일순 > 가나다순
+    data.sort((a, b) => {
+        // 1. 신간 우선
+        if (!!a.newbook !== !!b.newbook) {
+            return !!b.newbook - !!a.newbook;
+        }
+        // 2. 등록일 기준 (최근 날짜가 위로)
+        const dateA = a.date || "0000-00-00";
+        const dateB = b.date || "0000-00-00";
+        if (dateA !== dateB) {
+            return dateB.localeCompare(dateA);
+        }
+        // 3. 가나다순
+        return (a.title || "").localeCompare(b.title || "", "ko");
+    })
     .forEach(book=>{
         /* 신간 */
         if(book.newbook){
@@ -94,7 +108,6 @@ function showDetail(book){
     const box = document.createElement("div");
     box.style = `display:flex; flex-direction:column; align-items:center; margin:auto; width:140px; border:8px solid #5D4037; border-radius:8px; background:#8D6E63; padding:5px;`;
 
-    // 6칸으로 수정
     for(let i=6; i>=1; i--){
         const slot = document.createElement("div");
         const active = Number(book.slot) === i;
