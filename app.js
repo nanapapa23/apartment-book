@@ -38,19 +38,12 @@ function renderList(data){
     bookList.innerHTML = "";
     newBooks.innerHTML = "";
 
-    // 정렬 로직: 신간 우선 > 최근 등록일순 > 가나다순
+    // 정렬: 신간 우선 > 최근 등록일순 > 가나다순
     data.sort((a, b) => {
-        // 1. 신간 우선
-        if (!!a.newbook !== !!b.newbook) {
-            return !!b.newbook - !!a.newbook;
-        }
-        // 2. 등록일 기준 (최근 날짜가 위로)
+        if (!!a.newbook !== !!b.newbook) return !!b.newbook - !!a.newbook;
         const dateA = a.date || "0000-00-00";
         const dateB = b.date || "0000-00-00";
-        if (dateA !== dateB) {
-            return dateB.localeCompare(dateA);
-        }
-        // 3. 가나다순
+        if (dateA !== dateB) return dateB.localeCompare(dateA);
         return (a.title || "").localeCompare(b.title || "", "ko");
     })
     .forEach(book=>{
@@ -60,8 +53,7 @@ function renderList(data){
             newCard.className = "new-book-card";
             newCard.innerHTML = `
                 <div style="width:100px; height:140px; margin:auto; overflow:hidden; border-radius:12px; background:#f2f2f2;">
-                    ${book.imgUrl ? `<img src="${book.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` 
-                                  : `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; color:#999; font-size:12px;">이미지 없음</div>`}
+                    ${book.imgUrl ? `<img src="${book.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; color:#999; font-size:12px;">이미지 없음</div>`}
                 </div>
                 <div style="font-weight:700; margin-top:10px; font-size:13px;">${book.title}</div>
                 <div style="color:#666; font-size:11px; margin-top:4px;">${book.author}</div>
@@ -75,8 +67,7 @@ function renderList(data){
         div.className = "book-item";
         div.innerHTML = `
             <div style="width:60px; height:85px; overflow:hidden; border-radius:10px; background:#f2f2f2; flex-shrink:0;">
-                ${book.imgUrl ? `<img src="${book.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` 
-                              : `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size:11px; color:#999;">없음</div>`}
+                ${book.imgUrl ? `<img src="${book.imgUrl}" style="width:100%; height:100%; object-fit:cover;">` : `<div style="display:flex; align-items:center; justify-content:center; width:100%; height:100%; font-size:11px; color:#999;">없음</div>`}
             </div>
             <div style="margin-left:15px; flex:1;">
                 <div style="font-weight:700; font-size:15px;">${book.title} ${book.newbook ? '<span style="color:red;font-size:11px;">NEW</span>' : ''}</div>
@@ -105,17 +96,27 @@ function showDetail(book){
         </div>
     `;
 
-    const box = document.createElement("div");
-    box.style = `display:flex; flex-direction:column; align-items:center; margin:auto; width:140px; border:8px solid #5D4037; border-radius:8px; background:#8D6E63; padding:5px;`;
-
-    for(let i=6; i>=1; i--){
-        const slot = document.createElement("div");
-        const active = Number(book.slot) === i;
-        slot.style = `width:120px; height:35px; border-bottom:2px solid #5D4037; display:flex; justify-content:center; align-items:center; background:${active ? "#FFCC80" : "#FFF3E0"}; color:${active ? "#E65100" : "#8D6E63"}; font-weight:${active ? "bold" : "normal"};`;
-        slot.innerText = i + "칸";
-        box.appendChild(slot);
+    // 어린이전용 카테고리일 경우 사각 박스 처리
+    if (book.category === "어린이전용") {
+        shelfView.innerHTML = `<div style="text-align:center; margin-bottom:15px; font-weight:bold; color:#5D4037;">어린이전용 책장</div>`;
+        const box = document.createElement("div");
+        box.style = `margin:auto; width:120px; height:80px; border:4px solid #5D4037; border-radius:8px; background:#FFCC80; display:flex; justify-content:center; align-items:center; font-weight:bold; color:#E65100;`;
+        box.innerText = "어린이전용";
+        shelfView.appendChild(box);
+    } else {
+        // 일반 도서 (6칸 책장)
+        const box = document.createElement("div");
+        box.style = `display:flex; flex-direction:column; align-items:center; margin:auto; width:140px; border:8px solid #5D4037; border-radius:8px; background:#8D6E63; padding:5px;`;
+        for(let i=6; i>=1; i--){
+            const slot = document.createElement("div");
+            const active = Number(book.slot) === i;
+            slot.style = `width:120px; height:35px; border-bottom:2px solid #5D4037; display:flex; justify-content:center; align-items:center; background:${active ? "#FFCC80" : "#FFF3E0"}; color:${active ? "#E65100" : "#8D6E63"}; font-weight:${active ? "bold" : "normal"};`;
+            slot.innerText = i + "칸";
+            box.appendChild(slot);
+        }
+        shelfView.appendChild(box);
     }
-    shelfView.appendChild(box);
+
     document.getElementById("detailModal").style.display = "block";
 }
 
