@@ -92,10 +92,10 @@ newBooks.innerHTML = "";
 data
 .sort((a, b) => {
     /* 1순위: 등록일 정렬 (내림차순 - 최신 등록 도서가 위로) */
-    // 만약 파이어베이스 필드명이 다르면 'createdAt'을 해당 필드명으로 변경하세요.
+    // 만약 파이어베이스 필드명이 다르면 'date'을 해당 필드명으로 변경하세요.
     // 파이어베이스 Timestamp 객체일 경우를 대비해 .seconds 나 .seconds가 없다면 값 자체를 비교합니다.
-    const dateA = a.createdAt?.seconds || a.createdAt || "";
-    const dateB = b.createdAt?.seconds || b.createdAt || "";
+    const dateA = a.date?.seconds || a.date || "";
+    const dateB = b.date?.seconds || b.date || "";
     
     if (dateB !== dateA) {
         return dateB > dateA ? 1 : -1;
