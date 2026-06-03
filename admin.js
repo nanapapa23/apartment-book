@@ -7,7 +7,6 @@ let currentCategory = "전체";
 let searchQuery = "";
 let editId = null;
 
-// DOM 요소 매핑
 const [title, author, publisher, imgUrl, regDate, category, shelf, slot, newbook] = 
       ["title", "author", "publisher", "imgUrl", "regDate", "category", "shelf", "slot", "newbook"].map(id => document.getElementById(id));
 const saveBtn = document.getElementById("saveBtn");
@@ -28,7 +27,7 @@ function sortBooks(data) {
     });
 }
 
-// 현황 출력
+// 현황 및 목록 렌더링
 function renderStats(books) {
     const statsContainer = document.getElementById("bookStats");
     if (!statsContainer) return;
@@ -38,18 +37,16 @@ function renderStats(books) {
         else counts["기타"]++;
         if (b.newbook) counts["신간"]++;
     });
-    statsContainer.innerHTML = `<div class="stats-grid">${Object.entries(counts).map(([name, count]) => `
-        <div class="stat-box" onclick="filterList('${name}')" style="cursor:pointer; border:1px solid #ccc; padding:10px; margin:5px;">
+    statsContainer.innerHTML = `<div class="stats-grid" style="display:flex; flex-wrap:wrap; gap:10px;">${Object.entries(counts).map(([name, count]) => `
+        <div class="stat-box" onclick="filterList('${name}')" style="cursor:pointer; border:1px solid #ccc; padding:10px; text-align:center;">
             <div class="stat-count">${count}</div><div class="stat-label">${name}</div>
         </div>`).join('')}</div>`;
 }
 
-// 목록 출력
 function renderList() {
     const listDiv = document.getElementById("adminList");
     if (!listDiv) return;
     listDiv.innerHTML = "";
-    
     let filtered = allBooks.filter(b => {
         const matchCat = (currentCategory === "전체" || (currentCategory === "신간" ? b.newbook : b.category === currentCategory));
         const matchSearch = ((b.title || "").toLowerCase().includes(searchQuery) || (b.author || "").toLowerCase().includes(searchQuery) || (b.publisher || "").toLowerCase().includes(searchQuery));
@@ -59,7 +56,7 @@ function renderList() {
     sortBooks(filtered).forEach(b => {
         const div = document.createElement("div");
         div.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
-        div.innerHTML = `<div><strong>${b.title}</strong> (${b.shelf}-${b.slot}칸)<br><small>${b.author} | ${b.publisher || '출판사없음'} | ${b.category || ''}</small></div>
+        div.innerHTML = `<div><strong>${b.title}</strong><br><small>${b.author} | ${b.publisher || '정보없음'} | ${b.category || ''}</small></div>
                          <div><button onclick="editBook('${b.id}')">수정</button> <button onclick="deleteBook('${b.id}')">삭제</button></div>`;
         listDiv.appendChild(div);
     });
@@ -74,12 +71,12 @@ async function loadBooks() {
 
 // 저장 기능 (중복체크 포함)
 saveBtn.onclick = async () => {
-    if(!category.value){ alert("카테고리를 선택하세요."); return; }
-    const titleVal = title.value.trim();
-    const authVal = author.value.trim();
-
-    const isDuplicated = allBooks.some(b => b.id !== editId && b.title.trim() === titleVal && b.author.trim() === authVal);
-    if(isDuplicated){ alert("이미 등록된 도서입니다."); return; }
+    const titleVal = title.value.trim(), authVal = author.value.trim();
+    if(!titleVal || !category.value){ alert("제목과 카테고리를 확인하세요."); return; }
+    
+    if (allBooks.some(b => b.id !== editId && b.title.trim() === titleVal && b.author.trim() === authVal)) {
+        alert("이미 등록된 도서입니다."); return;
+    }
 
     const data = {
         title: titleVal, author: authVal, publisher: publisher.value.trim(),
@@ -92,30 +89,48 @@ saveBtn.onclick = async () => {
     location.reload();
 };
 
-// CSV 업로드 (Batch 방식)
+// CSV 업로드 (중복제외)
 document.getElementById("csvFile").onchange = async (e) => {
     const reader = new FileReader();
     reader.onload = async (event) => {
+        const rows = event.target.result.split("\n").slice(1);
         const batch = writeBatch(db);
-        let addCount = 0;
-        event.target.result.split("\n").slice(1).forEach(row => {
+        let addCount = 0, skipCount = 0;
+
+        rows.forEach(row => {
             const cols = row.split(",");
             if(cols.length < 8) return;
-            batch.set(doc(collection(db, "books")), {
-                title: cols[0].trim(), author: cols[1].trim(), publisher: cols[2].trim(),
-                imgUrl: cols[3], date: cols[4], category: cols[5], shelf: cols[6],
-                slot: parseInt(cols[7]) || 0, newbook: cols[8] === "true"
-            });
-            addCount++;
+            const [t, a] = [cols[0].trim(), cols[1].trim()];
+            if(allBooks.some(b => b.title.trim() === t && b.author.trim() === a)) skipCount++;
+            else {
+                batch.set(doc(collection(db, "books")), {
+                    title: t, author: a, publisher: cols[2].trim(), imgUrl: cols[3],
+                    date: cols[4], category: cols[5], shelf: cols[6], slot: parseInt(cols[7]) || 0, newbook: cols[8]?.trim() === "true"
+                });
+                addCount++;
+            }
         });
         await batch.commit();
-        alert(`업로드 완료: ${addCount}건`);
+        alert(`업로드 완료 (추가: ${addCount}건, 중복제외: ${skipCount}건)`);
         location.reload();
     };
     reader.readAsText(e.target.files[0], "UTF-8");
 };
 
-// 기타 함수들
+// CSV 다운로드
+document.getElementById("downloadBtn").onclick = () => {
+    let csv = "\uFEFF제목,저자,출판사,이미지URL,등록일,카테고리,책장,칸,신간\n";
+    sortBooks([...allBooks]).forEach(b => {
+        csv += `${b.title},${b.author},${b.publisher||""},${b.imgUrl||""},${b.date||""},${b.category||""},${b.shelf||""},${b.slot||0},${!!b.newbook}\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "booklist.csv";
+    a.click();
+};
+
+// 기타 이벤트
 window.editBook = (id) => {
     const b = allBooks.find(i => i.id === id);
     title.value = b.title; author.value = b.author; publisher.value = b.publisher || "";
@@ -128,4 +143,3 @@ window.deleteBook = async (id) => { if(confirm("삭제?")) { await deleteDoc(doc
 window.filterList = (cat) => { currentCategory = cat; renderList(); };
 document.getElementById("adminSearch").addEventListener("input", (e) => { searchQuery = e.target.value.toLowerCase(); renderList(); });
 document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); location.href = "index.html"; };
-document.getElementById("downloadBtn").onclick = () => { /* ... 이전 다운로드 로직 유지 ... */ };
