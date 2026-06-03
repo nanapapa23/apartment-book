@@ -273,7 +273,7 @@ data
 }
 
 /* ------------------
-상세보기
+상세보기 (수정된 영역)
 ------------------ */
 
 function showDetail(book){
@@ -294,6 +294,9 @@ document.getElementById(
     "shelfView"
 );
 
+// 어린이전용 책장 여부 확인
+const isChildrenShelf = book.shelf === "어린이전용";
+
 shelfView.innerHTML = `
 <div style="
     text-align:center;
@@ -306,7 +309,7 @@ shelfView.innerHTML = `
     border-radius:20px;
     font-weight:bold;
 ">
-${book.shelf} 책장 - ${book.slot}칸
+${isChildrenShelf ? `${book.shelf} 책장` : `${book.shelf} 책장 - ${book.slot}칸`}
 </span>
 </div>
 `;
@@ -326,30 +329,58 @@ box.style = `
     padding:5px;
 `;
 
-for(let i=7;i>=1;i--){
-
+if (isChildrenShelf) {
+    
+    /* 어린이 전용 책장: 칸 구분 없이 통짜로 위치만 표기 */
     const slot =
     document.createElement("div");
 
-    const active =
-    Number(book.slot) === i;
-
     slot.style = `
         width:120px;
-        height:35px;
-        border-bottom:2px solid #5D4037;
+        height:80px;
         display:flex;
         justify-content:center;
         align-items:center;
-        background:${active ? "#FFCC80" : "#FFF3E0"};
-        color:${active ? "#E65100" : "#8D6E63"};
-        font-weight:${active ? "bold" : "normal"};
+        background:#FFCC80;
+        color:#E65100;
+        font-weight:bold;
+        text-align:center;
+        border-radius:4px;
     `;
 
-    slot.innerText =
-    i + "칸";
+    slot.innerText = "어린이전용\n위치";
 
     box.appendChild(slot);
+
+} else {
+
+    /* 일반 책장 (A~J): 기존과 동일하게 7칸 랜더링 */
+    for(let i=7;i>=1;i--){
+
+        const slot =
+        document.createElement("div");
+
+        const active =
+        Number(book.slot) === i;
+
+        slot.style = `
+            width:120px;
+            height:35px;
+            border-bottom:2px solid #5D4037;
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            background:${active ? "#FFCC80" : "#FFF3E0"};
+            color:${active ? "#E65100" : "#8D6E63"};
+            font-weight:${active ? "bold" : "normal"};
+        `;
+
+        slot.innerText =
+        i + "칸";
+
+        box.appendChild(slot);
+
+    }
 
 }
 
@@ -378,7 +409,7 @@ document
 
     item.addEventListener(
     "click",
-    ()=>{
+     Meso=>{
 
         document
         .querySelectorAll(
