@@ -5,6 +5,7 @@ import { collection, getDocs, addDoc, updateDoc, doc, deleteDoc } from "https://
 let allBooks = [];
 let currentCategory = "전체";
 let searchQuery = "";
+let editId = null;
 
 const getInitialSound = (str) => {
     const onset = ["ㄱ","ㄲ","ㄴ","ㄷ","ㄸ","ㄹ","ㅁ","ㅂ","ㅃ","ㅅ","ㅆ","ㅇ","ㅈ","ㅉ","ㅊ","ㅋ","ㅌ","ㅍ","ㅎ"];
@@ -20,13 +21,12 @@ onAuthStateChanged(auth, async (user) => {
     await loadBooks();
 });
 
-// 검색 이벤트
+// 검색 및 필터 이벤트
 document.getElementById("adminSearch").addEventListener("input", (e) => {
     searchQuery = e.target.value.toLowerCase();
     renderList();
 });
 
-// 필터 변경 시 호출
 window.filterList = (cat) => {
     currentCategory = cat;
     renderList();
@@ -82,7 +82,54 @@ async function loadBooks() {
     renderList();
 }
 
-// 수정/삭제 함수 유지
-window.editBook = (id) => { /* 기존 로직 */ };
-window.deleteBook = async (id) => { if(confirm("삭제?")) { await deleteDoc(doc(db, "books", id)); location.reload(); } };
-// 기타 저장, CSV 기능 등 유지...
+document.getElementById("saveBtn").onclick = async () => {
+    const data = {
+        title: document.getElementById("title").value.trim(),
+        author: document.getElementById("author").value.trim(),
+        imgUrl: document.getElementById("imgUrl").value,
+        date: document.getElementById("regDate").value,
+        category: document.getElementById("category").value,
+        shelf: document.getElementById("shelf").value,
+        slot: parseInt(document.getElementById("slot").value),
+        newbook: document.getElementById("newbook").checked
+    };
+    if (editId) await updateDoc(doc(db, "books", editId), data);
+    else await addDoc(collection(db, "books"), data);
+    location.reload();
+};
+
+window.editBook = (id) => {
+    const b = allBooks.find(i => i.id === id);
+    document.getElementById("title").value = b.title;
+    document.getElementById("author").value = b.author;
+    document.getElementById("imgUrl").value = b.imgUrl || "";
+    document.getElementById("regDate").value = b.date || "";
+    document.getElementById("category").value = b.category || "";
+    document.getElementById("shelf").value = b.shelf;
+    document.getElementById("slot").value = b.slot;
+    document.getElementById("newbook").checked = b.newbook;
+    editId = id;
+    document.getElementById("saveBtn").innerText = "수정 저장";
+};
+
+window.deleteBook = async (id) => { if(confirm("삭제하시겠습니까?")) { await deleteDoc(doc(db, "books", id)); location.reload(); } };
+
+document.getElementById("downloadBtn").onclick = async () => {
+    let csv = "\uFEFF제목,저자,이미지URL,등록일,카테고리,책장,칸,신간\n";
+    allBooks.forEach(b => {
+        csv += `${b.title || ""},${b.author || ""},${b.imgUrl || ""},${b.date || ""},${b.category || ""},${b.shelf || ""},${b.slot || ""},${b.newbook || false}\n`;
+    });
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const today = new Date();
+    const y = String(today.getFullYear()).slice(-2);
+    const m = String(today.getMonth() + 1).padStart(2, "0");
+    const d = String(today.getDate()).padStart(2, "0");
+    a.href = url;
+    a.download = `${y}${m}${d}_booklist.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+};
+
+document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); location.href = "index.html"; };
