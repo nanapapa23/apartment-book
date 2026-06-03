@@ -31,16 +31,12 @@ window.filterList = (cat) => {
     renderList();
 };
 
-// 정렬 함수 (공통 사용)
 function sortBooks(data) {
     return data.sort((a, b) => {
-        // 1. 신간 우선 (true가 앞)
         if (!!a.newbook !== !!b.newbook) return (b.newbook ? 1 : 0) - (a.newbook ? 1 : 0);
-        // 2. 등록일 최신순
         const dateA = a.date ? new Date(a.date).getTime() : 0;
         const dateB = b.date ? new Date(b.date).getTime() : 0;
         if (dateA !== dateB) return dateB - dateA;
-        // 3. 제목 가나다순
         return (a.title || "").localeCompare(b.title || "", "ko");
     });
 }
@@ -80,7 +76,6 @@ function renderList() {
         return matchCat && matchSearch;
     });
 
-    // 정렬 적용
     sortBooks(filtered).forEach(b => {
         const div = document.createElement("div");
         div.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
@@ -97,25 +92,39 @@ async function loadBooks() {
     renderList();
 }
 
+// 업로드 및 수정 기능
 document.getElementById("saveBtn").onclick = async () => {
     const data = {
         title: document.getElementById("title").value.trim(),
         author: document.getElementById("author").value.trim(),
         publisher: document.getElementById("publisher").value.trim(),
-        imgUrl: document.getElementById("imgUrl").value,
+        imgUrl: document.getElementById("imgUrl").value.trim(),
         date: document.getElementById("regDate").value,
         category: document.getElementById("category").value,
         shelf: document.getElementById("shelf").value,
-        slot: parseInt(document.getElementById("slot").value),
+        slot: parseInt(document.getElementById("slot").value) || 0,
         newbook: document.getElementById("newbook").checked
     };
-    if (editId) await updateDoc(doc(db, "books", editId), data);
-    else await addDoc(collection(db, "books"), data);
-    location.reload();
+
+    if (!data.title) { alert("제목을 입력해주세요."); return; }
+
+    try {
+        if (editId) {
+            await updateDoc(doc(db, "books", editId), data);
+        } else {
+            await addDoc(collection(db, "books"), data);
+        }
+        alert("저장되었습니다.");
+        location.reload(); // 데이터 새로고침
+    } catch (e) {
+        console.error("저장 실패:", e);
+        alert("저장 중 오류가 발생했습니다.");
+    }
 };
 
 window.editBook = (id) => {
     const b = allBooks.find(i => i.id === id);
+    if(!b) return;
     document.getElementById("title").value = b.title;
     document.getElementById("author").value = b.author;
     document.getElementById("publisher").value = b.publisher || "";
@@ -127,24 +136,27 @@ window.editBook = (id) => {
     document.getElementById("newbook").checked = b.newbook;
     editId = id;
     document.getElementById("saveBtn").innerText = "수정 저장";
+    window.scrollTo(0, 0); // 수정 화면으로 이동
 };
 
-window.deleteBook = async (id) => { if(confirm("삭제하시겠습니까?")) { await deleteDoc(doc(db, "books", id)); location.reload(); } };
+window.deleteBook = async (id) => { 
+    if(confirm("정말 삭제하시겠습니까?")) { 
+        await deleteDoc(doc(db, "books", id)); 
+        location.reload(); 
+    } 
+};
 
 document.getElementById("downloadBtn").onclick = async () => {
     let csv = "\uFEFF제목,저자,출판사,이미지URL,등록일,카테고리,책장,칸,신간\n";
-    // 다운로드 시에도 정렬 적용
     sortBooks([...allBooks]).forEach(b => {
         csv += `${b.title || ""},${b.author || ""},${b.publisher || ""},${b.imgUrl || ""},${b.date || ""},${b.category || ""},${b.shelf || ""},${b.slot || ""},${b.newbook || false}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
-    const today = new Date();
     a.href = url;
-    a.download = `${String(today.getFullYear()).slice(-2)}${String(today.getMonth() + 1).padStart(2, "0")}${String(today.getDate()).padStart(2, "0")}_booklist.csv`;
+    a.download = `booklist_${new Date().toISOString().slice(0,10)}.csv`;
     a.click();
-    URL.revokeObjectURL(url);
 };
 
 document.getElementById("logoutBtn").onclick = async () => { await signOut(auth); location.href = "index.html"; };
