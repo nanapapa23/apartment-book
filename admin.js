@@ -16,18 +16,20 @@ onAuthStateChanged(auth, async (user) => {
     await loadBooks();
 });
 
-// 정렬 로직 (신간 > 최근등록일 > 가나다순)
+// [핵심] 신간 > 최근등록일 > 가나다순 정렬 함수
 function sortBooks(data) {
     return data.sort((a, b) => {
+        // 1. 신간 우선 (true가 앞으로)
         if (!!a.newbook !== !!b.newbook) return (b.newbook ? 1 : 0) - (a.newbook ? 1 : 0);
+        // 2. 등록일 최신순 (날짜가 없으면 0으로 처리)
         const dateA = a.date ? new Date(a.date).getTime() : 0;
         const dateB = b.date ? new Date(b.date).getTime() : 0;
         if (dateA !== dateB) return dateB - dateA;
+        // 3. 제목 가나다순
         return (a.title || "").localeCompare(b.title || "", "ko");
     });
 }
 
-// 현황 및 목록 렌더링
 function renderStats(books) {
     const statsContainer = document.getElementById("bookStats");
     if (!statsContainer) return;
@@ -47,12 +49,14 @@ function renderList() {
     const listDiv = document.getElementById("adminList");
     if (!listDiv) return;
     listDiv.innerHTML = "";
+    
     let filtered = allBooks.filter(b => {
         const matchCat = (currentCategory === "전체" || (currentCategory === "신간" ? b.newbook : b.category === currentCategory));
         const matchSearch = ((b.title || "").toLowerCase().includes(searchQuery) || (b.author || "").toLowerCase().includes(searchQuery) || (b.publisher || "").toLowerCase().includes(searchQuery));
         return matchCat && matchSearch;
     });
 
+    // 정렬 적용
     sortBooks(filtered).forEach(b => {
         const div = document.createElement("div");
         div.style = "padding:10px; border-bottom:1px solid #eee; display:flex; justify-content:space-between;";
@@ -69,7 +73,6 @@ async function loadBooks() {
     renderList();
 }
 
-// 저장 기능 (중복체크 포함)
 saveBtn.onclick = async () => {
     const titleVal = title.value.trim(), authVal = author.value.trim();
     if(!titleVal || !category.value){ alert("제목과 카테고리를 확인하세요."); return; }
@@ -89,14 +92,12 @@ saveBtn.onclick = async () => {
     location.reload();
 };
 
-// CSV 업로드 (중복제외)
 document.getElementById("csvFile").onchange = async (e) => {
     const reader = new FileReader();
     reader.onload = async (event) => {
         const rows = event.target.result.split("\n").slice(1);
         const batch = writeBatch(db);
         let addCount = 0, skipCount = 0;
-
         rows.forEach(row => {
             const cols = row.split(",");
             if(cols.length < 8) return;
@@ -117,40 +118,38 @@ document.getElementById("csvFile").onchange = async (e) => {
     reader.readAsText(e.target.files[0], "UTF-8");
 };
 
-// CSV 다운로드
+// [핵심] 다운로드 파일명 및 정렬 적용
 document.getElementById("downloadBtn").onclick = () => {
     let csv = "\uFEFF제목,저자,출판사,이미지URL,등록일,카테고리,책장,칸,신간\n";
+    // 다운로드 시에도 정렬 적용
     sortBooks([...allBooks]).forEach(b => {
         csv += `${b.title},${b.author},${b.publisher||""},${b.imgUrl||""},${b.date||""},${b.category||""},${b.shelf||""},${b.slot||0},${!!b.newbook}\n`;
     });
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = "booklist.csv";
+    
+    // 파일명 형식: yyMMdd_booklist
+    const now = new Date();
+    const y = String(now.getFullYear()).slice(-2);
+    const m = String(now.getMonth() + 1).padStart(2, '0');
+    const d = String(now.getDate()).padStart(2, '0');
+    a.download = `${y}${m}${d}_booklist.csv`;
+    
     a.click();
 };
 
-// 전체 데이터 삭제
 const delAllBtn = document.getElementById("deleteAllBtn");
 if (delAllBtn) {
     delAllBtn.onclick = async () => {
-        if (!confirm("⚠️ 경고: 모든 도서 데이터를 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다.")) return;
-        if (!confirm("정말 모든 데이터를 삭제하시겠습니까? 최종 확인입니다.")) return;
-
-        try {
-            const batch = writeBatch(db);
-            allBooks.forEach(b => batch.delete(doc(db, "books", b.id)));
-            await batch.commit();
-            alert("모든 데이터가 삭제되었습니다.");
-            location.reload();
-        } catch (e) {
-            console.error("삭제 실패:", e);
-            alert("삭제 중 오류가 발생했습니다.");
-        }
+        if (!confirm("⚠️ 모든 데이터를 삭제하시겠습니까?")) return;
+        const batch = writeBatch(db);
+        allBooks.forEach(b => batch.delete(doc(db, "books", b.id)));
+        await batch.commit();
+        location.reload();
     };
 }
 
-// 기타 이벤트
 window.editBook = (id) => {
     const b = allBooks.find(i => i.id === id);
     title.value = b.title; author.value = b.author; publisher.value = b.publisher || "";
