@@ -75,7 +75,7 @@ try{
 }
 
 /* ------------------
-목록 출력
+목록 출력 (정렬 로직 수정됨)
 ------------------ */
 
 function renderList(data){
@@ -90,10 +90,22 @@ bookList.innerHTML = "";
 newBooks.innerHTML = "";
 
 data
-.sort((a,b)=>
-    (b.newbook ? 1 : 0) -
-    (a.newbook ? 1 : 0)
-)
+.sort((a, b) => {
+    /* 1순위: 등록일 정렬 (내림차순 - 최신 등록 도서가 위로) */
+    // 만약 파이어베이스 필드명이 다르면 'createdAt'을 해당 필드명으로 변경하세요.
+    // 파이어베이스 Timestamp 객체일 경우를 대비해 .seconds 나 .seconds가 없다면 값 자체를 비교합니다.
+    const dateA = a.createdAt?.seconds || a.createdAt || "";
+    const dateB = b.createdAt?.seconds || b.createdAt || "";
+    
+    if (dateB !== dateA) {
+        return dateB > dateA ? 1 : -1;
+    }
+    
+    /* 2순위: 가나다 순 정렬 (오름차순 - 책제목 기준) */
+    const titleA = a.title || "";
+    const titleB = b.title || "";
+    return titleA.localeCompare(titleB, "ko");
+})
 .forEach(book=>{
 
     /* 신간 */
@@ -273,7 +285,7 @@ data
 }
 
 /* ------------------
-상세보기 (수정된 영역)
+상세보기
 ------------------ */
 
 function showDetail(book){
@@ -409,7 +421,7 @@ document
 
     item.addEventListener(
     "click",
-     Meso=>{
+    ()=>{
 
         document
         .querySelectorAll(
