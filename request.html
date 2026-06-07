@@ -1,32 +1,32 @@
-<!DOCTYPE html><html lang="ko">
+<!DOCTYPE html>
+<html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>희망도서 신청</title><link rel="stylesheet" href="style.css"><link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"></head><body><div class="admin-header"><div>
+<title>희망도서 신청</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+<div class="admin-header">
+<div>
 <h1>희망도서 신청</h1>
 <p>원하는 도서를 신청해주세요</p>
-</div><a href="index.html" class="logout-btn">
-홈으로
-</a></div><div class="admin-card"><h2>희망도서 신청</h2><input
-type="text"
-id="reqTitle"
-placeholder="책 제목">
+</div>
+<a href="index.html" class="logout-btn">홈으로</a>
+</div>
 
-<input
-type="text"
-id="reqAuthor"
-placeholder="저자">
+<div class="admin-card">
+<h2>희망도서 신청</h2>
 
-<input
-type="text"
-id="reqPublisher"
-placeholder="출판사 (선택)">
+<!-- 동호수 입력 필드 추가 -->
+<input type="text" id="reqDongHo" placeholder="동호수 (예: 101동 102호)">
 
-<textarea
-id="reqComment"
-placeholder="기타 의견 (선택)"
-style="
+<input type="text" id="reqTitle" placeholder="책 제목">
+<input type="text" id="reqAuthor" placeholder="저자">
+<input type="text" id="reqPublisher" placeholder="출판사 (선택)">
+
+<textarea id="reqComment" placeholder="기타 의견 (선택)" style="
 width:100%;
 height:100px;
 padding:12px;
@@ -34,17 +34,27 @@ border:1px solid #ddd;
 border-radius:12px;
 margin-bottom:10px;
 resize:none;
-"></textarea><button
-id="requestBtn"
-class="save-btn">
+"></textarea>
 
-신청하기
+<button id="requestBtn" class="save-btn">신청하기</button>
+</div>
 
-</button></div><div class="admin-card"><h2>신청 현황</h2><div id="requestList"></div></div><div class="bottom-nav"><a href="index.html" class="nav-item">
+<div class="admin-card">
+<h2>신청 현황</h2>
+<div id="requestList"></div>
+</div>
+
+<div class="bottom-nav">
+<a href="index.html" class="nav-item">
 <i class="fa-solid fa-house"></i>
 <span>홈</span>
-</a><a href="request.html" class="nav-item active">
+</a>
+<a href="request.html" class="nav-item active">
 <i class="fa-solid fa-book"></i>
 <span>희망도서</span>
-</a></div><script type="module" src="request.js"></script></body>
+</a>
+</div>
+
+<script type="module" src="request.js"></script>
+</body>
 </html>
