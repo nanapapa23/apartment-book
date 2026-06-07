@@ -8,6 +8,48 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
+
+<!-- 안내 팝업 모달 추가 -->
+<div id="guideModal" style="
+    display: flex;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    justify-content: center;
+    align-items: center;
+">
+    <div style="
+        background-color: white;
+        padding: 25px;
+        border-radius: 20px;
+        width: 90%;
+        max-width: 400px;
+        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        text-align: center;
+    ">
+        <h3 style="margin-top: 0; margin-bottom: 15px; color: #333; font-size: 19px; font-weight: 700;">희망도서 신청 안내</h3>
+        <div style="font-size: 14.5px; line-height: 1.6; color: #444; margin-bottom: 22px; text-align: left; word-break: keep-all;">
+            <span style="color: #d32f2f; font-weight: 700;">종교관련 / 투자관련 / 특정기업 시험책</span>은 요청하여도 <span style="color: #d32f2f; font-weight: 700;">구매가 불가</span>합니다.<br><br>
+            많은 입주민이 함께 읽을 수 있는 <span style="color: #4caf50; font-weight: 700;">베스트셀러 / 자기계발</span> 등에 관련된 책 위주로 신청 부탁드립니다.
+        </div>
+        <button id="closeModalBtn" style="
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        ">확인했습니다</button>
+    </div>
+</div>
+
 <div class="admin-header">
 <div>
 <h1>희망도서 신청</h1>
@@ -19,8 +61,8 @@
 <div class="admin-card">
 <h2>희망도서 신청</h2>
 
-<!-- 동호수 입력 필드 및 안내 문구 추가 -->
-<input type="text" id="reqDongHo" placeholder="신청인 동호수 (예: 101동 102호)">
+<!-- 동호수 입력 필드 및 안내 문구 -->
+<input type="text" id="reqDongHo" placeholder="동호수 (예: 101동 102호)">
 <p style="font-size: 12px; color: #e53935; margin-top: -5px; margin-bottom: 15px; padding-left: 5px; font-weight: 600;">
     * 입력하신 동호수는 관리자만 볼 수 있습니다.
 </p>
