@@ -11,47 +11,51 @@ volunteerBtn.onclick = async () => {
     const phone = document.getElementById("volPhone").value.trim();
     const dong = document.getElementById("volDong").value;
     const ho = document.getElementById("volHo").value.trim();
-    const type = document.querySelector('input[name="volType"]:checked').value;
+    const type = document.getElementById("volType").value;
     const date = document.getElementById("volDate").value;
-    const time = document.getElementById("volTime").value;
-    const duration = parseInt(document.getElementById("volDuration").value, 10);
+    const startTime = document.getElementById("volStartTime").value; // 시작 시간 가져오기
+    const duration = document.getElementById("volDuration").value; // 진행 시간 가져오기
+    const comment = document.getElementById("volComment").value.trim();
 
-    // 필수 항목 유효성 검사
-    if(!name || !phone || !dong || !ho || !date || !time || !duration) {
-        alert("모든 필수 기재 사항을 입력해주세요.");
-        return;
-    }
+    // 필수 기재 사항 유효성 검사
+    if(!name){ alert("성함을 입력해주세요."); return; }
+    if(!phone){ alert("연락처를 입력해주세요."); return; }
+    if(!dong){ alert("거주하시는 동을 선택해주세요."); return; }
+    if(!ho){ alert("호수를 입력해주세요."); return; }
+    if(!type){ alert("참여 형태(매주/원데이)를 선택해주세요."); return; }
+    if(!date){ alert("봉사 희망 날짜를 선택해주세요."); return; }
+    if(!startTime){ alert("봉사 시작 시간을 선택해주세요."); return; }
+    if(!duration){ alert("봉사 희망 시간을 선택해주세요."); return; }
 
-    // 최소 2시간 확인 조건문
-    if(duration < 2) {
-        alert("봉사 시간은 최소 2시간 이상으로 설정해야 합니다.");
-        return;
-    }
-
-    try {
+    try{
         await addDoc(collection(db, "volunteer_applications"), {
             name,
             phone,
-            address: `${dong} ${ho}`,
+            dong,
+            ho,
             type,
-            dateTime: `${date} ${time}`,
-            duration: `${duration}시간`,
+            date,
+            startTime, // 데이터 저장 추가
+            duration,
+            comment,
             createdAt: new Date().toISOString()
         });
 
-        alert("봉사 신청이 성공적으로 접수되었습니다. 감사합니다!");
-        
-        // 폼 초기화
+        alert("자원봉사 신청이 정상적으로 접수되었습니다. 감사합니다!");
+
+        // 입력 폼 초기화
         document.getElementById("volName").value = "";
         document.getElementById("volPhone").value = "";
         document.getElementById("volDong").value = "";
         document.getElementById("volHo").value = "";
+        document.getElementById("volType").value = "";
         document.getElementById("volDate").value = "";
-        document.getElementById("volTime").value = "";
-        document.getElementById("volDuration").value = "2";
+        document.getElementById("volStartTime").value = "";
+        document.getElementById("volDuration").value = "";
+        document.getElementById("volComment").value = "";
 
-    } catch(err) {
+    }catch(err){
         console.error(err);
-        alert("신청 시스템 오류가 발생했습니다. 관리자에게 문의하세요.");
+        alert("접수 실패. 관리자에게 문의 바랍니다.");
     }
 };
