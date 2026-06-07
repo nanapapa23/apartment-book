@@ -53,12 +53,12 @@ async function loadVolunteers(){
         const div = document.createElement("div");
         div.className = "vol-admin-card";
 
-        // 희망 일정 부분을 [날짜 + 시작시간 + 진행시간] 조합으로 깔끔하게 노출합니다.
+        // 희망 일정 부분에 [평일/주말] 정보 데이터가 연동되어 직관적으로 출력됩니다.
         div.innerHTML = `
             <div class="vol-admin-name">${v.name || "미입력"} (${v.dong || "-"} ${v.ho || "-"})</div>
             <div class="vol-admin-info"><span>연락처 :</span> ${v.phone || "-"}</div>
             <div class="vol-admin-info"><span>참여 형태 :</span> ${v.type || "-"}</div>
-            <div class="vol-admin-info"><span>희망 일정 :</span> ${v.date || "-"} / ${v.startTime || "시간미지정"} 시작 (${v.duration || "-"})</div>
+            <div class="vol-admin-info"><span>희망 일정 :</span> ${v.date || "-"} (${v.dayType || "미지정"}) / ${v.startTime || "시간미지정"} 시작 (${v.duration || "-"})</div>
             <div class="vol-admin-info"><span>비고/기타 :</span> ${v.comment || "-"}</div>
             <div class="vol-admin-info" style="font-size:12px; color:#999; margin-top:8px;">신청 일시 : ${v.createdAt ? v.createdAt.replace('T', ' ').substring(0, 16) : "-"}</div>
             
