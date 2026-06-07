@@ -1,14 +1,60 @@
-봉사 신청 관리
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>봉사 신청 관리</title>
+<link rel="stylesheet" href="style.css">
+<style>
+    .vol-admin-card {
+        background: white;
+        padding: 20px;
+        border-radius: 20px;
+        margin-bottom: 15px;
+        box-shadow: 0 4px 10px rgba(0,0,0,.05);
+    }
+    .vol-admin-name {
+        font-size: 18px;
+        font-weight: 700;
+        color: #1e88e5;
+        margin-bottom: 8px;
+    }
+    .vol-admin-info {
+        color: #444;
+        font-size: 14px;
+        margin-bottom: 6px;
+    }
+    .vol-admin-info span {
+        font-weight: bold;
+        color: #666;
+    }
+    .btn-delete-vol {
+        border: none;
+        padding: 8px 16px;
+        border-radius: 10px;
+        cursor: pointer;
+        font-weight: 600;
+        background: #f44336;
+        color: white;
+        margin-top: 10px;
+    }
+</style>
+</head>
+<body>
 
+<div class="admin-header">
+    <div>
+        <h1>봉사 신청자 관리</h1>
+        <p>입주민분들이 신청한 봉사 일정 현황입니다.</p>
+    </div>
+    <a href="admin.html" class="logout-btn">관리자 홈</a>
+</div>
 
+<div class="admin-card">
+    <h2>신청 명단 목록</h2>
+    <div id="volunteerAdminList"></div>
+</div>
 
-
-
-
-봉사 신청 관리
-입주민 봉사 신청 명단 (관리자 전용)
-
-관리자 홈
-
-
-신청 현황
+<script type="module" src="volunteer-admin.js"></script>
+</body>
+</html>
