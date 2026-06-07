@@ -6,124 +6,63 @@
 <title>효성해링턴 작은도서관</title>
 
 <link rel="stylesheet" href="style.css">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
-
 <body>
 
 <div class="top-header">
-
 <h1>남율 효성해링턴 2단지 작은도서관</h1>
-
 <div class="search-box">
-
 <i class="fa-solid fa-magnifying-glass"></i>
-
-<input
-id="search"
-type="text"
-placeholder="초성/제목/저자로 검색하세요.">
-
+<input id="search" type="text" placeholder="초성/제목/저자로 검색하세요.">
+</div>
 </div>
 
-</div>
-
-<div class="section-title">
-신간 도서
-</div>
-
+<div class="section-title">신간 도서</div>
 <div id="newBooks"></div>
 
-<div class="section-title">
-도서 카테고리
-</div>
-
+<div class="section-title">도서 카테고리</div>
 <div class="category-grid">
-
-<div class="category-item active" data-category="전체">
-<i class="fa-solid fa-book"></i>
-<span>전체</span>
+<div class="category-item active" data-category="전체"><i class="fa-solid fa-book"></i><span>전체</span></div>
+<div class="category-item" data-category="성인"><i class="fa-solid fa-user"></i><span>성인</span></div>
+<div class="category-item" data-category="청소년"><i class="fa-solid fa-user-group"></i><span>청소년</span></div>
+<div class="category-item" data-category="어린이"><i class="fa-solid fa-child"></i><span>어린이</span></div>
+<div class="category-item" data-category="자기개발"><i class="fa-solid fa-seedling"></i><span>자기개발</span></div>
+<div class="category-item" data-category="기타"><i class="fa-solid fa-layer-group"></i><span>기타</span></div>
 </div>
 
-<div class="category-item" data-category="성인">
-<i class="fa-solid fa-user"></i>
-<span>성인</span>
-</div>
-
-<div class="category-item" data-category="청소년">
-<i class="fa-solid fa-user-group"></i>
-<span>청소년</span>
-</div>
-
-<div class="category-item" data-category="어린이">
-<i class="fa-solid fa-child"></i>
-<span>어린이</span>
-</div>
-
-<div class="category-item" data-category="자기개발">
-<i class="fa-solid fa-seedling"></i>
-<span>자기개발</span>
-</div>
-
-<div class="category-item" data-category="기타">
-<i class="fa-solid fa-layer-group"></i>
-<span>기타</span>
-</div>
-
-</div>
-
-<div class="section-title">
-도서 목록
-</div>
-
+<div class="section-title">도서 목록</div>
 <div id="bookList"></div>
 
 <div id="detailModal" class="modal">
-
 <div class="modal-content">
-
 <h2 id="detailTitle"></h2>
-
 <div id="detailAuthor"></div>
-
 <div id="shelfView"></div>
-
-<button id="closeBtn">
-닫기
-</button>
-
+<button id="closeBtn">닫기</button>
+</div>
 </div>
 
-</div>
-
+<!-- 하단 고정바 수정: 검색 -> 봉사신청 -->
 <div class="bottom-nav">
-
 <a href="index.html" class="nav-item active">
 <i class="fa-solid fa-house"></i>
 <span>홈</span>
 </a>
-
-<a href="#" class="nav-item" id="bottomSearch">
-<i class="fa-solid fa-magnifying-glass"></i>
-<span>검색</span>
+<a href="volunteer.html" class="nav-item">
+<i class="fa-solid fa-hand-holding-heart"></i>
+<span>봉사신청</span>
 </a>
-
 <a href="request.html" class="nav-item">
 <i class="fa-solid fa-book-bookmark"></i>
 <span>희망도서</span>
 </a>
-
 <a href="admin-login.html" class="nav-item">
 <i class="fa-solid fa-user-shield"></i>
 <span>관리자</span>
 </a>
-
 </div>
 
 <script type="module" src="app.js"></script>
-
 </body>
 </html>
