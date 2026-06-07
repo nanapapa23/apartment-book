@@ -149,7 +149,6 @@
             </div>
         </div>
         
-        <!-- ⭐ 버튼에 직접 닫기 명령(onclick)을 심어 오류를 원천 차단했습니다. -->
         <button id="closeGuideBtn" class="save-btn" style="margin-top: 15px; width: 100%;" onclick="document.getElementById('volunteerGuideModal').style.display = 'none';">
             확인했습니다 (신청하기)
         </button>
@@ -192,24 +191,22 @@
         <option value="원데이만 가능">원데이만 가능 (일회성 봉사)</option>
     </select>
 
+    <!-- 평일 / 주말 구분 선택 추가 -->
+    <label class="vol-label">평일 / 주말 구분</label>
+    <select id="volDayType" class="vol-select">
+        <option value="">-- 평일 또는 주말 선택 --</option>
+        <option value="평일">평일 (오후 18:00 ~ 22:00)</option>
+        <option value="주말">주말 (오전 10:00 ~ 오후 18:00)</option>
+    </select>
+
     <!-- 날짜 선택 -->
     <label class="vol-label">봉사 희망 날짜</label>
     <input type="date" id="volDate" style="margin-bottom: 15px;">
 
-    <!-- 봉사 시작 시간 선택 (드롭다운) -->
+    <!-- 봉사 시작 시간 선택 (선택에 따라 스크립트로 제어됨) -->
     <label class="vol-label">봉사 시작 시간</label>
     <select id="volStartTime" class="vol-select">
-        <option value="">-- 시작 시간 선택 --</option>
-        <option value="09:00">09:00</option>
-        <option value="10:00">10:00</option>
-        <option value="11:00">11:00</option>
-        <option value="12:00">12:00</option>
-        <option value="13:00">13:00</option>
-        <option value="14:00">14:00</option>
-        <option value="15:00">15:00</option>
-        <option value="16:00">16:00</option>
-        <option value="17:00">17:00</option>
-        <option value="18:00">18:00</option>
+        <option value="">-- 평일/주말을 먼저 선택해주세요 --</option>
     </select>
 
     <!-- 봉사 진행 시간 선택 (드롭다운) -->
