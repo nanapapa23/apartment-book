@@ -29,7 +29,7 @@
         padding-left: 5px;
     }
 
-    /* 🔔 안내 팝업(모달) 스타일 추가 */
+    /* 🔔 안내 팝업(모달) 스타일 */
     .vol-modal {
         display: block; /* 페이지 로드시 기본적으로 띄움 */
         position: fixed;
@@ -115,6 +115,7 @@
 </head>
 <body>
 
+<!-- 🔔 자원봉사 참여 안내 팝업 모달 -->
 <div id="volunteerGuideModal" class="vol-modal">
     <div class="vol-modal-content">
         <div class="vol-modal-title">
@@ -147,7 +148,11 @@
                 </div>
             </div>
         </div>
-        <button id="closeGuideBtn" class="save-btn" style="margin-top: 15px; width: 100%;">확인했습니다 (신청하기)</button>
+        
+        <!-- ⭐ 버튼에 직접 닫기 명령(onclick)을 심어 오류를 원천 차단했습니다. -->
+        <button id="closeGuideBtn" class="save-btn" style="margin-top: 15px; width: 100%;" onclick="document.getElementById('volunteerGuideModal').style.display = 'none';">
+            확인했습니다 (신청하기)
+        </button>
     </div>
 </div>
 
@@ -168,6 +173,7 @@
     <input type="text" id="volName" placeholder="성함">
     <input type="tel" id="volPhone" placeholder="연락처 (예: 010-1234-5678)">
 
+    <!-- 동(201동~206동) 선택 및 호수 입력 -->
     <select id="volDong" class="vol-select">
         <option value="">-- 거주하시는 동 선택 --</option>
         <option value="201동">201동</option>
@@ -179,17 +185,75 @@
     </select>
     <input type="text" id="volHo" placeholder="호수 (예: 104호)">
 
+    <!-- 참여 구분 -->
     <select id="volType" class="vol-select">
         <option value="">-- 참여 형태 선택 --</option>
         <option value="매주 가능">매주 가능 (정기 봉사)</option>
         <option value="원데이만 가능">원데이만 가능 (일회성 봉사)</option>
     </select>
 
+    <!-- 날짜 선택 -->
     <label class="vol-label">봉사 희망 날짜</label>
     <input type="date" id="volDate" style="margin-bottom: 15px;">
 
+    <!-- 봉사 시작 시간 선택 (드롭다운) -->
     <label class="vol-label">봉사 시작 시간</label>
     <select id="volStartTime" class="vol-select">
         <option value="">-- 시작 시간 선택 --</option>
         <option value="09:00">09:00</option>
-        <option value="10:00">10:0
+        <option value="10:00">10:00</option>
+        <option value="11:00">11:00</option>
+        <option value="12:00">12:00</option>
+        <option value="13:00">13:00</option>
+        <option value="14:00">14:00</option>
+        <option value="15:00">15:00</option>
+        <option value="16:00">16:00</option>
+        <option value="17:00">17:00</option>
+        <option value="18:00">18:00</option>
+    </select>
+
+    <!-- 봉사 진행 시간 선택 (드롭다운) -->
+    <label class="vol-label">봉사 희망 시간 (최소 2시간 단위)</label>
+    <select id="volDuration" class="vol-select">
+        <option value="">-- 진행 시간 선택 --</option>
+        <option value="2시간">2시간 동안</option>
+        <option value="4시간">4시간 동안</option>
+        <option value="6시간">6시간 동안</option>
+        <option value="8시간">8시간 동안</option>
+    </select>
+
+    <textarea id="volComment" placeholder="기타 참고사항 및 문의사항 (선택)" style="
+        width:100%;
+        height:80px;
+        padding:12px;
+        border:1px solid #ddd;
+        border-radius:12px;
+        margin-bottom:15px;
+        resize:none;
+    "></textarea>
+
+    <button id="volunteerBtn" class="save-btn">봉사 신청하기</button>
+</div>
+
+<div class="bottom-nav">
+    <a href="index.html" class="nav-item">
+        <i class="fa-solid fa-house"></i>
+        <span>홈</span>
+    </a>
+    <a href="volunteer.html" class="nav-item active">
+        <i class="fa-solid fa-hands-helping"></i>
+        <span>봉사신청</span>
+    </a>
+    <a href="request.html" class="nav-item">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <span>희망도서</span>
+    </a>
+    <a href="admin-login.html" class="nav-item">
+        <i class="fa-solid fa-user-shield"></i>
+        <span>관리자</span>
+    </a>
+</div>
+
+<script type="module" src="volunteer.js"></script>
+</body>
+</html>
