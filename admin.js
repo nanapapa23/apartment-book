@@ -107,7 +107,12 @@ document.getElementById("csvFile").onchange = async (e) => {
             else {
                 batch.set(doc(collection(db, "books")), {
                     title: t, author: a, publisher: cols[2].trim(), imgUrl: cols[3],
-                    date: cols[4], category: cols[5], shelf: cols[6], slot: parseInt(cols[7]) || 0, newbook: cols[8]?.trim() === "true"
+                    date: cols[4], category: cols[5], shelf: cols[6], slot: parseInt(cols[7]) || 0, newbook: (
+    cols[8] || ""
+)
+.trim()
+.replace(/\r/g, "")
+.toLowerCase() === "true"
                 });
                 addCount++;
             }
