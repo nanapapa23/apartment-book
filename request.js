@@ -11,6 +11,18 @@ const requestBtn = document.getElementById("requestBtn");
 const requestList = document.getElementById("requestList");
 
 /* -------------------
+팝업 모달 제어
+------------------- */
+const guideModal = document.getElementById("guideModal");
+const closeModalBtn = document.getElementById("closeModalBtn");
+
+if (closeModalBtn && guideModal) {
+    closeModalBtn.onclick = () => {
+        guideModal.style.display = "none";
+    };
+}
+
+/* -------------------
 신청 저장
 ------------------- */
 requestBtn.onclick = async () => {
@@ -34,7 +46,7 @@ try{
 await addDoc(
 collection(db, "book_requests"),
 {
-dongHo, // 동호수 추가 저장
+dongHo, 
 title,
 author,
 publisher,
@@ -100,7 +112,6 @@ statusClass = "status-rejected";
 const div = document.createElement("div");
 div.className = "request-card";
 
-// 주민 화면에는 신청일만 보여주고 동호수 정보는 렌더링하지 않습니다.
 div.innerHTML = `
 <div style="font-size:17px;font-weight:700;margin-bottom:5px;">${data.title || ""}</div>
 <div style="font-size:13px;color:#666;">저자 : ${data.author || ""}</div>
