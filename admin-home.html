@@ -1,136 +1,77 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-
 <meta charset="UTF-8">
-<meta name="viewport"
-content="width=device-width,initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>관리자 홈</title>
-
 <link rel="stylesheet" href="style.css">
-
 <style>
-
 .menu-grid{
-
-display:grid;
-
-grid-template-columns:
-repeat(2,1fr);
-
-gap:15px;
-margin-top:20px;
+    display:grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap:15px;
+    margin-top:20px;
 }
-
 .menu-card{
-
-background:white;
-
-padding:30px 15px;
-
-border-radius:25px;
-
-text-align:center;
-
-cursor:pointer;
-
-box-shadow:
-0 4px 12px rgba(0,0,0,.05);
+    background:white;
+    padding:30px 15px;
+    border-radius:25px;
+    text-align:center;
+    cursor:pointer;
+    box-shadow: 0 4px 12px rgba(0,0,0,.05);
 }
-
 .menu-card i{
-
-font-size:42px;
-margin-bottom:10px;
-
-color:#5e7ff5;
+    font-size:42px;
+    margin-bottom:10px;
+    color:#5e7ff5;
 }
-
 .menu-card h3{
-margin-bottom:5px;
+    margin-bottom:5px;
 }
-
 </style>
-
 </head>
-
 <body>
 
 <div class="admin-header">
-
-<div>
-
-<h1>관리자</h1>
-<p>도서관 관리 시스템</p>
-
-</div>
-
-<button
-id="logoutBtn"
-class="logout-btn">
-
-로그아웃
-
-</button>
-
+    <div>
+        <h1>관리자</h1>
+        <p>도서관 관리 시스템</p>
+    </div>
+    <button id="logoutBtn" class="logout-btn">로그아웃</button>
 </div>
 
 <div class="menu-grid">
 
-<div
-class="menu-card"
-onclick="location.href='admin.html'">
+    <div class="menu-card" onclick="location.href='admin.html'">
+        <i class="fa-solid fa-book"></i>
+        <h3>도서 관리</h3>
+        <p>도서 등록 / 수정</p>
+    </div>
 
-<i class="fa-solid fa-book"></i>
+    <div class="menu-card" onclick="location.href='request-admin.html'">
+        <i class="fa-solid fa-book-bookmark"></i>
+        <h3>희망도서</h3>
+        <p>신청 현황 관리</p>
+    </div>
 
-<h3>도서 관리</h3>
-
-<p>도서 등록 / 수정</p>
-
-</div>
-
-<div
-class="menu-card"
-onclick="location.href='request-admin.html'">
-
-<i class="fa-solid fa-book-bookmark"></i>
-
-<h3>희망도서</h3>
-
-<p>신청 현황 관리</p>
-
-</div>
+    <div class="menu-card" onclick="location.href='volunteer-admin.html'">
+        <i class="fa-solid fa-hands-helping"></i>
+        <h3>봉사신청 관리</h3>
+        <p>신청 현황 및 명단 관리</p>
+    </div>
 
 </div>
 
 <script type="module">
+import { auth } from "./firebase.js";
+import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 
-import {
-auth
-}
-from "./firebase.js";
-
-import {
-signOut
-}
-from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-document
-.getElementById("logoutBtn")
-.onclick = async()=>{
-
-await signOut(auth);
-
-location.href =
-"index.html";
-
+document.getElementById("logoutBtn").onclick = async()=>{
+    await signOut(auth);
+    location.href = "index.html";
 };
-
 </script>
 
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </body>
 </html>
