@@ -36,8 +36,33 @@
     .large-input:focus { border-color: #2e7d32; background: white; outline: none; }
 
     /* 기구 실물 사진 출력 존 */
-    .machine-img-zone { width: 100%; height: 180px; background: #f1f2f6; border-radius: 15px; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc; }
-    .machine-img-zone img { width: 100%; height: 100%; object-fit: cover; display: none; }
+/* 📷 기구 실물 사진 출력 존 (상자 크기 고정 및 정중앙 정렬) */
+.machine-img-zone { 
+    width: 100%; 
+    height: 220px;            /* 세로 높이를 보기 좋게 조금 늘렸습니다 */
+    background: #f1f2f6; 
+    border-radius: 15px; 
+    margin-bottom: 15px; 
+    overflow: hidden; 
+    display: flex; 
+    align-items: center;      /* 세로 정중앙 정렬 */
+    justify-content: center;   /* 가로 정중앙 정렬 */
+    border: 1px dashed #ccc; 
+    padding: 10px;            /* 사진이 벽에 딱 붙지 않도록 안쪽 여백 추가 */
+    box-sizing: border-box;
+}
+
+/* ⭐ 거대했던 기구 사진을 상자 크기에 맞춰 딱 줄여주는 핵심 코드 */
+.machine-img-zone img { 
+    max-width: 100%;          /* 상자 가로 폭을 절대 넘지 않음 */
+    max-height: 100%;         /* 상자 세로 높이를 절대 넘지 않음 */
+    width: auto;              /* 가로 비율 유지 */
+    height: auto;             /* 세로 비율 유지 */
+    object-fit: contain;      /* 💡 이미지가 잘리거나 찌그러지지 않고 원본 그대로 쏙 들어가게 조절 */
+    border-radius: 10px;      /* 사진 모서리도 부드럽게 라운딩 */
+    display: none;            /* 기본 숨김 (JS가 활성화함) */
+}
+
     .machine-img-zone .no-img { font-size: 13px; color: #999; text-align: center; padding: 0 10px; }
 
     /* 주민용 실시간 접수 리스트 스타일 */
