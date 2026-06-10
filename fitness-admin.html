@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>휘트니스 관리자 제어판</title>
+<link rel="stylesheet" href="style.css">
+<style>
+    .admin-box { background: white; border-radius: 20px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+    .title-tag { font-size: 16px; font-weight: bold; margin-bottom: 12px; color: #5e7ff5; display: flex; align-items: center; gap: 6px; border-bottom: 2px solid #f0f2f5; padding-bottom: 8px;}
+    select, input, textarea { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 10px; font-size: 14px; background: white; }
+    
+    /* 관리 항목 리스트 카드 디자인 */
+    .admin-data-card { background: #fcfdfe; border: 1px solid #eef2f8; padding: 15px; border-radius: 15px; margin-bottom: 12px; }
+    .card-meta { font-size: 12px; color: #888; margin-top: 5px; }
+    .status-select-box { width: auto; display: inline-block; padding: 6px 10px; font-size: 12px; margin-bottom: 0; margin-left: 10px; border-color: #5e7ff5; font-weight: bold; color: #5e7ff5; }
+</style>
+</head>
+<body>
+<div style="max-width: 550px; margin: 0 auto; padding: 20px 15px;">
+    <div class="admin-header" style="justify-content: center; text-align: center; margin-bottom: 20px;">
+        <div>
+            <h1>⚙️ 휘트니스 관리자 통합 데스크</h1>
+            <p>공지 편집 및 들어온 접수 사항들의 상태를 실시간 편집 관리합니다.</p>
+        </div>
+    </div>
+
+    <div class="admin-box">
+        <div class="title-tag">📢 메인 회원안내 및 공지글 설정</div>
+        <textarea id="noticeInput" style="height: 90px; resize: none;"></textarea>
+        <button id="btnSaveNotice" class="save-btn" style="width:100%;">공지사항 반영하기</button>
+    </div>
+
+    <div class="admin-box">
+        <div class="title-tag">🖼️ 기구별 매칭 실물 사진 주소 업데이트</div>
+        <select id="targetMachineKey">
+            <option value="">-- 대상 기구 선택 --</option>
+            <option value="렉스코 LT6XL 1번">렉스코 LT6XL 1번 런닝머신</option>
+            <option value="렉스코 LT6XL 2번">렉스코 LT6XL 2번 런닝머신</option>
+            <option value="기존 런닝머신 1번">기존 런닝머신 1번</option>
+            <option value="기존 런닝머신 2번">기존 런닝머신 2번</option>
+            <option value="기존 런닝머신 3번">기존 런닝머신 3번</option>
+            <option value="천국의계단">천국의계단</option>
+            <option value="마이마운틴">마이마운틴</option>
+            <option value="자전거">자전거</option>
+            <option value="스미스머신">스미스머신</option>
+            <option value="듀얼풀리">듀얼풀리</option>
+            <option value="매직레그프레스">매직레그프레스</option>
+            <option value="시티드레그프레스">시티드레그프레스</option>
+            <option value="랫풀다운">랫풀다운</option>
+            <option value="체스트프레스">체스트프레스</option>
+            <option value="인바디">인바디 측정기</option>
+            <option value="아령">아령/덤벨 존</option>
+            <option value="주변기기등">주변기기 및 부속 시설</option>
+        </select>
+        <input type="text" id="machineImgUrl" placeholder="이미지 URL 주소를 붙여넣으세요.">
+        <button id="btnSaveImg" class="save-btn" style="width:100%; background:#2e7d32;">기구 사진 교체하기</button>
+    </div>
+
+    <div class="admin-box">
+        <div class="title-tag">🔧 수리 요청 관리 현황</div>
+        <div id="adminRepairList">목록 로딩 중...</div>
+    </div>
+
+    <div class="admin-box">
+        <div class="title-tag">🏋️ 희망기구 제안서 및 처리 현황</div>
+        <div id="adminWishList">목록 로딩 중...</div>
+    </div>
+
+    <div class="admin-box">
+        <div class="title-tag">💬 주민 익명 건의사항 내역</div>
+        <div id="adminSuggestList">목록 로딩 중...</div>
+    </div>
+</div>
+
+<script type="module" src="fitness-admin.js"></script>
+</body>
+</html>
