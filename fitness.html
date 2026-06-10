@@ -7,7 +7,7 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-    body { padding-bottom: 30px; background-color: #f8f9fa; }
+    body { padding-bottom: 40px; background-color: #f8f9fa; }
     .fit-container { max-width: 500px; margin: 0 auto; padding: 20px 15px; }
     
     /* 공지사항 박스 */
@@ -15,42 +15,54 @@
     .notice-title { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
     .notice-content { font-size: 14px; color: #555; line-height: 1.6; white-space: pre-wrap; }
 
-    /* 고정 배너 메뉴 (하단/메인 버튼 Grid) */
-    .banner-grid { display: grid; grid-template-columns: repeat(3, 100%); gap: 12px; margin-bottom: 25px; display: flex; }
-    .banner-btn { flex: 1; background: white; border: 1px solid #e1e4e8; border-radius: 18px; padding: 18px 10px; text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.2s; }
+    /* 고정 배너 메뉴 */
+    .banner-grid { display: flex; gap: 10px; margin-bottom: 25px; }
+    .banner-btn { flex: 1; background: white; border: 1px solid #e1e4e8; border-radius: 18px; padding: 18px 5px; text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.2s; }
     .banner-btn:hover, .banner-btn.active { border-color: #5e7ff5; background: #f0f3ff; transform: translateY(-2px); }
-    .banner-btn i { font-size: 24px; color: #5e7ff5; margin-bottom: 8px; display: block; }
+    .banner-btn i { font-size: 22px; color: #5e7ff5; margin-bottom: 8px; display: block; }
     .banner-btn span { font-size: 13px; font-weight: bold; color: #333; }
 
     /* 세부 입력 폼 섹션 */
-    .fit-sub-section { display: none; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); animation: fadeIn 0.3s ease; }
+    .fit-sub-section { display: none; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); animation: fadeIn 0.3s ease; margin-bottom: 20px; }
     .fit-sub-section.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     
-    .fit-sub-section h2 { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+    .fit-sub-section h2 { font-size: 17px; font-weight: bold; margin-bottom: 15px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 10px; }
     .fit-select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; font-size: 14px; background-color: white; }
     .fit-label { font-size: 13px; font-weight: bold; color: #555; margin-bottom: 6px; display: block; padding-left: 4px; }
 
-    /* 기구 실물 사진 출력 존 */
-    .machine-img-zone { width: 100%; height: 200px; background: #f1f2f6; border-radius: 15px; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc; }
-    .machine-img-zone img { width: 100%; height: 100%; object-fit: cover; display: none; }
-    .machine-img-zone .no-img { font-size: 13px; color: #999; text-align: center; }
+    /* 크게 키운 도입원하는기구명 입력창 */
+    .large-input { width: 100%; padding: 16px; border: 2px solid #ddd; border-radius: 14px; font-size: 16px; font-weight: 600; margin-bottom: 15px; background: #fafafa; }
+    .large-input:focus { border-color: #2e7d32; background: white; outline: none; }
 
-    /* 부위 세분화 체크박스 그룹 */
-    .part-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; background: #f8f9fa; padding: 12px; border-radius: 12px; }
-    .part-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #444; cursor: pointer; }
-    .part-item input { width: 16px; height: 16px; cursor: pointer; }
+    /* 기구 실물 사진 출력 존 */
+    .machine-img-zone { width: 100%; height: 180px; background: #f1f2f6; border-radius: 15px; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc; }
+    .machine-img-zone img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .machine-img-zone .no-img { font-size: 13px; color: #999; text-align: center; padding: 0 10px; }
+
+    /* 주민용 실시간 접수 리스트 스타일 */
+    .live-list-title { font-size: 15px; font-weight: bold; color: #444; margin: 25px 0 10px 0; padding-left: 5px; display: flex; align-items: center; gap: 6px; }
+    .live-card { background: #fdfdfd; border: 1px solid #edf0f5; border-radius: 14px; padding: 12px 15px; margin-bottom: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.01); }
+    .live-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+    .live-machine-name { font-size: 14px; font-weight: bold; color: #222; }
+    .live-date { font-size: 11px; color: #999; }
+    .live-memo { font-size: 13px; color: #555; line-height: 1.4; word-break: break-all; }
+    
+    /* 상태 표시 태그 */
+    .badge { padding: 4px 8px; border-radius: 6px; font-size: 11px; font-weight: bold; color: white; }
+    .bg-info { background-color: #5e7ff5; }
+    .bg-warning { background-color: #ff9800; }
+    .bg-success { background-color: #4caf50; }
 </style>
 </head>
 <body>
 
 <div class="fit-container">
-    <div class="admin-header" style="margin-bottom: 15px;">
+    <div class="admin-header" style="margin-bottom: 15px; justify-content: center; text-align: center;">
         <div>
-            <h1>휘트니스 센터 소통방</h1>
+            <h1 style="font-size: 22px;">🏋️ 휘트니스 센터 소통방</h1>
             <p>쾌적하고 안전한 운동 공간을 함께 만듭니다.</p>
         </div>
-        <a href="index.html" class="logout-btn">홈으로</a>
     </div>
 
     <div class="notice-box">
@@ -100,52 +112,42 @@
             <div id="imgPlaceholder" class="no-img">기구를 선택하시면 관리자가 등록한<br>실물 사진이 이곳에 나타납니다.</div>
             <img id="machineImg" src="" alt="기구 사진">
         </div>
-
-        <label class="fit-label">🔧 수리 요청 부위 (중복 선택 가능)</label>
-        <div id="partGrid" class="part-grid">
-            <div style="grid-column: span 2; text-align:center; color:#999; font-size:12px;">기구를 먼저 선택해주세요.</div>
-        </div>
-
-        <input type="text" id="repairCustomPart" placeholder="기타 구체적인 부위 직접 작성 (선택)" style="margin-bottom:15px;">
         
-        <textarea id="repairMemo" placeholder="고장 증상이나 관리자에게 하실 말씀을 적어주세요." style="width:100%; height:80px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
+        <label class="fit-label">🔧 고장증상 및 수리 필요한 부분</label>
+        <textarea id="repairMemo" placeholder="예) 벨트 구동 시 드르륵 소음이 심하게 발생합니다. 발판 왼쪽이 깨져있습니다 등 상세 증상을 적어주세요." style="width:100%; height:100px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
 
-        <div style="border-top: 1px dashed #eee; padding-top:15px; margin-top:15px;">
-            <input type="text" id="repairName" placeholder="신청자 성함">
-            <input type="tel" id="repairPhone" placeholder="연락처 (예: 010-1234-5678)">
-            <div style="display:flex; gap:10px;">
-                <select id="repairDong" class="fit-select" style="flex:1;">
-                    <option value="">-- 동 선택 --</option>
-                    <option value="201동">201동</option><option value="202동">202동</option><option value="203동">203동</option>
-                    <option value="204동">204동</option><option value="205동">205동</option><option value="206동">206동</option>
-                </select>
-                <input type="text" id="repairHo" placeholder="호수 (예: 102호)" style="flex:1;">
-            </div>
-        </div>
-        <button id="btnSubmitRepair" class="save-btn" style="background:#5e7ff5;">수리 요청 접수하기</button>
+        <button id="btnSubmitRepair" class="save-btn" style="background:#5e7ff5; width:100%;">수리 요청 등록하기</button>
+
+        <div class="live-list-title"><i class="fa-solid fa-rectangle-list"></i> 실시간 수리 진행 현황</div>
+        <div id="residentRepairList">현황을 불러오는 중입니다...</div>
     </div>
 
     <div id="sec-wish" class="fit-sub-section">
         <h2>🏋️ 추가 희망기구 신청</h2>
-        <input type="text" id="wishMachineName" placeholder="도입을 원하는 기구명 (예: 천국의 계단 추가, 거꾸리 등)">
-        <textarea id="wishReason" placeholder="해당 기구가 필요한 이유나 건의 배경을 작성해주세요." style="width:100%; height:120px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
         
-        <input type="text" id="wishName" placeholder="성함">
-        <input type="tel" id="wishPhone" placeholder="연락처">
-        <button id="btnSubmitWish" class="save-btn" style="background:#2e7d32;">희망기구 요청하기</button>
+        <label class="fit-label">도입을 원하는 기구명 (크기 확대)</label>
+        <input type="text" id="wishMachineName" class="large-input" placeholder="예) 천국의 계단 1대 추가 요청">
+        
+        <label class="fit-label">필요성 및 건의 내용</label>
+        <textarea id="wishReason" placeholder="해당 운동 기구가 필요한 이유나 설치 희망 위치가 있다면 자유롭게 작성해주세요." style="width:100%; height:110px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
+        
+        <button id="btnSubmitWish" class="save-btn" style="background:#2e7d32; width:100%;">희망기구 건의하기</button>
+
+        <div class="live-list-title"><i class="fa-solid fa-rectangle-list"></i> 희망기구 신청 목록 현황</div>
+        <div id="residentWishList">목록을 불러오는 중입니다...</div>
     </div>
 
     <div id="sec-suggest" class="fit-sub-section">
-        <h2>💬 센터 이용 일반 건의사항</h2>
-        <textarea id="suggestContent" placeholder="냉난방, 이용 시간, 청결 상태, 매너 타임 등 센터 운영 전반에 대한 건의사항을 자유롭게 적어주세요." style="width:100%; height:150px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
+        <h2>💬 센터 이용 일반 건의사항 (완전 익명)</h2>
+        <p style="font-size:12px; color:#888; margin-top:-10px; margin-bottom:15px;">※ 인적사항이나 성함을 수집하지 않는 안전한 100% 익명 소통 창구입니다.</p>
         
-        <input type="text" id="suggestName" placeholder="성함 (익명 가능)">
-        <button id="btnSubmitSuggest" class="save-btn" style="background:#e53935;">건의사항 제출하기</button>
+        <textarea id="suggestContent" placeholder="냉난방 가동, 샤워실 청결 상태, 이용 시간 조율, 매너 타임 권고 등 휘트니스 운영 전반에 대한 의견을 편하게 작성해주세요." style="width:100%; height:160px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
+        
+        <button id="btnSubmitSuggest" class="save-btn" style="background:#e53935; width:100%;">익명 건의사항 제출하기</button>
     </div>
 </div>
 
 <script>
-    // 글로벌 탭 전환 함수
     function switchMenu(target) {
         document.querySelectorAll('.banner-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.fit-sub-section').forEach(s => s.classList.remove('active'));
@@ -153,7 +155,6 @@
         document.getElementById('btn-' + target).classList.add('active');
         document.getElementById('sec-' + target).classList.add('active');
         
-        // 이동 시 자동 스크롤 연동
         document.getElementById('sec-' + target).scrollIntoView({ behavior: 'smooth' });
     }
 </script>
