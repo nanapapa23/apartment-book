@@ -7,198 +7,156 @@
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
-    body {
-        padding-bottom: 90px;
-    }
-    .fit-select {
-        width: 100%;
-        padding: 12px;
-        border: 1px solid #ddd;
-        border-radius: 12px;
-        margin-bottom: 10px;
-        font-size: 14px;
-        background-color: white;
-    }
-    /* 상단 내부 탭 스타일 */
-    .fit-tabs {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 15px;
-    }
-    .fit-tab-btn {
-        flex: 1;
-        padding: 12px;
-        border: none;
-        border-radius: 15px;
-        font-weight: bold;
-        cursor: pointer;
-        background: #f0f2f5;
-        color: #666;
-        transition: all 0.2s;
-    }
-    .fit-tab-btn.active {
-        background: #5e7ff5;
-        color: white;
-    }
-    .fit-section {
-        display: none;
-    }
-    .fit-section.active {
-        display: block;
-    }
-    /* 기구 설명서 카드 스타일 */
-    .manual-item {
-        background: #f8f9fa;
-        padding: 15px;
-        border-radius: 15px;
-        margin-bottom: 12px;
-        border-left: 4px solid #5e7ff5;
-    }
-    .manual-item h3 {
-        margin: 0 0 5px 0;
-        font-size: 16px;
-        color: #333;
-    }
-    .manual-item p {
-        margin: 0;
-        font-size: 13px;
-        color: #666;
-        line-height: 1.5;
-    }
+    body { padding-bottom: 30px; background-color: #f8f9fa; }
+    .fit-container { max-width: 500px; margin: 0 auto; padding: 20px 15px; }
+    
+    /* 공지사항 박스 */
+    .notice-box { background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); margin-bottom: 20px; border-top: 4px solid #5e7ff5; }
+    .notice-title { font-size: 16px; font-weight: bold; color: #333; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+    .notice-content { font-size: 14px; color: #555; line-height: 1.6; white-space: pre-wrap; }
+
+    /* 고정 배너 메뉴 (하단/메인 버튼 Grid) */
+    .banner-grid { display: grid; grid-template-columns: repeat(3, 100%); gap: 12px; margin-bottom: 25px; display: flex; }
+    .banner-btn { flex: 1; background: white; border: 1px solid #e1e4e8; border-radius: 18px; padding: 18px 10px; text-align: center; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.03); transition: all 0.2s; }
+    .banner-btn:hover, .banner-btn.active { border-color: #5e7ff5; background: #f0f3ff; transform: translateY(-2px); }
+    .banner-btn i { font-size: 24px; color: #5e7ff5; margin-bottom: 8px; display: block; }
+    .banner-btn span { font-size: 13px; font-weight: bold; color: #333; }
+
+    /* 세부 입력 폼 섹션 */
+    .fit-sub-section { display: none; background: white; border-radius: 20px; padding: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); animation: fadeIn 0.3s ease; }
+    .fit-sub-section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    
+    .fit-sub-section h2 { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #222; border-bottom: 1px solid #eee; padding-bottom: 10px; }
+    .fit-select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 12px; margin-bottom: 12px; font-size: 14px; background-color: white; }
+    .fit-label { font-size: 13px; font-weight: bold; color: #555; margin-bottom: 6px; display: block; padding-left: 4px; }
+
+    /* 기구 실물 사진 출력 존 */
+    .machine-img-zone { width: 100%; height: 200px; background: #f1f2f6; border-radius: 15px; margin-bottom: 15px; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1px dashed #ccc; }
+    .machine-img-zone img { width: 100%; height: 100%; object-fit: cover; display: none; }
+    .machine-img-zone .no-img { font-size: 13px; color: #999; text-align: center; }
+
+    /* 부위 세분화 체크박스 그룹 */
+    .part-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 15px; background: #f8f9fa; padding: 12px; border-radius: 12px; }
+    .part-item { display: flex; align-items: center; gap: 6px; font-size: 13px; color: #444; cursor: pointer; }
+    .part-item input { width: 16px; height: 16px; cursor: pointer; }
 </style>
 </head>
 <body>
 
-<div class="admin-header">
-    <div>
-        <h1>휘트니스 센터 소통방</h1>
-        <p>쾌적하고 건강한 주민 운동 공간을 함께 만듭니다.</p>
-    </div>
-    <a href="index.html" class="logout-btn">홈으로</a>
-</div>
-
-<!-- 탭 메뉴 (접수창구 / 사용설명서) -->
-<div style="padding: 0 15px;">
-    <div class="fit-tabs">
-        <button id="tabFormBtn" class="fit-tab-btn active" onclick="switchTab('form')">민원 및 기구 요청</button>
-        <button id="tabManualBtn" class="fit-tab-btn" onclick="switchTab('manual')">제품 사용 설명서</button>
-    </div>
-</div>
-
-<!-- 1구역: 신청 및 민원 접수 폼 -->
-<div id="sectionForm" class="admin-card fit-section active">
-    <h2>민원 / 건의 접수서</h2>
-    <p style="font-size: 12px; color: #666; margin-top: -5px; margin-bottom: 15px; padding-left: 5px;">
-        원하시는 분류를 선택하시면 관리자가 확인 후 신속히 조치하겠습니다.
-    </p>
-
-    <!-- 분류 선택 (수리요청 / 희망기구 요청 / 건의하기) -->
-    <select id="fitCategory" class="fit-select" style="border: 2px solid #5e7ff5; font-weight: bold; color: #5e7ff5;">
-        <option value="">-- 원하시는 분류를 선택하세요 --</option>
-        <option value="수리 요청">🔧 고장 및 수리 요청</option>
-        <option value="희망기구 요청">🏋️ 추가 희망기구 신청</option>
-        <option value="건의사항">💬 센터 이용 일반 건의사항</option>
-    </select>
-
-    <input type="text" id="fitName" placeholder="성함">
-    <input type="tel" id="fitPhone" placeholder="연락처 (예: 010-1234-5678)">
-
-    <!-- 동/호수 입력 -->
-    <select id="fitDong" class="fit-select">
-        <option value="">-- 거주하시는 동 선택 --</option>
-        <option value="201동">201동</option>
-        <option value="202동">202동</option>
-        <option value="203동">203동</option>
-        <option value="204동">204동</option>
-        <option value="205동">205동</option>
-        <option value="206동">206동</option>
-    </select>
-    <input type="text" id="fitHo" placeholder="호수 (예: 104호)">
-
-    <textarea id="fitContent" placeholder="상세 내용들을 작성해주세요. (수리 요청 시 기구명 기재 필수)" style="
-        width:100%;
-        height:120px;
-        padding:12px;
-        border:1px solid #ddd;
-        border-radius:12px;
-        margin-bottom:15px;
-        resize:none;
-    "></textarea>
-
-    <button id="fitSubmitBtn" class="save-btn">내용 접수하기</button>
-</div>
-
-<!-- 2구역: 제품 사용 설명서 안내판 -->
-<div id="sectionManual" class="admin-card fit-section">
-    <h2>기구별 안전 사용법</h2>
-    <p style="font-size: 12px; color: #e53935; margin-top: -5px; margin-bottom: 15px; padding-left: 5px; font-weight: 600;">
-        * 부상 방지를 위해 이용 전 반드시 올바른 사용법을 숙지해 주세요.
-    </p>
-
-    <div class="manual-item">
-        <h3>🏃 DRAX 디렉스 러닝머신</h3>
-        <p>1. 계기판 아래 안전키를 옷에 집게로 고정합니다.<br>
-           2. [시작] 버튼을 누르면 3초 후 벨트가 서서히 구동됩니다.<br>
-           3. 속도 조정은 손잡이의 단축 버튼이나 계기판 화살표를 이용하세요.</p>
+<div class="fit-container">
+    <div class="admin-header" style="margin-bottom: 15px;">
+        <div>
+            <h1>휘트니스 센터 소통방</h1>
+            <p>쾌적하고 안전한 운동 공간을 함께 만듭니다.</p>
+        </div>
+        <a href="index.html" class="logout-btn">홈으로</a>
     </div>
 
-    <div class="manual-item">
-        <h3>⛰️ 스태퍼 / 계단 운동 기구 (클라이머)</h3>
-        <p>1. 양발을 발판에 완전히 밀착시키고 계단을 잡고 올라섭니다.<br>
-           2. 화면의 시작 버튼을 누르고 속도 레벨을 낮은 단계(1~3)부터 조절합니다.<br>
-           3. 반드시 안전 손잡이를 잡은 상태에서 바른 자세로 이용해 주세요.</p>
+    <div class="notice-box">
+        <div class="notice-title">
+            <i class="fa-solid fa-bullhorn" style="color: #e53935;"></i> 휘트니스 운영 및 회원등록 안내
+        </div>
+        <div id="noticeContent" class="notice-content">공지사항을 불러오는 중입니다...</div>
     </div>
 
-    <div class="manual-item">
-        <h3>🏋️ LEXCO 렉스코 웨이트 머신 (가슴/어깨)</h3>
-        <p>1. 본인의 체형에 맞게 하단 조절 레버로 의자 높낮이를 조정합니다.<br>
-           2. 무리하지 않는 알맞은 무게에 무게 핀을 깊숙이 꽂아 고정합니다.<br>
-           3. 와이어가 엉키거나 쾅 소리가 나지 않도록 끝까지 무게를 통제하며 운동합니다.</p>
+    <div class="banner-grid">
+        <div id="btn-repair" class="banner-btn" onclick="switchMenu('repair')">
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            <span>수리 요청</span>
+        </div>
+        <div id="btn-wish" class="banner-btn" onclick="switchMenu('wish')">
+            <i class="fa-solid fa-dumbbell"></i>
+            <span>희망기구 요청</span>
+        </div>
+        <div id="btn-suggest" class="banner-btn" onclick="switchMenu('suggest')">
+            <i class="fa-solid fa-comment-dots"></i>
+            <span>건의 사항</span>
+        </div>
     </div>
-</div>
 
-<!-- 하단 네비게이션 바 -->
-<div class="bottom-nav">
-    <a href="index.html" class="nav-item">
-        <i class="fa-solid fa-house"></i>
-        <span>홈</span>
-    </a>
-    <a href="volunteer.html" class="nav-item">
-        <i class="fa-solid fa-hands-helping"></i>
-        <span>봉사신청</span>
-    </a>
-    <a href="request.html" class="nav-item">
-        <i class="fa-solid fa-book-bookmark"></i>
-        <span>희망도서</span>
-    </a>
-    <a href="fitness.html" class="nav-item active">
-        <i class="fa-solid fa-dumbbell"></i>
-        <span>휘트니스</span>
-    </a>
+    <div id="sec-repair" class="fit-sub-section">
+        <h2>🔧 고장 및 수리 요청 접수</h2>
+        
+        <label class="fit-label">1차 분류 (종류)</label>
+        <select id="repairMainCat" class="fit-select">
+            <option value="">-- 분류 선택 --</option>
+            <option value="유산소">🏃 유산소 기구</option>
+            <option value="웨이트">🏋️ 웨이트 머신</option>
+            <option value="기타">📦 기타 시설 및 주변기기</option>
+        </select>
+
+        <div id="subCatArea" style="display:none;">
+            <label class="fit-label">2차 분류 (상세 기구)</label>
+            <select id="repairSubCat" class="fit-select"></select>
+        </div>
+
+        <div id="detailCatArea" style="display:none;">
+            <label class="fit-label">3차 분류 (기기 번호 지정)</label>
+            <select id="repairDetailCat" class="fit-select"></select>
+        </div>
+
+        <div class="machine-img-zone">
+            <div id="imgPlaceholder" class="no-img">기구를 선택하시면 관리자가 등록한<br>실물 사진이 이곳에 나타납니다.</div>
+            <img id="machineImg" src="" alt="기구 사진">
+        </div>
+
+        <label class="fit-label">🔧 수리 요청 부위 (중복 선택 가능)</label>
+        <div id="partGrid" class="part-grid">
+            <div style="grid-column: span 2; text-align:center; color:#999; font-size:12px;">기구를 먼저 선택해주세요.</div>
+        </div>
+
+        <input type="text" id="repairCustomPart" placeholder="기타 구체적인 부위 직접 작성 (선택)" style="margin-bottom:15px;">
+        
+        <textarea id="repairMemo" placeholder="고장 증상이나 관리자에게 하실 말씀을 적어주세요." style="width:100%; height:80px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
+
+        <div style="border-top: 1px dashed #eee; padding-top:15px; margin-top:15px;">
+            <input type="text" id="repairName" placeholder="신청자 성함">
+            <input type="tel" id="repairPhone" placeholder="연락처 (예: 010-1234-5678)">
+            <div style="display:flex; gap:10px;">
+                <select id="repairDong" class="fit-select" style="flex:1;">
+                    <option value="">-- 동 선택 --</option>
+                    <option value="201동">201동</option><option value="202동">202동</option><option value="203동">203동</option>
+                    <option value="204동">204동</option><option value="205동">205동</option><option value="206동">206동</option>
+                </select>
+                <input type="text" id="repairHo" placeholder="호수 (예: 102호)" style="flex:1;">
+            </div>
+        </div>
+        <button id="btnSubmitRepair" class="save-btn" style="background:#5e7ff5;">수리 요청 접수하기</button>
+    </div>
+
+    <div id="sec-wish" class="fit-sub-section">
+        <h2>🏋️ 추가 희망기구 신청</h2>
+        <input type="text" id="wishMachineName" placeholder="도입을 원하는 기구명 (예: 천국의 계단 추가, 거꾸리 등)">
+        <textarea id="wishReason" placeholder="해당 기구가 필요한 이유나 건의 배경을 작성해주세요." style="width:100%; height:120px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
+        
+        <input type="text" id="wishName" placeholder="성함">
+        <input type="tel" id="wishPhone" placeholder="연락처">
+        <button id="btnSubmitWish" class="save-btn" style="background:#2e7d32;">희망기구 요청하기</button>
+    </div>
+
+    <div id="sec-suggest" class="fit-sub-section">
+        <h2>💬 센터 이용 일반 건의사항</h2>
+        <textarea id="suggestContent" placeholder="냉난방, 이용 시간, 청결 상태, 매너 타임 등 센터 운영 전반에 대한 건의사항을 자유롭게 적어주세요." style="width:100%; height:150px; padding:12px; border:1px solid #ddd; border-radius:12px; margin-bottom:15px; resize:none;"></textarea>
+        
+        <input type="text" id="suggestName" placeholder="성함 (익명 가능)">
+        <button id="btnSubmitSuggest" class="save-btn" style="background:#e53935;">건의사항 제출하기</button>
+    </div>
 </div>
 
 <script>
-    // 탭 전환 자바스크립트 함수
-    function switchTab(target) {
-        const formBtn = document.getElementById('tabFormBtn');
-        const manualBtn = document.getElementById('tabManualBtn');
-        const secForm = document.getElementById('sectionForm');
-        const secManual = document.getElementById('sectionManual');
-
-        if(target === 'form') {
-            formBtn.classList.add('active');
-            manualBtn.classList.remove('active');
-            secForm.classList.add('active');
-            secManual.classList.remove('active');
-        } else {
-            manualBtn.classList.add('active');
-            formBtn.classList.remove('active');
-            secManual.classList.add('active');
-            secForm.classList.remove('active');
-        }
+    // 글로벌 탭 전환 함수
+    function switchMenu(target) {
+        document.querySelectorAll('.banner-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.fit-sub-section').forEach(s => s.classList.remove('active'));
+        
+        document.getElementById('btn-' + target).classList.add('active');
+        document.getElementById('sec-' + target).classList.add('active');
+        
+        // 이동 시 자동 스크롤 연동
+        document.getElementById('sec-' + target).scrollIntoView({ behavior: 'smooth' });
     }
 </script>
 <script type="module" src="fitness.js"></script>
 </body>
 </html>
-
