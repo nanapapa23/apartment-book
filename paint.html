@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>남율효성해링턴플레이스2단지 재도장 시안</title>
+    <style>
+        body { font-family: 'Pretendard', sans-serif; background-color: #f4f4f9; padding: 20px; }
+        .container { max-width: 700px; margin: 0 auto; text-align: center; }
+        h1 { color: #333; margin-bottom: 30px; }
+        
+        .plan-card { 
+            background: white;
+            margin-bottom: 30px; 
+            padding: 20px; 
+            border-radius: 15px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .plan-img { width: 100%; border-radius: 8px; border: 1px solid #eee; }
+        
+        .download-btn { 
+            display: inline-block; 
+            margin-top: 15px; 
+            padding: 12px 25px; 
+            background: #03c75a; 
+            color: white; 
+            text-decoration: none; 
+            border-radius: 25px; 
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .download-btn:hover { background: #02a34a; }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>재도장 시안 확인</h1>
+        <div id="planContainer"></div>
+    </div>
+
+    <script>
+        // 시안 파일 정보 (파일명이 다르면 여기서 수정하세요)
+        const plans = [
+            { id: 1, title: "1번 시안", src: "plan1.jpg" },
+            { id: 2, title: "2번 시안", src: "plan2.jpg" },
+            { id: 3, title: "3번 시안", src: "plan3.jpg" },
+            { id: 4, title: "4번 시안", src: "plan4.jpg" }
+        ];
+
+        const container = document.getElementById("planContainer");
+
+        plans.forEach(plan => {
+            const div = document.createElement("div");
+            div.className = "plan-card";
+            div.innerHTML = `
+                <h2>${plan.title}</h2>
+                <img src="${plan.src}" alt="${plan.title}" class="plan-img">
+                <br>
+                <a href="${plan.src}" download="${plan.src}" class="download-btn">이미지 다운로드</a>
+            `;
+            container.appendChild(div);
+        });
+    </script>
+</body>
+</html>
