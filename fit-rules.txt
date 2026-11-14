@@ -1,0 +1,14 @@
+// 기존 Firestore 규칙의 match /databases/{database}/documents { ... } 안에 "추가"하세요.
+// admin@example.com 은 관리자 이메일로 바꾸세요. (기존 규칙은 건드리지 않아요)
+match /fit_notices/{id} {
+  allow read: if true;
+  allow write: if request.auth != null && request.auth.token.email == 'admin@example.com';
+}
+match /fit_equipment/{id} {
+  allow read: if true;
+  allow write: if request.auth != null && request.auth.token.email == 'admin@example.com';
+}
+match /fit_submissions/{id} {
+  allow create: if request.resource.data.type in ['repair','equip','suggest'];
+  allow read, update, delete: if request.auth != null && request.auth.token.email == 'admin@example.com';
+}
