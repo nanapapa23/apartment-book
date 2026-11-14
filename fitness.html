@@ -1,17 +1,16 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="fit.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<title>휘트니스 센터</title></head><body>
-<div class="top-header"><h1>남율 효성해링턴 2단지 휘트니스 센터</h1></div>
-<div class="section-title">공지사항</div>
-<div id="notices"><div class="request-card">불러오는 중…</div></div>
-<div class="section-title">이용 메뉴</div>
-<div class="pick">
-<a href="form.html?t=repair" class="pick-card"><i class="fa-solid fa-screwdriver-wrench"></i><b>수리요청</b><span>고장난 기구를 알려주세요</span></a>
-<a href="form.html?t=equip" class="pick-card"><i class="fa-solid fa-dumbbell"></i><b>희망기구요청</b><span>들여왔으면 하는 기구</span></a>
-<a href="form.html?t=suggest" class="pick-card"><i class="fa-solid fa-comment-dots"></i><b>건의사항</b><span>이용하며 느낀 점</span></a>
-</div>
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>휘트니스 센터</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="gym.css"></head><body>
+<header class="gh"><a class="back" href="index.html"><i class="fa-solid fa-chevron-left"></i> 메인</a><h1>휘트니스 센터</h1><p>남율 효성해링턴 2단지</p></header>
+<main>
+<h2>공지사항</h2>
+<ul class="board" id="notices"><li class="empty">불러오는 중…</li></ul>
+<h2>이용 메뉴</h2>
+<a class="act" href="form.html?t=repair"><span class="ic"><i class="fa-solid fa-screwdriver-wrench"></i></span><div><b>수리요청</b><span>고장났거나 불편한 기구를 알려주세요</span></div><i class="fa-solid fa-chevron-right"></i></a>
+<a class="act" href="form.html?t=equip"><span class="ic"><i class="fa-solid fa-dumbbell"></i></span><div><b>희망기구요청</b><span>들여왔으면 하는 기구를 알려주세요</span></div><i class="fa-solid fa-chevron-right"></i></a>
+<a class="act" href="form.html?t=suggest"><span class="ic"><i class="fa-solid fa-comment-dots"></i></span><div><b>건의사항</b><span>이용하며 느낀 점을 남겨주세요</span></div><i class="fa-solid fa-chevron-right"></i></a>
+</main>
 <script type="module">
 import{list,nav,esc}from"./fit.js";
 nav();
 const box=document.getElementById("notices");
-list("fit_notices").then(r=>{box.innerHTML=r.map(n=>`<div class="request-card"><b>${esc(n.title)}</b><div style="margin-top:6px;color:#555;white-space:pre-wrap">${esc(n.body)}</div></div>`).join("")||'<div class="request-card">등록된 공지가 없어요.</div>'}).catch(()=>{box.innerHTML='<div class="request-card">공지를 불러오지 못했어요.</div>'});
+list("fit_notices").then(r=>{box.innerHTML=r.map(n=>`<li><time>${n.createdAt?.toDate?.().toLocaleDateString("ko-KR")||""}</time><b>${esc(n.title)}</b><p>${esc(n.body)}</p></li>`).join("")||'<li class="empty">등록된 공지가 없어요.</li>'}).catch(()=>{box.innerHTML='<li class="empty">공지를 불러오지 못했어요.</li>'});
 </script></body></html>
