@@ -6,9 +6,9 @@
 <script type="module">
 import{auth,signInWithEmailAndPassword,signOut,onAuthStateChanged,list,add,del,upd,shrink,esc}from"./fit.js";
 const $=id=>document.getElementById(id);
-const TY={repair:"수리요청",equip:"희망기구요청",suggest:"건의사항"};
+const TY={repair:"수리요청",equip:"희망기구추천",suggest:"건의사항"};
 const K={name:"이름",detail:"증상",group:"분류",equipment:"기구",item:"희망기구",subject:"제목",memo:"내용",status:"상태"};
-const ST=["접수","처리중","완료"],SC={접수:"pending",처리중:"planned",완료:"completed"},HID=["id","createdAt","type","equipmentId","status"];
+const ST={repair:["수리접수","수리완료"],equip:["검토예정","구매예정","구매완료","구매불가"]},SC={수리접수:"pending",수리완료:"completed",검토예정:"pending",구매예정:"planned",구매완료:"completed",구매불가:"rejected"},HID=["id","createdAt","type","equipmentId","status","reason"];
 const TABS={
 subs:{l:"접수내역",c:"fit_submissions"},
 notices:{l:"공지",c:"fit_notices",f:[["title","제목","text"],["body","내용","textarea"]],row:d=>`<b>${esc(d.title)}</b><br>${esc(d.body)}`},
@@ -18,18 +18,18 @@ const dt=r=>r.createdAt?.toDate?.().toLocaleString("ko-KR")||"";
 onAuthStateChanged(auth,u=>{$("login").hidden=!!u;$("app").hidden=!u;if(u){$("tabs").innerHTML=Object.entries(TABS).map(([k,v])=>`<button data-t="${k}">${v.l}</button>`).join("");show("subs")}});
 $("login").onsubmit=async e=>{e.preventDefault();try{await signInWithEmailAndPassword(auth,$("em").value,$("pw").value)}catch{$("lm").textContent="로그인에 실패했어요."}};
 $("out").onclick=()=>signOut(auth);
-function csv(rows){const ks=[...new Set(rows.flatMap(r=>Object.keys(r)))].filter(k=>!["id","createdAt","type","equipmentId","status"].includes(k));
+function csv(rows){const ks=[...new Set(rows.flatMap(r=>Object.keys(r)))].filter(k=>!["id","createdAt","type","equipmentId","status","reason"].includes(k));
 const q=v=>{v=String(v??"");if(/^[=+\-@]/.test(v))v="'"+v;return'"'+v.replace(/"/g,'""')+'"'};
-const L=[["유형","접수일","상태",...ks.map(k=>K[k]||k)],...rows.map(r=>[TY[r.type]||r.type,dt(r),r.status,...ks.map(k=>r[k])])].map(a=>a.map(q).join(","));
+const L=[["유형","접수일","상태","사유",...ks.map(k=>K[k]||k)],...rows.map(r=>[TY[r.type]||r.type,dt(r),r.status,r.reason,...ks.map(k=>r[k])])].map(a=>a.map(q).join(","));
 const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+L.join("\r\n")],{type:"text/csv"}));a.download="휘트니스_접수내역.csv";a.click()}
 async function show(k){cur=k;document.querySelectorAll("#tabs button").forEach(b=>b.classList.toggle("on",b.dataset.t==k));
 const T=TABS[k];let rows;
 try{rows=await list(T.c)}catch{$("body").innerHTML='<div class="admin-card">불러오지 못했어요. 규칙과 관리자 이메일을 확인하세요.</div>';return}
 if(k=="subs"){subs=rows;$("body").innerHTML=`<div class="admin-card"><select id="flt"><option value="">전체</option>${Object.entries(TY).map(([a,b])=>`<option value="${a}">${b}</option>`).join("")}</select><button class="download-btn" id="xls">엑셀(CSV) 내려받기</button></div><div id="subs"></div>`;
-const draw=()=>{const v=$("flt").value;$("subs").innerHTML=subs.filter(x=>!v||x.type==v).map(x=>`<div class="request-card"><b>${TY[x.type]||esc(x.type)}</b> <small>${dt(x)}</small> <span class="status status-${SC[x.status]||"pending"}">${esc(x.status||"접수")}</span>${Object.entries(x).filter(([a])=>!HID.includes(a)).map(([a,b])=>`<div style="margin-top:4px">${K[a]||a}: ${esc(b)}</div>`).join("")}<select data-s="${x.id}">${ST.map(s=>`<option${s==x.status?" selected":""}>${s}</option>`).join("")}</select><button class="del-btn" data-d="${x.id}">삭제</button></div>`).join("")||'<div class="request-card">접수 내역이 없어요.</div>'};
+const draw=()=>{const v=$("flt").value;$("subs").innerHTML=subs.filter(x=>!v||x.type==v).map(x=>{const o=ST[x.type],cs=x.status||(o&&o[0]);return`<div class="request-card"><b>${TY[x.type]||esc(x.type)}</b> <small>${dt(x)}</small>${o?` <span class="status status-${SC[cs]||"pending"}">${esc(cs)}</span>`:""}${Object.entries(x).filter(([a])=>!HID.includes(a)).map(([a,b])=>`<div style="margin-top:4px">${K[a]||a}: ${esc(b)}</div>`).join("")}${o?`<select data-s="${x.id}">${o.map(s=>`<option${s==cs?" selected":""}>${s}</option>`).join("")}</select>`:""}${cs=="구매불가"?`<textarea data-r="${x.id}" placeholder="구매불가 사유를 적어주세요">${esc(x.reason)}</textarea><button class="save-btn" data-rs="${x.id}">사유 저장</button>`:""}<button class="del-btn" data-d="${x.id}">삭제</button></div>`}).join("")||'<div class="request-card">접수 내역이 없어요.</div>'};
 $("flt").onchange=draw;$("xls").onclick=()=>csv(subs.filter(x=>!$("flt").value||x.type==$("flt").value));draw();return}
 $("body").innerHTML=`<form id="af" class="admin-card">${T.f.map(([n,l,ty,o])=>`<label>${l}</label>`+(ty=="select"?`<select id="a_${n}">${o.map(x=>`<option>${x}</option>`).join("")}</select>`:ty=="textarea"?`<textarea id="a_${n}" required></textarea>`:`<input id="a_${n}" type="${ty}" ${ty=="file"?'accept="image/*"':"required"}>`)).join("")}<button class="save-btn">추가</button></form>${rows.map(d=>`<div class="book-item">${d.photo?`<img class="thumb" src="${esc(d.photo)}">`:""}<div style="flex:1;margin-left:${d.photo?12:0}px">${T.row(d)}</div><button class="del-btn" data-d="${d.id}">삭제</button></div>`).join("")||'<div class="request-card">등록된 항목이 없어요.</div>'}`;
 $("af").onsubmit=async e=>{e.preventDefault();const d={};for(const[n,,ty]of T.f){const el=$("a_"+n);d[n]=ty=="file"?(el.files[0]?await shrink(el.files[0]):""):el.value.trim()}await add(T.c,d);show(k)}}
-document.addEventListener("click",async e=>{const t=e.target.dataset;if(t.t)show(t.t);if(t.d&&confirm("삭제할까요?")){await del(TABS[cur].c,t.d);show(cur)}});
-document.addEventListener("change",async e=>{const s=e.target.dataset.s;if(s){await upd("fit_submissions",s,{status:e.target.value});show("subs")}});
+document.addEventListener("click",async e=>{const t=e.target.dataset;if(t.t)show(t.t);if(t.rs){await upd("fit_submissions",t.rs,{reason:document.querySelector('[data-r="'+t.rs+'"]').value.trim()});alert("저장했어요.")}if(t.d&&confirm("삭제할까요?")){await del(TABS[cur].c,t.d);show(cur)}});
+document.addEventListener("change",async e=>{const s=e.target.dataset.s;if(s){const v=e.target.value;await upd("fit_submissions",s,v=="구매불가"?{status:v}:{status:v,reason:""});show("subs")}});
 </script></body></html>

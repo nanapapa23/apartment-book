@@ -4,8 +4,8 @@
 <script type="module">
 import{add,list,nav,esc}from"./fit.js";
 const T={
-repair:{title:"수리요청",sub:"고장난 기구와 증상을 알려주세요",pick:1,f:[["name","이름(선택)","text",0],["detail","증상","textarea"]]},
-equip:{title:"희망기구요청",sub:"들여왔으면 하는 기구를 알려주세요",f:[["item","희망 기구","text"],["memo","사유(선택)","textarea",0]]},
+repair:{title:"수리요청",status:"수리접수",sub:"고장난 기구와 증상을 알려주세요",pick:1,f:[["name","이름(선택)","text",0],["detail","증상","textarea"]]},
+equip:{title:"희망기구추천",status:"검토예정",sub:"들여왔으면 하는 기구를 추천해 주세요",f:[["item","추천 기구","text"],["memo","추천 이유(선택)","textarea",0]]},
 suggest:{title:"건의사항",sub:"이용하며 느낀 점을 남겨주세요",f:[["subject","제목","text"],["memo","내용","textarea"],["name","이름(선택)","text",0]]}};
 const t=new URLSearchParams(location.search).get("t"),c=T[t]||T.suggest,$=id=>document.getElementById(id);
 document.title=c.title;$("h").textContent=c.title;$("sub").textContent=c.sub;nav();
@@ -22,7 +22,7 @@ const p=e.target.closest("[data-e]");
 if(p){sel=eq.find(x=>x.id==p.dataset.e);document.querySelectorAll("[data-e]").forEach(x=>x.classList.toggle("on",x==p));$("eqBig").hidden=!sel.photo;if(sel.photo)$("eqBig").src=sel.photo}})}
 $("f").onsubmit=async e=>{e.preventDefault();
 if(c.pick){if(!grp)return alert("기구 종류를 선택하세요.");if(!sel&&eq.some(x=>x.group==grp))return alert("기구를 선택하세요.")}
-const d={type:t,status:"접수"};c.f.forEach(([k])=>d[k]=$("f_"+k).value.trim());
+const d={type:t};if(c.status)d.status=c.status;c.f.forEach(([k])=>d[k]=$("f_"+k).value.trim());
 if(c.pick){d.group=grp;d.equipment=sel?sel.name:"";d.equipmentId=sel?sel.id:""}
 $("go").disabled=true;
 try{await add("fit_submissions",d);$("f").reset();sel=null;document.querySelectorAll(".on[data-e]").forEach(x=>x.classList.remove("on"));if(c.pick)$("eqBig").hidden=true;$("msg").textContent="접수되었어요. 감사합니다."}

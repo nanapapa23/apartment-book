@@ -17,3 +17,6 @@
 .msg{margin-top:12px;font-weight:700;color:#5e7ff5}
 .link{display:block;text-align:center;color:#888;font-size:13px;margin:16px}
 .request-card select{width:auto;padding:6px;margin:8px 8px 0 0}
+.request-card textarea{width:100%;padding:10px;border:1px solid #ddd;border-radius:10px;margin-top:8px;font:inherit;min-height:70px}
+.request-card .save-btn{width:auto;margin-top:8px;padding:10px 16px}
+.request-card .del-btn{margin-top:8px}
