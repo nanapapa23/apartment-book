@@ -1,0 +1,16 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>처리현황</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="gym.css"></head><body>
+<header class="gh"><a class="back" href="fitness.html"><i class="fa-solid fa-chevron-left"></i> 휘트니스 센터</a><h1>처리현황</h1><p>수리요청과 희망기구추천의 진행 상황이에요</p></header>
+<main>
+<div class="seg" id="seg" style="margin-top:20px"><button type="button" data-k="repair" class="on">수리요청</button><button type="button" data-k="equip">희망기구추천</button></div>
+<ul class="board" id="list"><li class="empty">불러오는 중…</li></ul>
+</main>
+<script type="module">
+import{list,nav,esc}from"./fit.js";
+nav();
+const SC={수리접수:"prog",수리완료:"done",검토예정:"wait",구매예정:"prog",구매완료:"done",구매불가:"no"};
+let all=[],k="repair";
+const $=id=>document.getElementById(id);
+function draw(){$("list").innerHTML=all.filter(x=>x.type==k).map(x=>`<li><div class="line"><b>${esc(x.title)}</b><span class="st st-${SC[x.status]||"wait"}">${esc(x.status)}</span></div><time>${x.createdAt?.toDate?.().toLocaleDateString("ko-KR")||""}</time>${x.status=="구매불가"&&x.reason?`<p>사유: ${esc(x.reason)}</p>`:""}</li>`).join("")||'<li class="empty">접수된 내역이 없어요.</li>'}
+document.querySelectorAll("#seg button").forEach(b=>b.onclick=()=>{k=b.dataset.k;document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on",x==b));draw()});
+list("fit_board").then(r=>{all=r;draw()}).catch(()=>{$("list").innerHTML='<li class="empty">현황을 불러오지 못했어요.</li>'});
+</script></body></html>

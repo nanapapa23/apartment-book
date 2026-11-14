@@ -4,7 +4,7 @@
 <form id="login" class="admin-card"><label>이메일</label><input id="em" type="email" required><label>비밀번호</label><input id="pw" type="password" required><button class="save-btn">로그인</button><div class="msg" id="lm"></div></form>
 <div id="app" hidden><div class="tabs" id="tabs"></div><div id="body"></div><button id="out" class="del-btn" style="margin-top:10px">로그아웃</button></div>
 <script type="module">
-import{auth,signInWithEmailAndPassword,signOut,onAuthStateChanged,list,add,del,upd,shrink,esc}from"./fit.js";
+import{auth,signInWithEmailAndPassword,signOut,onAuthStateChanged,list,add,del,upd,put,shrink,esc}from"./fit.js";
 const $=id=>document.getElementById(id);
 const TY={repair:"수리요청",equip:"희망기구추천",suggest:"건의사항"};
 const K={name:"이름",detail:"증상",group:"분류",equipment:"기구",item:"희망기구",subject:"제목",memo:"내용",status:"상태"};
@@ -14,6 +14,7 @@ subs:{l:"접수내역",c:"fit_submissions"},
 notices:{l:"공지",c:"fit_notices",f:[["title","제목","text"],["body","내용","textarea"]],row:d=>`<b>${esc(d.title)}</b><br>${esc(d.body)}`},
 equipment:{l:"기구·사진",c:"fit_equipment",f:[["group","1차 분류","select",["유산소기구","웨이트머신","기타"]],["name","기구명(2차 분류)","text"],["photo","사진","file"]],row:d=>`${esc(d.group)} / <b>${esc(d.name)}</b>`}};
 let cur="subs",subs=[];
+const sync=async(id,p)=>{const x=subs.find(y=>y.id==id);if(!x||x.type=="suggest")return;try{await put("fit_board",id,{type:x.type,title:(x.type=="repair"?(x.equipment||x.group||"기구"):x.item||"").slice(0,60),group:x.group||"",status:x.status||"",reason:x.reason||"",...(x.createdAt?{createdAt:x.createdAt}:{}),...p},1)}catch(e){console.error(e)}};
 const dt=r=>r.createdAt?.toDate?.().toLocaleString("ko-KR")||"";
 onAuthStateChanged(auth,u=>{$("login").hidden=!!u;$("app").hidden=!u;if(u){$("tabs").innerHTML=Object.entries(TABS).map(([k,v])=>`<button data-t="${k}">${v.l}</button>`).join("");show("subs")}});
 $("login").onsubmit=async e=>{e.preventDefault();try{await signInWithEmailAndPassword(auth,$("em").value,$("pw").value)}catch{$("lm").textContent="로그인에 실패했어요."}};
@@ -30,6 +31,6 @@ const draw=()=>{const v=$("flt").value;$("subs").innerHTML=subs.filter(x=>!v||x.
 $("flt").onchange=draw;$("xls").onclick=()=>csv(subs.filter(x=>!$("flt").value||x.type==$("flt").value));draw();return}
 $("body").innerHTML=`<form id="af" class="admin-card">${T.f.map(([n,l,ty,o])=>`<label>${l}</label>`+(ty=="select"?`<select id="a_${n}">${o.map(x=>`<option>${x}</option>`).join("")}</select>`:ty=="textarea"?`<textarea id="a_${n}" required></textarea>`:`<input id="a_${n}" type="${ty}" ${ty=="file"?'accept="image/*"':"required"}>`)).join("")}<button class="save-btn">추가</button></form>${rows.map(d=>`<div class="book-item">${d.photo?`<img class="thumb" src="${esc(d.photo)}">`:""}<div style="flex:1;margin-left:${d.photo?12:0}px">${T.row(d)}</div><button class="del-btn" data-d="${d.id}">삭제</button></div>`).join("")||'<div class="request-card">등록된 항목이 없어요.</div>'}`;
 $("af").onsubmit=async e=>{e.preventDefault();const d={};for(const[n,,ty]of T.f){const el=$("a_"+n);d[n]=ty=="file"?(el.files[0]?await shrink(el.files[0]):""):el.value.trim()}await add(T.c,d);show(k)}}
-document.addEventListener("click",async e=>{const t=e.target.dataset;if(t.t)show(t.t);if(t.rs){await upd("fit_submissions",t.rs,{reason:document.querySelector('[data-r="'+t.rs+'"]').value.trim()});alert("저장했어요.")}if(t.d&&confirm("삭제할까요?")){await del(TABS[cur].c,t.d);show(cur)}});
-document.addEventListener("change",async e=>{const s=e.target.dataset.s;if(s){const v=e.target.value;await upd("fit_submissions",s,v=="구매불가"?{status:v}:{status:v,reason:""});show("subs")}});
+document.addEventListener("click",async e=>{const t=e.target.dataset;if(t.t)show(t.t);if(t.rs){const rs=document.querySelector('[data-r="'+t.rs+'"]').value.trim();await upd("fit_submissions",t.rs,{reason:rs});await sync(t.rs,{reason:rs});const x=subs.find(y=>y.id==t.rs);if(x)x.reason=rs;alert("저장했어요.")}if(t.d&&confirm("삭제할까요?")){await del(TABS[cur].c,t.d);if(cur=="subs")del("fit_board",t.d).catch(()=>{});show(cur)}});
+document.addEventListener("change",async e=>{const s=e.target.dataset.s;if(s){const v=e.target.value,p=v=="구매불가"?{status:v}:{status:v,reason:""};await upd("fit_submissions",s,p);await sync(s,p);show("subs")}});
 </script></body></html>

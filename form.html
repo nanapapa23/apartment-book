@@ -2,7 +2,7 @@
 <header class="gh"><a class="back" href="fitness.html"><i class="fa-solid fa-chevron-left"></i> 휘트니스 센터</a><h1 id="h"></h1><p id="sub"></p></header>
 <main><form id="f"><div id="picker"></div><div id="fields"></div><button class="go" id="go">접수하기</button><div class="msg" id="msg"></div></form></main>
 <script type="module">
-import{add,list,nav,esc}from"./fit.js";
+import{put,newId,list,nav,esc}from"./fit.js";
 const T={
 repair:{title:"수리요청",status:"수리접수",sub:"고장난 기구와 증상을 알려주세요",pick:1,f:[["name","이름(선택)","text",0],["detail","증상","textarea"]]},
 equip:{title:"희망기구추천",status:"검토예정",sub:"들여왔으면 하는 기구를 추천해 주세요",f:[["item","추천 기구","text"],["memo","추천 이유(선택)","textarea",0]]},
@@ -25,7 +25,7 @@ if(c.pick){if(!grp)return alert("기구 종류를 선택하세요.");if(!sel&&eq
 const d={type:t};if(c.status)d.status=c.status;c.f.forEach(([k])=>d[k]=$("f_"+k).value.trim());
 if(c.pick){d.group=grp;d.equipment=sel?sel.name:"";d.equipmentId=sel?sel.id:""}
 $("go").disabled=true;
-try{await add("fit_submissions",d);$("f").reset();sel=null;document.querySelectorAll(".on[data-e]").forEach(x=>x.classList.remove("on"));if(c.pick)$("eqBig").hidden=true;$("msg").textContent="접수되었어요. 감사합니다."}
+try{const id=newId();await put("fit_submissions",id,d);if(t!="suggest")try{await put("fit_board",id,{type:t,title:(t=="repair"?(d.equipment||d.group):d.item).slice(0,60),group:d.group||"",status:d.status})}catch{}$("f").reset();sel=null;document.querySelectorAll(".on[data-e]").forEach(x=>x.classList.remove("on"));if(c.pick)$("eqBig").hidden=true;$("msg").textContent="접수되었어요. 감사합니다."}
 catch{$("msg").textContent="접수에 실패했어요. 잠시 후 다시 시도해 주세요."}
 $("go").disabled=false};
 </script></body></html>
