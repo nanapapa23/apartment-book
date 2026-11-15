@@ -1,8 +1,8 @@
 // 기존 firebase.js(설정 + export db)를 그대로 사용합니다.
-import{db}from"./firebase.js";
-import{collection,addDoc,getDocs,getDoc,deleteDoc,updateDoc,setDoc,doc,query,orderBy,serverTimestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-import{getAuth,signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-export const auth=getAuth();
+import{db,auth}from"./firebase.js";
+import{collection,addDoc,getDocs,getDoc,deleteDoc,updateDoc,setDoc,doc,query,orderBy,serverTimestamp,Timestamp}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import{signInWithEmailAndPassword,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+export{auth};
 export{signInWithEmailAndPassword,signOut,onAuthStateChanged};
 export const list=async(c,o=1)=>(await getDocs(o?query(collection(db,c),orderBy("createdAt","desc")):collection(db,c))).docs.map(d=>({id:d.id,...d.data()}));
 export const add=(c,d)=>addDoc(collection(db,c),{...d,createdAt:serverTimestamp()});
@@ -20,7 +20,7 @@ repair:{l:"수리요청",st:["수리접수","수리완료"],board:1},
 equip:{l:"희망기구추천",st:["검토예정","구매예정","구매완료","구매불가"],board:1,no:"구매불가"},
 suggest:{l:"건의사항"},
 volunteer:{l:"봉사신청",st:["신청접수","확정"]},
-bookreq:{l:"희망도서",st:["검토예정","구매예정","구매완료","구매불가"],board:1,no:"구매불가"}};
+bookreq:{l:"희망도서",st:["접수완료","구매예정","구매완료","구매불가"],board:1,no:"구매불가"}};
 export const SPACES={lib:{n:"작은도서관",types:["volunteer","bookreq"],page:"library.html"},fit:{n:"휘트니스 센터",types:["repair","equip","suggest"],page:"fitness.html"}};
 export const bTitle=d=>String(d.type=="repair"?(d.equipment||d.group||"기구"):d.type=="equip"?d.item:d.title||"").slice(0,60);
 // 운영 여부
@@ -30,3 +30,4 @@ export const openState=c=>{const h=c.days?.length&&c.start&&c.end?`${fmtDays(c.d
 const NAV={lib:[["index.html","fa-table-cells-large","메인"],["library.html","fa-book-open","도서관"],["form.html?s=lib&t=volunteer","fa-hand-holding-heart","봉사신청"],["form.html?s=lib&t=bookreq","fa-book-bookmark","희망도서"],["status.html?s=lib","fa-clipboard-list","처리현황"]],
 fit:[["index.html","fa-table-cells-large","메인"],["fitness.html","fa-bullhorn","공지"],["form.html?s=fit&t=repair","fa-screwdriver-wrench","수리요청"],["form.html?s=fit&t=equip","fa-dumbbell","희망기구추천"],["form.html?s=fit&t=suggest","fa-comment-dots","건의"]]};
 export const nav=s=>{const p=(location.pathname.split("/").pop()||"index.html")+location.search;document.body.insertAdjacentHTML("beforeend",`<nav class="bottom-nav">${NAV[s].map(([h,i,l])=>`<a href="${h}" class="nav-item${h==p?" active":""}"><i class="fa-solid ${i}"></i><span>${l}</span></a>`).join("")}</nav>`)};
+export const ts=m=>Timestamp.fromMillis(m);

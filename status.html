@@ -10,12 +10,12 @@ const s=document.documentElement.className,$=id=>document.getElementById(id);
 nav(s);$("back").href=SPACES[s].page;$("bk").textContent=SPACES[s].n;
 $("sub").textContent=s=="lib"?"희망도서 신청의 진행 상황이에요":"수리요청과 희망기구추천의 진행 상황이에요";
 const TABS=s=="lib"?[["bookreq","희망도서"]]:[["repair","수리요청"],["equip","희망기구추천"]];
-const SC={수리접수:"prog",수리완료:"done",검토예정:"wait",구매예정:"prog",구매완료:"done",구매불가:"no"};
+const SC={수리접수:"prog",수리완료:"done",검토예정:"wait",구매예정:"prog",구매완료:"done",구매불가:"no",접수완료:"wait"};
 let all=[],k=TABS[0][0];
 $("seg").style.gridTemplateColumns=`repeat(${TABS.length},1fr)`;
 $("seg").innerHTML=TABS.map(([v,l],i)=>`<button type="button" data-k="${v}"${i?"":' class="on"'}>${l}</button>`).join("");
 if(TABS.length<2)$("seg").hidden=true;
-function draw(){$("list").innerHTML=all.filter(x=>x.type==k).map(x=>`<li><div class="line"><b>${esc(x.title)}</b><span class="st st-${SC[x.status]||"wait"}">${esc(x.status)}</span></div><time>${x.createdAt?.toDate?.().toLocaleDateString("ko-KR")||""}</time>${x.status=="구매불가"&&x.reason?`<p>사유: ${esc(x.reason)}</p>`:""}</li>`).join("")||'<li class="empty">접수된 내역이 없어요.</li>'}
+function draw(){$("list").innerHTML=all.filter(x=>x.type==k).map(x=>`<li><div class="line"><b>${esc(x.title)}</b><span class="st st-${SC[x.status]||"wait"}">${esc(x.status)}</span></div>${x.author?`<p>저자 ${esc(x.author)}${x.publisher?" · 출판사 "+esc(x.publisher):""}</p>`:""}<time>${x.createdAt?.toDate?.().toLocaleDateString("ko-KR")||""}</time>${x.status=="구매불가"&&x.reason?`<p>사유: ${esc(x.reason)}</p>`:""}</li>`).join("")||'<li class="empty">접수된 내역이 없어요.</li>'}
 document.querySelectorAll("#seg button").forEach(b=>b.onclick=()=>{k=b.dataset.k;document.querySelectorAll("#seg button").forEach(x=>x.classList.toggle("on",x==b));draw()});
 list(s+"_board").then(r=>{all=r;draw()}).catch(()=>{$("list").innerHTML='<li class="empty">현황을 불러오지 못했어요.</li>'});
 </script></body></html>

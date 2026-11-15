@@ -1,126 +1,86 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>관리자 모드</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<style>
-    /* 하단 네비게이션 바가 추가됨에 따라 최하단 카드가 가려지지 않도록 바디 여백 추가 */
-    body {
-        padding-bottom: 90px;
-    }
-</style>
-</head>
-<body>
-
-<div class="admin-header">
-    <div>
-        <h1>관리자 모드</h1>
-        <p>도서 등록 및 관리</p>
-    </div>
-    <button id="logoutBtn" class="logout-btn">로그아웃</button>
+<!DOCTYPE html><html lang="ko" class="lib"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700;900&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="app.css"><meta name="robots" content="noindex"><title>관리자</title></head><body>
+<header class="gh"><a class="back" href="index.html"><i class="fa-solid fa-chevron-left"></i> 메인</a><h1>관리자</h1><p>작은도서관 · 휘트니스 센터를 한곳에서 관리해요</p></header>
+<main>
+<form id="login" class="card" style="margin-top:20px"><label for="em">이메일</label><input id="em" type="email" required><label for="pw">비밀번호</label><input id="pw" type="password" required><button class="go">로그인</button><div class="msg" id="lm"></div></form>
+<div id="app" hidden>
+<div class="seg two" id="sp" style="margin-top:20px"><button type="button" data-sp="lib">작은도서관</button><button type="button" data-sp="fit">휘트니스 센터</button></div>
+<div class="tabs" id="tabs"></div><div id="body"></div>
+<button id="out" class="ghost" type="button">로그아웃</button>
 </div>
-
-<div class="admin-card">
-    <h2>도서 등록 / 수정</h2>
-    <input id="title" placeholder="도서명">
-    <input id="author" placeholder="저자">
-    <input id="publisher" placeholder="출판사"> 
-    <input id="imgUrl" placeholder="표지 이미지 URL">
-    <input type="date" id="regDate">
-
-    <select id="category">
-        <option value="">카테고리 선택</option>
-        <option value="성인">성인</option>
-        <option value="청소년">청소년</option>
-        <option value="어린이">어린이</option>
-        <option value="자기개발">자기개발</option>
-        <option value="기타">기타</option>
-    </select>
-
-    <div class="row">
-        <select id="shelf">
-            <option value="A">A</option><option value="B">B</option><option value="C">C</option>
-            <option value="D">D</option><option value="E">E</option><option value="F">F</option>
-            <option value="G">G</option><option value="H">H</option><option value="I">I</option>
-            <option value="J">J</option>
-            <option value="어린이전용">어린이전용</option>
-        </select>
-        <select id="slot">
-            <option value="1">1</option><option value="2">2</option><option value="3">3</option>
-            <option value="4">4</option><option value="5">5</option><option value="6">6</option>
-        </select>
-    </div>
-
-    <label class="newbook-check">
-        <input type="checkbox" id="newbook"> 신간 도서
-    </label>
-    <button id="saveBtn" class="save-btn">저장</button>
-</div>
-
-<div class="admin-card">
-    <h2>데이터 관리</h2>
-    <input type="file" id="csvFile" style="display:none;">
-    <button class="upload-btn" onclick="document.getElementById('csvFile').click()">CSV 업로드</button>
-    <button id="downloadBtn" class="download-btn">CSV 다운로드</button>    
-    <button id="deleteAllBtn" class="delete-btn" style="background-color: #ff4444; color: white;">전체 데이터 삭제</button>
-</div>
-
-<div class="admin-card">
-    <h2>도서 현황</h2>
-    <div id="bookStats">로딩중...</div>
-</div>
-
-<div class="admin-card">
-    <h2>도서 검색</h2>
-    <input type="text" id="adminSearch" placeholder="제목/저자/초성 검색...">
-</div>
-
-<div class="admin-card">
-    <h2>도서 목록</h2>
-    <div id="adminList"></div>
-</div>
-
-<div class="bottom-nav">
-    <a href="admin.html" class="nav-item active">
-        <i class="fa-solid fa-book"></i>
-        <span>도서관리</span>
-    </a>
-    <a href="request-admin.html" class="nav-item">
-        <i class="fa-solid fa-book-bookmark"></i>
-        <span>희망도서관리</span>
-    </a>
-    <a href="volunteer-admin.html" class="nav-item">
-        <i class="fa-solid fa-hands-helping"></i>
-        <span>봉사인원관리</span>
-    </a>
-    <a href="#" id="bottomLogoutBtn" class="nav-item">
-        <i class="fa-solid fa-right-from-bracket"></i>
-        <span>로그아웃</span>
-    </a>
-</div>
-
-<script type="module" src="admin.js"></script>
-
+</main>
 <script type="module">
-import { auth } from "./firebase.js";
-import { signOut } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-
-document.getElementById("bottomLogoutBtn").onclick = async (e) => {
-    e.preventDefault(); // 기본 링크 이동 막기
-    if(!confirm("로그아웃 하시겠습니까?")) return;
-    
-    try {
-        await signOut(auth);
-        location.href = "index.html";
-    } catch(err) {
-        console.error(err);
-        alert("로그아웃에 실패했습니다.");
-    }
-};
-</script>
-
-</body>
-</html>
+import{auth,signInWithEmailAndPassword,signOut,onAuthStateChanged,list,add,del,upd,put,site,setSite,shrink,esc,TYPES,SPACES,bTitle,DAYS,openState,ts}from"./common.js";
+const $=id=>document.getElementById(id);
+const CATS=["성인","청소년","어린이","어린이전용","자기개발","기타"],GR=["유산소기구","웨이트머신","기타"];
+const K={name:"이름",phone:"연락처",dong:"동",ho:"호수",type:"참여형태",dayType:"평일/주말",date:"희망일",startTime:"시작시간",duration:"봉사시간",comment:"의견·참고",dongHo:"신청인(동호수)",publisher:"출판사",memo:"내용",title:"도서명",author:"저자",detail:"증상",group:"분류",equipment:"기구",item:"희망기구",subject:"제목"};
+const HID=["id","createdAt","type","equipmentId","status","reason"];
+const CODE={pending:"접수완료",planned:"구매예정",completed:"구매완료",rejected:"구매불가"};
+const SC={수리접수:"prog",수리완료:"done",검토예정:"wait",구매예정:"prog",구매완료:"done",구매불가:"no",신청접수:"wait",확정:"done",접수완료:"wait"};
+const RES={
+lib:{c:"books",o:0,f:[["title","도서명","text"],["author","저자","text"],["publisher","출판사","text",0],["category","분류","select",CATS],["shelf","책장 (예: A)","text"],["slot","칸 (1~6)","number"],["imgUrl","표지 사진","file"],["newbook","신간으로 표시","checkbox"]],row:d=>`<b>${esc(d.title)}</b>${d.newbook?' <span class="new">NEW</span>':""}<br><small>${esc(d.author)} · ${esc(d.category)} · ${esc(d.shelf)}책장 ${esc(d.slot)}칸</small>`},
+fit:{c:"fit_equipment",o:1,f:[["group","1차 분류","select",GR],["name","기구명 (2차 분류)","text"],["photo","사진","file"]],row:d=>`<small>${esc(d.group)}</small><br><b>${esc(d.name)}</b>`}};
+const notice=()=>({c:sp+"_notices",o:1,f:[["title","제목","text"],["body","내용","textarea"]],row:d=>`<b>${esc(d.title)}</b><br><small>${esc(d.body)}</small>`});
+let sp="lib",tab="dash",subs=[],rowsC=[],curR=null;
+const ms=r=>r.createdAt?.toMillis?r.createdAt.toMillis():Date.parse(r.createdAt)||0;
+const dt=r=>ms(r)?new Date(ms(r)).toLocaleString("ko-KR"):"";
+const fields=x=>Object.entries(x).filter(([a])=>!a.startsWith("_")&&(!HID.includes(a)||(a=="type"&&x._k=="volunteer")));
+const col=t=>t=="notices"?sp+"_notices":RES[sp].c;
+onAuthStateChanged(auth,u=>{$("login").hidden=!!u;$("app").hidden=!u;if(u)show()});
+$("login").onsubmit=async e=>{e.preventDefault();try{await signInWithEmailAndPassword(auth,$("em").value,$("pw").value)}catch{$("lm").textContent="로그인에 실패했어요."}};
+$("out").onclick=()=>signOut(auth);
+const sync=async(id,p)=>{const x=subs.find(y=>y.id==id);if(!x||!(TYPES[x._k]||{}).board)return;try{await put(sp+"_board",id,{type:x._k,title:bTitle({...x,type:x._k}),group:x.group||"",status:x.status||"",reason:x.reason||"",...(x._k=="bookreq"?{author:x.author||"",publisher:x.publisher||""}:{}),...(ms(x)?{createdAt:ts(ms(x))}:{}),...p},1)}catch(e){console.error(e)}};
+const backfill=async()=>{try{const have=new Set((await list(sp+"_board",0)).map(x=>x.id));for(const x of subs)if((TYPES[x._k]||{}).board&&!have.has(x.id))await sync(x.id,{})}catch(e){console.error(e)}};
+function csv(rows){const ks=[...new Set(rows.flatMap(r=>fields(r).map(([a])=>a)))],g=(r,k)=>fields(r).some(([a])=>a==k)?r[k]:"";
+const q=v=>{v=String(v??"");if(/^[=+\-@]/.test(v))v="'"+v;return'"'+v.replace(/"/g,'""')+'"'};
+const L=[["유형","접수일","상태","사유",...ks.map(k=>K[k]||k)],...rows.map(r=>[(TYPES[r._k]||{}).l,dt(r),r.status,r.reason,...ks.map(k=>g(r,k))])].map(a=>a.map(q).join(","));
+const a=document.createElement("a");a.href=URL.createObjectURL(new Blob(["\uFEFF"+L.join("\r\n")],{type:"text/csv"}));a.download=SPACES[sp].n+"_접수내역.csv";a.click()}
+async function show(){document.documentElement.className=sp;
+document.querySelectorAll("[data-sp]").forEach(b=>b.classList.toggle("on",b.dataset.sp==sp));
+$("tabs").innerHTML=[["dash","현황"],["set","운영설정"],["subs","접수내역"],["notices","공지"],["res",sp=="lib"?"도서":"기구·사진"]].map(([k,l])=>`<button data-t="${k}"${k==tab?' class="on"':""}>${l}</button>`).join("");
+try{await({dash:dashTab,set:setTab,subs:subsTab}[tab]||listTab)()}catch(e){console.error(e);$("body").innerHTML='<div class="card">불러오지 못했어요. 규칙과 관리자 이메일을 확인하세요.</div>'}}
+async function setTab(){const sv=await site(sp),c={mode:"auto",days:[1,2,3,4,5],start:"09:00",end:"18:00",note:"",...sv},o=openState(c);
+$("body").innerHTML=`<form id="sf" class="card"><div class="msg" style="margin:0${sv?"":";color:#b42318"}">${sv?`지금 홈 화면 표시: ${o.open?"운영중":"운영종료"}`:"아직 저장 전이에요. 저장해야 홈 화면에 표시돼요."}</div><label>운영 방식</label><div class="seg" id="mode">${[["auto","자동(시간표)"],["open","운영중"],["closed","운영안함"]].map(([v,l])=>`<button type="button" data-m="${v}"${c.mode==v?' class="on"':""}>${l}</button>`).join("")}</div><small class="hint">자동은 아래 요일·시간에 맞춰 표시하고, 운영중/운영안함은 시간표와 상관없이 고정해요.</small><label>운영 요일</label><div class="days">${[1,2,3,4,5,6,0].map(n=>`<label class="chk"><input type="checkbox" value="${n}"${c.days.includes(n)?" checked":""}>${DAYS[n]}</label>`).join("")}</div><label>운영 시간</label><div class="two"><input type="time" id="st" value="${c.start}" aria-label="시작"><input type="time" id="en" value="${c.end}" aria-label="종료"></div><label for="nt">안내 문구 (선택)</label><input id="nt" value="${esc(c.note)}" placeholder="예: 오늘은 오후 2시부터 운영해요"><button class="go">저장</button><div class="msg" id="sm"></div></form>`;
+$("sf").onsubmit=async e=>{e.preventDefault();await setSite(sp,{mode:document.querySelector("#mode .on").dataset.m,days:[...document.querySelectorAll(".days input:checked")].map(x=>+x.value),start:$("st").value,end:$("en").value,note:$("nt").value.trim()});$("sm").textContent="저장했어요. 홈 화면에 바로 반영돼요."}}
+async function subsTab(){const rows=[];
+if(sp=="lib")for(const[k,c]of[["volunteer","volunteer_applications"],["bookreq","book_requests"]])(await list(c,0)).forEach(x=>rows.push({...x,_k:k,_c:c,...(CODE[x.status]?{status:CODE[x.status]}:{})}));
+else(await list("fit_submissions")).forEach(x=>rows.push({...x,_k:x.type,_c:"fit_submissions"}));
+subs=rows.sort((a,b)=>ms(b)-ms(a));await backfill();
+$("body").innerHTML=`<div class="card"><select id="flt" aria-label="유형"><option value="">전체</option>${SPACES[sp].types.map(k=>`<option value="${k}">${TYPES[k].l}</option>`).join("")}</select><button type="button" class="go" id="xls" style="margin-top:12px;padding:12px">엑셀(CSV) 내려받기</button></div><div id="subs"></div>`;
+const cur=()=>subs.filter(x=>!$("flt").value||x._k==$("flt").value);
+const draw=()=>{$("subs").innerHTML=cur().map(x=>{const T=TYPES[x._k]||{l:x._k},o=T.st,cs=x.status||(o&&o[0]);return`<div class="card"><b>${T.l}</b> <small>${dt(x)}</small>${o?` <span class="st st-${SC[cs]||"wait"}">${esc(cs)}</span>`:""}${fields(x).map(([a,b])=>`<div style="margin-top:4px">${K[a]||a}: ${esc(b)}</div>`).join("")}<div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">${o?`<select style="width:auto" data-s="${x.id}">${o.map(s=>`<option${s==cs?" selected":""}>${s}</option>`).join("")}</select>`:""}<button class="sm danger" data-d="${x.id}">삭제</button></div>${T.no&&cs==T.no?`<textarea data-r="${x.id}" placeholder="${T.no} 사유를 적어주세요" style="margin-top:10px">${esc(x.reason)}</textarea><button class="sm" data-rs="${x.id}" style="margin-top:8px">사유 저장</button>`:""}</div>`}).join("")||'<div class="empty">접수 내역이 없어요.</div>'};
+$("flt").onchange=draw;$("xls").onclick=()=>csv(cur());draw()}
+const XCARD=`<div class="card"><b>엑셀 일괄 등록</b><small class="hint">열 이름: 도서명 · 저자 · 출판사 · 분류 · 책장 · 칸 · 신간(Y/N). 분류는 성인/청소년/어린이/어린이전용/자기개발/기타 중에서 적어주세요.</small><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px"><button class="sm" type="button" id="tpl">양식 내려받기</button><button class="sm" type="button" id="dl">도서 목록 내려받기</button><label class="sm" style="display:inline-block;margin:0;cursor:pointer">엑셀 올리기<input type="file" id="xin" accept=".xlsx,.xls,.csv" hidden></label></div><div class="msg" id="xm"></div></div>`;
+const xl=()=>window.XLSX?Promise.resolve(window.XLSX):new Promise((ok,no)=>{const s=document.createElement("script");s.src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js";s.onload=()=>ok(window.XLSX);s.onerror=no;document.head.appendChild(s)});
+const HEAD=["도서명","저자","출판사","분류","책장","칸","신간"];
+const save=async(name,rows)=>{const X=await xl(),w=X.utils.book_new();X.utils.book_append_sheet(w,X.utils.aoa_to_sheet([HEAD,...rows]),"도서");X.writeFile(w,name)};
+function xbind(){
+$("tpl").onclick=()=>save("도서등록_양식.xlsx",[["예시 도서","홍길동","예시출판사","성인","A",1,"N"]]);
+$("dl").onclick=()=>save("도서목록.xlsx",rowsC.map(b=>[b.title,b.author,b.publisher||"",b.category,b.shelf,b.slot,b.newbook?"Y":"N"]));
+$("xin").onchange=async e=>{const f=e.target.files[0];if(!f)return;const X=await xl(),wb=X.read(await f.arrayBuffer()),r=X.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]],{defval:""}),t=new Date().toISOString().slice(0,10),have=new Set(rowsC.map(b=>b.title+"|"+b.author)),v=(x,k)=>String(x[k]??"").trim();let ok=0,skip=0;
+for(const x of r){const it={title:v(x,"도서명"),author:v(x,"저자"),publisher:v(x,"출판사"),category:CATS.includes(v(x,"분류"))?v(x,"분류"):"기타",shelf:v(x,"책장"),slot:Math.min(6,Math.max(1,Number(x["칸"])||1)),newbook:/^(y|예|o|1|true)$/i.test(v(x,"신간")),imgUrl:"",date:t};
+if(!it.title||have.has(it.title+"|"+it.author)){skip++;continue}
+try{await add("books",it);have.add(it.title+"|"+it.author);ok++;$("xm").textContent=`등록 중… ${ok}권`}catch{skip++}}
+alert(`${ok}권을 등록했어요. (건너뜀 ${skip}건: 빈 제목 또는 이미 있는 도서)`);show()}}
+async function dashTab(){let boxes,extra="";
+if(sp=="lib"){const[b,v,r]=await Promise.all([list("books",0),list("volunteer_applications",0),list("book_requests",0)]),cat={};b.forEach(x=>{const c=x.category||"기타";cat[c]=(cat[c]||0)+1});
+boxes=[["전체 도서",b.length+"권"],["신간",b.filter(x=>x.newbook).length+"권"],["희망도서 처리 대기",r.filter(x=>!x.status||["pending","접수완료"].includes(x.status)).length+"건"],["봉사 신청 대기",v.filter(x=>!x.status||x.status=="신청접수").length+"건"]];
+extra=`<div class="card"><b>분류별 도서</b><div class="days" style="margin-top:10px">${Object.entries(cat).map(([k,n])=>`<span class="chk">${esc(k)} ${n}권</span>`).join("")||"-"}</div></div>`}
+else{const[e,s]=await Promise.all([list("fit_equipment"),list("fit_submissions")]);boxes=[["등록 기구",e.length+"대"],["수리 접수",s.filter(x=>x.type=="repair"&&x.status!="수리완료").length+"건"],["희망기구 검토중",s.filter(x=>x.type=="equip"&&(!x.status||x.status=="검토예정")).length+"건"],["건의사항",s.filter(x=>x.type=="suggest").length+"건"]]}
+const sv=await site(sp),o=sv&&openState(sv);
+$("body").innerHTML=`<div class="stats">${boxes.map(([l,n])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("")}</div>${extra}<div class="card">홈 화면 표시: <b>${o?(o.open?"운영중":"운영종료"):"미설정 (운영설정에서 저장해 주세요)"}</b></div>`}
+const fld=([n,l,ty,o])=>ty=="checkbox"?`<label class="chk" style="margin-top:14px"><input type="checkbox" id="a_${n}">${l}</label>`:`<label for="a_${n}">${l}</label>`+(ty=="select"?`<select id="a_${n}">${o.map(x=>`<option>${x}</option>`).join("")}</select>`:ty=="textarea"?`<textarea id="a_${n}" required></textarea>`:`<input id="a_${n}" type="${ty}"${ty=="file"?' accept="image/*"':ty=="number"?' min="1" max="6"':""}${o===0||ty=="file"?"":" required"}>`);
+async function listTab(){const R=curR=tab=="notices"?notice():RES[sp];rowsC=await list(R.c,R.o);if(R.c=="books")rowsC.sort((a,b)=>(b.date||"").localeCompare(a.date||""));
+$("body").innerHTML=`${R.c=="books"?XCARD:""}<form id="af" class="card">${R.f.map(fld).join("")}<button class="go">추가</button></form>${rowsC.map(d=>{const u=d.imgUrl||d.photo;return`<div class="card row">${u?`<img class="thumb" src="${esc(u)}" alt="">`:""}<div style="flex:1">${R.row(d)}</div>${R.c=="books"?`<button class="sm" data-nb="${d.id}" data-v="${d.newbook?0:1}">${d.newbook?"신간 해제":"신간 지정"}</button>`:""}<button class="sm" data-ed="${d.id}">수정</button><button class="sm danger" data-d="${d.id}">삭제</button></div>`}).join("")||'<div class="empty">등록된 항목이 없어요.</div>'}`;
+if(R.c=="books")xbind();
+$("af").onsubmit=async e=>{e.preventDefault();const id=$("af").dataset.ed,d={};for(const[n,,ty]of R.f){const el=$("a_"+n);if(ty=="file"){if(el.files[0])d[n]=await shrink(el.files[0]);else if(!id)d[n]="";continue}d[n]=ty=="checkbox"?el.checked:ty=="number"?+el.value:el.value.trim()}
+if(id)await upd(R.c,id,d);else{if(R.c=="books")d.date=new Date().toISOString().slice(0,10);await add(R.c,d)}show()}}
+document.addEventListener("click",async e=>{const t=e.target.dataset;
+if(t.sp){sp=t.sp;tab="set";show()}
+if(t.t){tab=t.t;show()}
+if(t.m)document.querySelectorAll("#mode button").forEach(b=>b.classList.toggle("on",b==e.target));
+if(t.nb){await upd("books",t.nb,{newbook:t.v=="1"});show()}
+if(t.ed){const d=rowsC.find(y=>y.id==t.ed);for(const[n,,ty]of curR.f){const el=$("a_"+n);if(!el||ty=="file")continue;if(ty=="checkbox")el.checked=!!d[n];else el.value=d[n]??""}$("af").dataset.ed=t.ed;$("af").querySelector(".go").textContent="수정 저장";scrollTo(0,0)}
+if(t.rs){const x=subs.find(y=>y.id==t.rs),rs=document.querySelector('[data-r="'+t.rs+'"]').value.trim();await upd(x._c,t.rs,{reason:rs});await sync(t.rs,{reason:rs});x.reason=rs;alert("저장했어요.")}
+if(t.d&&confirm("삭제할까요?")){if(tab=="subs"){const x=subs.find(y=>y.id==t.d);await del(x._c,t.d);if((TYPES[x._k]||{}).board)del(sp+"_board",t.d).catch(()=>{})}else await del(col(tab),t.d);show()}});
+document.addEventListener("change",async e=>{const s=e.target.dataset.s;if(s){const x=subs.find(y=>y.id==s),v=e.target.value,T=TYPES[x._k],p=v==T.no?{status:v}:{status:v,reason:""};await upd(x._c,s,p);await sync(s,p);show()}});
+</script></body></html>

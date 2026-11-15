@@ -45,7 +45,7 @@ body{min-height:100dvh;display:flex;flex-direction:column;font-family:"Noto Sans
 <script type="module">
 import{site,openState,esc}from"./common.js";
 const cfg={};
-const draw=()=>{for(const id of["lib","fit"]){const el=document.getElementById("live-"+id),c=cfg[id];if(!c){el.innerHTML="";continue}const o=openState(c);el.innerHTML=`<span class="pill ${o.open?"on":"off"}"><i></i>${o.open?"지금 운영중":"운영종료"}</span>${o.hrs?`<span class="hrs">${esc(o.hrs)}</span>`:""}${o.note?`<div class="note">${esc(o.note)}</div>`:""}`}};
+const draw=()=>{for(const id of["lib","fit"]){const el=document.getElementById("live-"+id),c=cfg[id];if(!c){el.innerHTML='<span class="pill"><i style="background:#98a2b3;animation:none"></i>운영 안내 준비중</span>';continue}const o=openState(c);el.innerHTML=`<span class="pill ${o.open?"on":"off"}"><i></i>${o.open?"지금 운영중":"운영종료"}</span>${o.hrs?`<span class="hrs">${esc(o.hrs)}</span>`:""}${o.note?`<div class="note">${esc(o.note)}</div>`:""}`}};
 Promise.all(["lib","fit"].map(async id=>{try{cfg[id]=await site(id)}catch{}})).then(draw);
 setInterval(draw,60000);
 </script>
