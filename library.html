@@ -1,29 +1,33 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><link rel="stylesheet" href="style.css"><link rel="stylesheet" href="fit.css"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<title>효성해링턴 작은도서관</title></head><body>
-<div class="top-header">
-<h1>남율 효성해링턴 2단지 작은도서관</h1>
-<div class="search-box"><i class="fa-solid fa-magnifying-glass"></i><input id="search" type="text" placeholder="초성/제목/저자로 검색하세요."></div>
-</div>
-<div class="section-title">신간 도서</div>
-<div id="newBooks"></div>
-<div class="section-title">도서 카테고리</div>
-<div class="category-grid">
-<div class="category-item active" data-category="전체"><i class="fa-solid fa-book"></i><span>전체</span></div>
-<div class="category-item" data-category="성인"><i class="fa-solid fa-user"></i><span>성인</span></div>
-<div class="category-item" data-category="청소년"><i class="fa-solid fa-user-group"></i><span>청소년</span></div>
-<div class="category-item" data-category="어린이"><i class="fa-solid fa-child"></i><span>어린이</span></div>
-<div class="category-item" data-category="자기개발"><i class="fa-solid fa-seedling"></i><span>자기개발</span></div>
-<div class="category-item" data-category="기타"><i class="fa-solid fa-layer-group"></i><span>기타</span></div>
-</div>
-<div class="section-title">도서 목록</div>
-<div id="bookList"></div>
-<div id="detailModal" class="modal"><div class="modal-content"><h2 id="detailTitle"></h2><div id="detailAuthor"></div><div id="shelfView"></div><button id="closeBtn">닫기</button></div></div>
-<div class="bottom-nav">
-<a href="index.html" class="nav-item"><i class="fa-solid fa-table-cells-large"></i><span>메인</span></a>
-<a href="library.html" class="nav-item active"><i class="fa-solid fa-house"></i><span>도서관</span></a>
-<a href="volunteer.html" class="nav-item"><i class="fa-solid fa-hand-holding-heart"></i><span>봉사신청</span></a>
-<a href="request.html" class="nav-item"><i class="fa-solid fa-book-bookmark"></i><span>희망도서</span></a>
-<a href="admin-login.html" class="nav-item"><i class="fa-solid fa-user-shield"></i><span>관리자</span></a>
-</div>
-<script type="module" src="app.js"></script>
-</body></html>
+<!DOCTYPE html><html lang="ko" class="lib"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700;900&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="app.css"><title>작은도서관</title></head><body>
+<header class="gh"><a class="back" href="index.html"><i class="fa-solid fa-chevron-left"></i> 메인</a><h1>작은도서관</h1><p>남율 효성해링턴 2단지</p>
+<div class="search"><i class="fa-solid fa-magnifying-glass"></i><input id="q" placeholder="초성/제목/저자로 검색하세요" aria-label="도서 검색"></div></header>
+<main>
+<div id="nw" hidden><h2>공지사항</h2><ul class="board" id="notices"></ul></div>
+<h2>신간 도서</h2><div class="hs" id="news"></div>
+<h2>도서 목록</h2><div class="chips" id="chips"></div><div id="list"><div class="empty">불러오는 중…</div></div>
+</main>
+<div class="sheet" id="sheet"><div><h2 id="dt"></h2><p id="da" style="color:var(--mute);font-size:14px"></p><span class="loc" id="dl"></span><div id="ds"></div><button class="go" id="cl" type="button">닫기</button></div></div>
+<script type="module">
+import{list,nav,esc}from"./common.js";
+nav("lib");
+const $=id=>document.getElementById(id);
+const ini=s=>[...s].map(c=>{const k=c.charCodeAt(0)-44032;return k>-1&&k<11172?"ㄱㄲㄴㄷㄸㄹㅁㅂㅃㅅㅆㅇㅈㅉㅊㅋㅌㅍㅎ"[Math.floor(k/588)]:c}).join("");
+const CATS=["전체","성인","청소년","어린이","자기개발","기타"];
+let books=[],cat="전체";
+$("chips").innerHTML=CATS.map(c=>`<button data-c="${c}"${c==cat?' class="on"':""}>${c}</button>`).join("");
+const cover=b=>b.imgUrl?`<img class="cover" src="${esc(b.imgUrl)}" alt="">`:'<div class="cover">이미지 없음</div>';
+const sort=a=>[...a].sort((x,y)=>(!!y.newbook-!!x.newbook)||((y.date?new Date(y.date):0)-(x.date?new Date(x.date):0))||(x.title||"").localeCompare(y.title||"","ko"));
+const row=b=>`<div class="item" data-id="${esc(b.id)}">${cover(b)}<div><b>${esc(b.title)}${b.newbook?'<span class="new">NEW</span>':""}</b><br><small>${esc(b.author)} · ${esc(b.publisher||"정보없음")}</small><br><small>${esc(b.category||"기타")}</small></div></div>`;
+const tile=b=>`<div class="bk" data-id="${esc(b.id)}">${cover(b)}<b>${esc(b.title)}</b><small>${esc(b.author)}</small></div>`;
+function draw(){const q=$("q").value.trim().toLowerCase(),s=sort(books);
+$("list").innerHTML=s.filter(b=>(cat=="전체"||b.category==cat)&&(!q||[b.title,b.author,b.publisher].some(v=>(v||"").toLowerCase().includes(q))||ini(b.title||"").includes(q))).map(row).join("")||'<div class="empty">검색 결과가 없어요.</div>';
+$("news").innerHTML=s.filter(b=>b.newbook).map(tile).join("")||'<div class="empty">신간이 없어요.</div>'}
+const shelf=b=>b.category=="어린이전용"?'<div class="shelf"><div class="on" style="height:60px">어린이전용 책장</div></div>':`<div class="shelf">${[6,5,4,3,2,1].map(i=>`<div${Number(b.slot)==i?' class="on"':""}>${i}칸</div>`).join("")}</div>`;
+$("q").oninput=draw;
+document.addEventListener("click",e=>{
+const c=e.target.closest("[data-c]");if(c){cat=c.dataset.c;document.querySelectorAll("#chips button").forEach(x=>x.classList.toggle("on",x==c));draw()}
+const i=e.target.closest("[data-id]");if(i){const b=books.find(x=>x.id==i.dataset.id);$("dt").textContent=b.title||"";$("da").textContent=`${b.author||""} · ${b.publisher||"정보없음"}`;$("dl").textContent=b.category=="어린이전용"?"어린이전용 책장":`${b.shelf||"-"} 책장 · ${b.slot||"-"}칸`;$("ds").innerHTML=shelf(b);$("sheet").classList.add("on")}
+if(e.target.id=="cl"||e.target.id=="sheet")$("sheet").classList.remove("on")});
+list("books",0).then(r=>{books=r;draw()}).catch(()=>{$("list").innerHTML='<div class="empty">도서 데이터를 불러오지 못했어요.</div>'});
+list("lib_notices").then(r=>{if(!r.length)return;$("nw").hidden=false;$("notices").innerHTML=r.slice(0,3).map(n=>`<li><time>${n.createdAt?.toDate?.().toLocaleDateString("ko-KR")||""}</time><b>${esc(n.title)}</b><p>${esc(n.body)}</p></li>`).join("")}).catch(()=>{});
+</script></body></html>

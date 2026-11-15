@@ -1,31 +1,35 @@
-<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>접수</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="gym.css"></head><body>
-<header class="gh"><a class="back" href="fitness.html"><i class="fa-solid fa-chevron-left"></i> 휘트니스 센터</a><h1 id="h"></h1><p id="sub"></p></header>
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Noto+Serif+KR:wght@700;900&display=swap"><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"><link rel="stylesheet" href="app.css"><script>var q=new URLSearchParams(location.search),tt=q.get("t");document.documentElement.className=q.get("s")=="lib"||tt=="volunteer"||tt=="bookreq"?"lib":"fit"</script><title>접수</title></head><body>
+<header class="gh"><a class="back" id="back" href="#"><i class="fa-solid fa-chevron-left"></i> <span id="bk"></span></a><h1 id="h"></h1><p id="sub"></p></header>
 <main><form id="f"><div id="picker"></div><div id="fields"></div><button class="go" id="go">접수하기</button><div class="msg" id="msg"></div></form></main>
 <script type="module">
-import{put,newId,list,nav,esc}from"./fit.js";
-const T={
-repair:{title:"수리요청",status:"수리접수",sub:"고장난 기구와 증상을 알려주세요",pick:1,f:[["name","이름(선택)","text",0],["detail","증상","textarea"]]},
-equip:{title:"희망기구추천",status:"검토예정",sub:"들여왔으면 하는 기구를 추천해 주세요",f:[["item","추천 기구","text"],["memo","추천 이유(선택)","textarea",0]]},
-suggest:{title:"건의사항",sub:"이용하며 느낀 점을 남겨주세요",f:[["subject","제목","text"],["memo","내용","textarea"],["name","이름(선택)","text",0]]}};
-const t=new URLSearchParams(location.search).get("t"),c=T[t]||T.suggest,$=id=>document.getElementById(id);
-document.title=c.title;$("h").textContent=c.title;$("sub").textContent=c.sub;nav();
-$("fields").innerHTML=c.f.map(([k,l,ty,r])=>`<label for="f_${k}">${l}</label>`+(ty=="textarea"?`<textarea id="f_${k}" ${r===0?"":"required"}></textarea>`:`<input id="f_${k}" type="${ty}" ${r===0?"":"required"}>`)).join("");
+import{put,newId,list,nav,esc,TYPES,SPACES,bTitle}from"./common.js";
+const F={
+volunteer:{sub:"작은도서관 운영에 함께해 주세요",f:[["name","이름","text"],["phone","연락처","tel"],["date","희망 날짜","date"],["memo","남기실 말씀(선택)","textarea",0]]},
+bookreq:{sub:"읽고 싶은 책을 알려주세요",f:[["title","도서명","text"],["author","저자(선택)","text",0],["name","신청자(선택)","text",0],["memo","신청 이유(선택)","textarea",0]]},
+repair:{sub:"고장난 기구와 증상을 알려주세요",pick:1,f:[["name","이름(선택)","text",0],["detail","증상","textarea"]]},
+equip:{sub:"들여왔으면 하는 기구를 추천해 주세요",f:[["item","추천 기구","text"],["memo","추천 이유(선택)","textarea",0]]},
+suggest:{sub:"이용하며 느낀 점을 남겨주세요",f:[["subject","제목","text"],["memo","내용","textarea"],["name","이름(선택)","text",0]]}};
+const $=id=>document.getElementById(id),Q=new URLSearchParams(location.search),k=F[Q.get("t")]?Q.get("t"):"suggest",s=document.documentElement.className,c=F[k],T=TYPES[k],SP=SPACES[s];
+document.title=T.l;$("h").textContent=T.l;$("sub").textContent=c.sub;$("back").href=SP.page;$("bk").textContent=SP.n;nav(s);
+$("fields").innerHTML=c.f.map(([n,l,ty,r])=>`<label for="f_${n}">${l}</label>`+(ty=="textarea"?`<textarea id="f_${n}" ${r===0?"":"required"}></textarea>`:`<input id="f_${n}" type="${ty}" ${r===0?"":"required"}>`)).join("");
 let sel=null,grp=null,eq=[],ready;
 if(c.pick){
 ready=list("fit_equipment").then(r=>eq=r).catch(()=>{});
 $("picker").innerHTML=`<label>기구 종류</label><div class="seg">${["유산소기구","웨이트머신","기타"].map(g=>`<button type="button" data-g="${g}">${g}</button>`).join("")}</div><div id="eqWrap" hidden><label>기구 선택</label><div class="tiles" id="tiles"></div><img id="eqBig" class="big" alt="" hidden></div>`;
 document.addEventListener("click",async e=>{
-const k=e.target.closest("[data-g]");
-if(k){await ready;grp=k.dataset.g;sel=null;$("eqBig").hidden=true;$("eqWrap").hidden=false;document.querySelectorAll("[data-g]").forEach(x=>x.classList.toggle("on",x==k));
+const b=e.target.closest("[data-g]");
+if(b){await ready;grp=b.dataset.g;sel=null;$("eqBig").hidden=true;$("eqWrap").hidden=false;document.querySelectorAll("[data-g]").forEach(x=>x.classList.toggle("on",x==b));
 $("tiles").innerHTML=eq.filter(x=>x.group==grp).map(x=>`<button type="button" class="tile" data-e="${esc(x.id)}">${x.photo?`<img src="${esc(x.photo)}" alt="">`:'<div class="ph">사진 없음</div>'}<span>${esc(x.name)}</span></button>`).join("")||'<div class="empty">등록된 기구가 없어요. 증상에 기구 이름을 적어주세요.</div>'}
 const p=e.target.closest("[data-e]");
 if(p){sel=eq.find(x=>x.id==p.dataset.e);document.querySelectorAll("[data-e]").forEach(x=>x.classList.toggle("on",x==p));$("eqBig").hidden=!sel.photo;if(sel.photo)$("eqBig").src=sel.photo}})}
 $("f").onsubmit=async e=>{e.preventDefault();
 if(c.pick){if(!grp)return alert("기구 종류를 선택하세요.");if(!sel&&eq.some(x=>x.group==grp))return alert("기구를 선택하세요.")}
-const d={type:t};if(c.status)d.status=c.status;c.f.forEach(([k])=>d[k]=$("f_"+k).value.trim());
+const d={type:k};if(T.st)d.status=T.st[0];c.f.forEach(([n])=>d[n]=$("f_"+n).value.trim());
 if(c.pick){d.group=grp;d.equipment=sel?sel.name:"";d.equipmentId=sel?sel.id:""}
 $("go").disabled=true;
-try{const id=newId();await put("fit_submissions",id,d);if(t!="suggest")try{await put("fit_board",id,{type:t,title:(t=="repair"?(d.equipment||d.group):d.item).slice(0,60),group:d.group||"",status:d.status})}catch{}$("f").reset();sel=null;document.querySelectorAll(".on[data-e]").forEach(x=>x.classList.remove("on"));if(c.pick)$("eqBig").hidden=true;$("msg").textContent="접수되었어요. 감사합니다."}
+try{const id=newId(s+"_submissions");await put(s+"_submissions",id,d);
+if(T.board)try{await put(s+"_board",id,{type:k,title:bTitle(d),group:d.group||"",status:d.status})}catch{}
+$("f").reset();sel=null;document.querySelectorAll(".on[data-e]").forEach(x=>x.classList.remove("on"));if(c.pick)$("eqBig").hidden=true;$("msg").textContent="접수되었어요. 감사합니다."}
 catch{$("msg").textContent="접수에 실패했어요. 잠시 후 다시 시도해 주세요."}
 $("go").disabled=false};
 </script></body></html>
