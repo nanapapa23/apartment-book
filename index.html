@@ -379,14 +379,15 @@
     import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
     // ⚠️ [필수] 본인의 Firebase 프로젝트 설정값을 아래에 붙여넣으세요!
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT_ID.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
+const firebaseConfig = {
+  apiKey: "AIzaSyDkf11w1Bu5IZ_sggCT_GqMjTKnFy9fyuE",
+  authDomain: "chilgokbookcafe.firebaseapp.com",
+  projectId: "chilgokbookcafe",
+  storageBucket: "chilgokbookcafe.firebasestorage.app",
+  messagingSenderId: "150579513603",
+  appId: "1:150579513603:web:bc76fe94bbddf244084136"
+};
+
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
