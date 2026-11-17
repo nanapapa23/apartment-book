@@ -149,9 +149,12 @@
     <main id="section-library" class="hidden p-4 space-y-4 flex-1 animate-fade">
       <div id="view-lib-books" class="space-y-3">
         <div class="admin-only hidden bg-white rounded-2xl p-3.5 naver-shadow border border-emerald-200 space-y-2.5">
-          <div class="flex items-center justify-between">
-            <span class="text-xs font-extrabold text-gray-800">도서 및 엑셀 관리</span>
-            <button onclick="openModal('modal-add-book')" class="px-3 py-1.5 bg-[#2E7D67] text-white text-xs font-bold rounded-lg">+ 도서 등록</button>
+          <div class="flex items-center justify-between gap-1.5">
+            <span class="text-xs font-extrabold text-gray-800">도서 및 메뉴 관리</span>
+            <div class="flex gap-1.5">
+              <button onclick="openDropdownManageModal()" class="px-2.5 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-bold rounded-lg">드롭다운 설정</button>
+              <button onclick="openModal('modal-add-book')" class="px-3 py-1.5 bg-[#2E7D67] text-white text-xs font-bold rounded-lg">+ 도서 등록</button>
+            </div>
           </div>
           <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
             <button onclick="exportBooksToExcel()" class="py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1">
@@ -177,30 +180,45 @@
           <div class="flex items-center justify-between">
             <div>
               <h2 class="text-base font-extrabold text-gray-900">도서관 자원봉사 신청</h2>
-              <p class="text-xs text-gray-500 mt-0.5">공지사항 확인 후 신청이 가능합니다.</p>
+              <p class="text-xs text-gray-500 mt-0.5">공지사항 확인 후 원하는 날짜·시간을 직접 선택하세요.</p>
             </div>
             <button onclick="openVolunteerNotice()" class="px-3.5 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-xs font-extrabold">공지필독</button>
           </div>
 
-          <div id="volunteerFormWrapper" class="space-y-3 pt-3 border-t border-gray-100 opacity-40 pointer-events-none transition">
+          <div id="volunteerFormWrapper" class="space-y-3.5 pt-3 border-t border-gray-100 opacity-40 pointer-events-none transition">
             <div class="grid grid-cols-3 gap-2">
               <input type="text" id="volDong" placeholder="동 (201)" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
               <input type="text" id="volHo" placeholder="호 (101)" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
               <input type="text" id="volName" placeholder="성함" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 희망일</label>
-              <input type="date" id="volDate" onchange="updateVolunteerTimeOptions()" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 희망 날짜 (요일 자동표시)</label>
+              <div class="flex items-center gap-2">
+                <input type="date" id="volDate" onchange="updateVolunteerDayLabel()" class="flex-1 px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+                <span id="volDayLabel" class="px-3 py-2.5 bg-emerald-50 text-[#2E7D67] font-extrabold text-xs rounded-xl shrink-0">요일 미선택</span>
+              </div>
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 시간대 <span id="volDayTypeBadge" class="text-[#2E7D67]"></span></label>
-              <select id="volTimeSlot" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-                <option value="">날짜를 먼저 선택해 주세요</option>
-              </select>
+              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 시간 구분</label>
+              <div class="grid grid-cols-2 gap-2">
+                <label class="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50 text-xs font-extrabold cursor-pointer has-[:checked]:bg-emerald-50 has-[:checked]:border-[#2E7D67] has-[:checked]:text-[#2E7D67]">
+                  <input type="radio" name="volDuration" value="2시간" checked onchange="autoCalcEndTime()" class="accent-[#2E7D67]"> 2시간 봉사
+                </label>
+                <label class="flex items-center justify-center gap-1.5 p-2.5 rounded-xl border border-gray-200 bg-gray-50 text-xs font-extrabold cursor-pointer has-[:checked]:bg-emerald-50 has-[:checked]:border-[#2E7D67] has-[:checked]:text-[#2E7D67]">
+                  <input type="radio" name="volDuration" value="4시간" onchange="autoCalcEndTime()" class="accent-[#2E7D67]"> 4시간 봉사
+                </label>
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 희망 시간 직접 설정 (시작 ~ 종료)</label>
+              <div class="grid grid-cols-2 gap-2 items-center">
+                <input type="time" id="volStartTime" value="18:00" onchange="autoCalcEndTime()" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold">
+                <input type="time" id="volEndTime" value="20:00" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm font-bold">
+              </div>
             </div>
             <button onclick="submitVolunteer()" class="w-full py-3.5 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm shadow-sm active:scale-[0.99] transition">봉사 신청 접수</button>
           </div>
-          <p id="volLockHint" class="text-center text-xs text-amber-600 font-bold">👆 상단 [공지필독] 버튼을 눌러 확인하시면 입력창이 열립니다.</p>
+          <p id="volLockHint" class="text-center text-xs text-amber-600 font-bold">👆 안내 공지 팝업의 [확인했어요] 버튼을 누르시면 신청창이 열립니다.</p>
         </div>
 
         <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border border-emerald-200 space-y-3">
@@ -403,10 +421,19 @@
       <input type="text" id="newBookAuthor" placeholder="저자 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <input type="text" id="newBookPublisher" placeholder="출판사" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <input type="url" id="newBookCover" placeholder="이미지 URL (선택)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <input type="text" id="newBookCat" placeholder="카테고리 (예: 소설, 아동, 자기계발)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <div>
+        <label class="block text-[11px] font-bold text-gray-500 mb-1">도서 구분 (카테고리) *</label>
+        <select id="newBookCat" class="book-cat-select w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></select>
+      </div>
       <div class="grid grid-cols-2 gap-2">
-        <input type="text" id="newBookShelf" placeholder="책장 (예: A책장) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-        <input type="text" id="newBookShelfBin" placeholder="칸 (예: 3칸) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <div>
+          <label class="block text-[11px] font-bold text-gray-500 mb-1">책장 *</label>
+          <select id="newBookShelf" class="book-shelf-select w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-500 mb-1">칸수 *</label>
+          <select id="newBookShelfBin" class="book-bin-select w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></select>
+        </div>
       </div>
       <label class="flex items-center gap-2 text-xs font-bold text-[#2E7D67] pt-1">
         <input type="checkbox" id="newBookIsNew" class="w-4 h-4 rounded"> 신간 도서로 상단 하이라이트 표시
@@ -483,7 +510,31 @@
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4">
       <h3 class="text-base font-extrabold text-gray-900">📢 자원봉사 안내 공지</h3>
       <div id="volNoticeContent" class="bg-amber-50 rounded-2xl p-4 text-xs text-gray-700 leading-relaxed whitespace-pre-line"></div>
-      <button onclick="confirmVolunteerNotice()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">확인했습니다 (신청하기)</button>
+      <button onclick="confirmVolunteerNotice()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">확인했어요</button>
+    </div>
+  </div>
+
+  <!-- 관리자: 드롭다운 메뉴(도서구분/책장/칸수) 설정 모달 -->
+  <div id="modal-dropdown-settings" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-extrabold">도서 등록 드롭다운 항목 설정</h3>
+        <button onclick="closeModal('modal-dropdown-settings')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <p class="text-[11px] text-gray-500">쉼표(,)로 구분하여 입력하면 도서 등록/수정 시 드롭다운 메뉴에 즉시 반영됩니다.</p>
+      <div class="space-y-1.5">
+        <label class="block text-xs font-extrabold text-gray-800">📚 도서 구분 (카테고리)</label>
+        <textarea id="cfgBookCats" rows="2" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
+      </div>
+      <div class="space-y-1.5">
+        <label class="block text-xs font-extrabold text-gray-800">🗄️ 책장 목록 (기본 A~J)</label>
+        <textarea id="cfgBookShelves" rows="2" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
+      </div>
+      <div class="space-y-1.5">
+        <label class="block text-xs font-extrabold text-gray-800">🔢 칸수 목록 (기본 1~10)</label>
+        <textarea id="cfgBookBins" rows="2" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
+      </div>
+      <button onclick="saveDropdownSettings()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">드롭다운 설정 저장</button>
     </div>
   </div>
 
@@ -499,10 +550,19 @@
       <input type="text" id="editBookAuthor" placeholder="저자 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <input type="text" id="editBookPublisher" placeholder="출판사" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <input type="url" id="editBookCover" placeholder="이미지 URL" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <input type="text" id="editBookCat" placeholder="카테고리" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <div>
+        <label class="block text-[11px] font-bold text-gray-500 mb-1">도서 구분 (카테고리) *</label>
+        <select id="editBookCat" class="book-cat-select w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></select>
+      </div>
       <div class="grid grid-cols-2 gap-2">
-        <input type="text" id="editBookShelf" placeholder="책장 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-        <input type="text" id="editBookShelfBin" placeholder="칸 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <div>
+          <label class="block text-[11px] font-bold text-gray-500 mb-1">책장 *</label>
+          <select id="editBookShelf" class="book-shelf-select w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></select>
+        </div>
+        <div>
+          <label class="block text-[11px] font-bold text-gray-500 mb-1">칸수 *</label>
+          <select id="editBookShelfBin" class="book-bin-select w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></select>
+        </div>
       </div>
       <label class="flex items-center gap-2 text-xs font-bold text-[#2E7D67] pt-1">
         <input type="checkbox" id="editBookIsNew" class="w-4 h-4 rounded"> 신간 도서
@@ -751,6 +811,7 @@
       window.scrollTo({ top: 0 });
     };
 
+    let volNoticeConfirmed = false;
     window.switchSubTab = (group, sub) => {
       const views = group === 'lib' ? ['books', 'volunteer', 'wishbook'] : ['equip', 'repair', 'wishequip'];
       views.forEach(v => {
@@ -761,6 +822,10 @@
       document.getElementById(`view-${group}-${sub}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`sub-${group}-${sub}`);
       activeBtn.className = "py-3 text-xs font-extrabold text-[#2E7D67] border-b-2 border-[#2E7D67] transition";
+
+      if (group === 'lib' && sub === 'volunteer' && !volNoticeConfirmed) {
+        openVolunteerNotice();
+      }
     };
 
     window.openModal = (id) => { const m = document.getElementById(id); m.classList.remove('hidden'); m.classList.add('flex'); };
@@ -787,6 +852,10 @@
         document.getElementById(`${p}CloseTime`).value = opSettings[fac].close;
         document.querySelectorAll(`.${p}-day-chk`).forEach((chk, i) => chk.checked = opSettings[fac].days.includes(i));
       });
+      const ddCfg = await Store.getSetting('bookDropdownConfig');
+      if (ddCfg && ddCfg.categories) bookDropdownConfig = ddCfg;
+      syncBookDropdownOptions();
+
       refreshOperatingBadges();
     }
     initSettings();
@@ -934,8 +1003,60 @@
       alert('공지사항이 등록되었습니다.');
     };
 
+    // ---------------- 도서 드롭다운 항목 (책장 A~J, 칸수 1~10, 도서구분 + 관리자 수정) ----------------
+    let bookDropdownConfig = {
+      categories: ['소설', '아동', '자기계발', '인문', '역사', '과학', '경제/경영', '만화', '일반'],
+      shelves: ['A책장', 'B책장', 'C책장', 'D책장', 'E책장', 'F책장', 'G책장', 'H책장', 'I책장', 'J책장'],
+      bins: ['1칸', '2칸', '3칸', '4칸', '5칸', '6칸', '7칸', '8칸', '9칸', '10칸']
+    };
+
+    function syncBookDropdownOptions() {
+      // 현재 등록된 도서들의 카테고리도 자동으로 목록에 병합
+      const existingCats = allBooks.map(b => (b.category || '').trim()).filter(Boolean);
+      const mergedCats = Array.from(new Set([...bookDropdownConfig.categories, ...existingCats]));
+
+      document.querySelectorAll('.book-cat-select').forEach(sel => {
+        const cur = sel.value;
+        sel.innerHTML = mergedCats.map(c => `<option value="${c}">${c}</option>`).join('');
+        if (cur && mergedCats.includes(cur)) sel.value = cur;
+      });
+      document.querySelectorAll('.book-shelf-select').forEach(sel => {
+        const cur = sel.value;
+        sel.innerHTML = bookDropdownConfig.shelves.map(s => `<option value="${s}">${s}</option>`).join('');
+        if (cur && bookDropdownConfig.shelves.includes(cur)) sel.value = cur;
+      });
+      document.querySelectorAll('.book-bin-select').forEach(sel => {
+        const cur = sel.value;
+        sel.innerHTML = bookDropdownConfig.bins.map(b => `<option value="${b}">${b}</option>`).join('');
+        if (cur && bookDropdownConfig.bins.includes(cur)) sel.value = cur;
+      });
+    }
+
+    window.openDropdownManageModal = () => {
+      const existingCats = allBooks.map(b => (b.category || '').trim()).filter(Boolean);
+      const mergedCats = Array.from(new Set([...bookDropdownConfig.categories, ...existingCats]));
+      document.getElementById('cfgBookCats').value = mergedCats.join(', ');
+      document.getElementById('cfgBookShelves').value = bookDropdownConfig.shelves.join(', ');
+      document.getElementById('cfgBookBins').value = bookDropdownConfig.bins.join(', ');
+      openModal('modal-dropdown-settings');
+    };
+
+    window.saveDropdownSettings = async () => {
+      const cats = document.getElementById('cfgBookCats').value.split(',').map(s => s.trim()).filter(Boolean);
+      const shelves = document.getElementById('cfgBookShelves').value.split(',').map(s => s.trim()).filter(Boolean);
+      const bins = document.getElementById('cfgBookBins').value.split(',').map(s => s.trim()).filter(Boolean);
+      if (!cats.length || !shelves.length || !bins.length) return alert('각 항목을 최소 1개 이상 입력해 주세요.');
+
+      bookDropdownConfig = { categories: cats, shelves, bins };
+      await Store.setSetting('bookDropdownConfig', bookDropdownConfig);
+      syncBookDropdownOptions();
+      closeModal('modal-dropdown-settings');
+      alert('드롭다운 메뉴 항목이 저장되었습니다.');
+    };
+
     // ---------------- 도서 목록 & 엑셀 ----------------
     window.renderBooks = () => {
+      syncBookDropdownOptions();
       const kw = document.getElementById('bookSearchInput').value.toLowerCase();
       const newBooks = allBooks.filter(b => b.isNew);
       const filtered = allBooks.filter(b => 
@@ -1075,6 +1196,7 @@
     // ---------------- 봉사신청 & 희망도서 ----------------
     window.openVolunteerNotice = () => { document.getElementById('volNoticeContent').innerText = currentVolNotice; openModal('modal-vol-notice'); };
     window.confirmVolunteerNotice = () => {
+      volNoticeConfirmed = true;
       closeModal('modal-vol-notice');
       document.getElementById('volunteerFormWrapper').classList.remove('opacity-40', 'pointer-events-none');
       document.getElementById('volLockHint').classList.add('hidden');
@@ -1085,29 +1207,42 @@
       closeModal('modal-edit-notice');
       alert('봉사 공지가 저장되었습니다.');
     };
-    window.updateVolunteerTimeOptions = () => {
+    window.updateVolunteerDayLabel = () => {
       const val = document.getElementById('volDate').value;
-      if (!val) return;
-      const day = new Date(val).getDay();
-      const sel = document.getElementById('volTimeSlot');
-      const badge = document.getElementById('volDayTypeBadge');
-      if (day === 0 || day === 6) {
-        badge.innerText = "(주말: 2시간 / 4시간 단위)";
-        sel.innerHTML = `<option value="오전 10:00~12:00 (2시간)">오전 10:00~12:00 (2시간)</option><option value="오후 13:00~15:00 (2시간)">오후 13:00~15:00 (2시간)</option><option value="오후 15:00~17:00 (2시간)">오후 15:00~17:00 (2시간)</option><option value="오전 10:00~14:00 (4시간)">오전 10:00~14:00 (4시간)</option><option value="오후 13:00~17:00 (4시간)">오후 13:00~17:00 (4시간)</option>`;
-      } else {
-        badge.innerText = "(평일 2시간 기본)";
-        sel.innerHTML = `<option value="평일 18:00~20:00 (2시간)">18:00 ~ 20:00 (2시간)</option>`;
-      }
+      const label = document.getElementById('volDayLabel');
+      if (!val) { label.innerText = '요일 미선택'; return; }
+      const d = new Date(val);
+      label.innerText = dayNames[d.getDay()] + '요일';
+    };
+    window.autoCalcEndTime = () => {
+      const start = document.getElementById('volStartTime').value;
+      if (!start) return;
+      const durRadio = document.querySelector('input[name="volDuration"]:checked');
+      const hoursToAdd = durRadio && durRadio.value === '4시간' ? 4 : 2;
+      const [hh, mm] = start.split(':').map(Number);
+      const endH = (hh + hoursToAdd) % 24;
+      document.getElementById('volEndTime').value = `${String(endH).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
     };
     window.submitVolunteer = async () => {
       const dong = document.getElementById('volDong').value.trim();
       const ho = document.getElementById('volHo').value.trim();
       const name = document.getElementById('volName').value.trim();
       const date = document.getElementById('volDate').value;
-      const timeSlot = document.getElementById('volTimeSlot').value;
-      if (!dong || !ho || !name || !date || !timeSlot) return alert('모든 항목을 입력해 주세요.');
-      const ts = Date.now(); await Store.add('volunteers', { dong, ho, name, date, timeSlot, regDateTime: formatDateTime(ts), createdAt: ts });
+      const startTime = document.getElementById('volStartTime').value;
+      const endTime = document.getElementById('volEndTime').value;
+      const durRadio = document.querySelector('input[name="volDuration"]:checked');
+      const duration = durRadio ? durRadio.value : '2시간';
+
+      if (!dong || !ho || !name || !date || !startTime || !endTime) return alert('모든 항목을 입력해 주세요.');
+      const dObj = new Date(date);
+      const dayStr = dayNames[dObj.getDay()] + '요일';
+      const timeSlot = `${startTime} ~ ${endTime} (${duration})`;
+      const fullDate = `${date} (${dayStr})`;
+
+      const ts = Date.now();
+      await Store.add('volunteers', { dong, ho, name, date: fullDate, timeSlot, regDateTime: formatDateTime(ts), createdAt: ts });
       ['volDong', 'volHo', 'volName', 'volDate'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('volDayLabel').innerText = '요일 미선택';
       alert('자원봉사 신청이 접수되었습니다.');
     };
 
@@ -1383,14 +1518,25 @@
     window.openEditBookModal = (id) => {
       const b = allBooks.find(x => x.id === id);
       if (!b) return;
+      syncBookDropdownOptions();
+      const ensureOpt = (selId, val) => {
+        if (!val) return;
+        const sel = document.getElementById(selId);
+        if (!Array.from(sel.options).some(o => o.value === val)) {
+          const opt = document.createElement('option');
+          opt.value = val; opt.text = val;
+          sel.appendChild(opt);
+        }
+        sel.value = val;
+      };
       document.getElementById('editBookId').value = b.id;
       document.getElementById('editBookTitle').value = b.title || '';
       document.getElementById('editBookAuthor').value = b.author || '';
       document.getElementById('editBookPublisher').value = b.publisher || '';
       document.getElementById('editBookCover').value = b.coverUrl || '';
-      document.getElementById('editBookCat').value = b.category || '';
-      document.getElementById('editBookShelf').value = b.shelf || '';
-      document.getElementById('editBookShelfBin').value = b.shelfBin || '';
+      ensureOpt('editBookCat', b.category);
+      ensureOpt('editBookShelf', b.shelf);
+      ensureOpt('editBookShelfBin', b.shelfBin);
       document.getElementById('editBookIsNew').checked = !!b.isNew;
       openModal('modal-edit-book');
     };
