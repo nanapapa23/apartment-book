@@ -13,7 +13,7 @@
   <style>
     body {
       font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
-      background-color: #E9ECEF;
+      background-color: #EAECEF;
       -webkit-tap-highlight-color: transparent;
     }
     .naver-shadow { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04); }
@@ -27,31 +27,37 @@
 <body class="text-[#191F28] antialiased select-none">
 
   <!-- 모바일 앱 프레임 -->
-  <div class="max-w-md mx-auto min-h-screen bg-[#F4F6F8] relative flex flex-col pb-24 shadow-xl">
+  <div class="max-w-md mx-auto min-h-screen bg-[#F6F7F5] relative flex flex-col pb-24 shadow-xl">
     
     <!-- ================= 상단 동적 헤더 ================= -->
     <header class="sticky top-0 z-30 bg-white border-b border-gray-100">
       <div class="px-5 h-14 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span id="headerBadge" class="px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-[#03C75A] text-white">2단지</span>
+          <span id="headerBadge" class="px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-[#2E7D67] text-white">2단지</span>
           <h1 id="headerTitle" class="text-[17px] font-extrabold tracking-tight text-[#191F28]">남율효성해링턴플레이스 2단지</h1>
         </div>
-        <button id="adminAuthBtn" onclick="openAdminModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-700 active:scale-95 transition">
-          <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
-          <span id="adminBtnText">관리자</span>
-        </button>
+        <div class="flex items-center gap-1.5">
+          <button onclick="copyFullHtmlCode()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-bold bg-stone-100 hover:bg-stone-200 text-stone-700 active:scale-95 transition" title="전체 HTML 코드 복사">
+            <i data-lucide="copy" class="w-3 h-3"></i>
+            <span>코드복사</span>
+          </button>
+          <button id="adminAuthBtn" onclick="openAdminModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-700 active:scale-95 transition">
+            <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+            <span id="adminBtnText">관리자</span>
+          </button>
+        </div>
       </div>
 
       <!-- 도서관 소메뉴 -->
       <div id="subnav-library" class="hidden grid grid-cols-3 border-t border-gray-100 bg-white">
-        <button onclick="switchSubTab('lib', 'books')" id="sub-lib-books" class="py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition">도서목록</button>
+        <button onclick="switchSubTab('lib', 'books')" id="sub-lib-books" class="py-3 text-xs font-extrabold text-[#2E7D67] border-b-2 border-[#2E7D67] transition">도서목록</button>
         <button onclick="switchSubTab('lib', 'volunteer')" id="sub-lib-volunteer" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">봉사신청</button>
         <button onclick="switchSubTab('lib', 'wishbook')" id="sub-lib-wishbook" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">희망도서</button>
       </div>
 
       <!-- 휘트니스 소메뉴 -->
       <div id="subnav-fitness" class="hidden grid grid-cols-3 border-t border-gray-100 bg-white">
-        <button onclick="switchSubTab('fit', 'equip')" id="sub-fit-equip" class="py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition">보유기구</button>
+        <button onclick="switchSubTab('fit', 'equip')" id="sub-fit-equip" class="py-3 text-xs font-extrabold text-[#2E7D67] border-b-2 border-[#2E7D67] transition">보유기구</button>
         <button onclick="switchSubTab('fit', 'repair')" id="sub-fit-repair" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">수리요청</button>
         <button onclick="switchSubTab('fit', 'wishequip')" id="sub-fit-wishequip" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">희망기구</button>
       </div>
@@ -63,20 +69,21 @@
 
     <!-- ================= 1. 홈(HOME) 대시보드 ================= -->
     <main id="section-home" class="p-4 space-y-4 flex-1 animate-fade">
-      <div class="bg-gradient-to-br from-[#03C75A] to-[#02A64B] rounded-3xl p-5 text-white shadow-md">
-        <p class="text-xs font-semibold opacity-90">스마트 커뮤니티 안내</p>
-        <h2 class="text-lg font-extrabold mt-0.5 leading-snug">남율효성해링턴플레이스 2단지<br>입주민 전용 라운지</h2>
-        <p class="text-[11px] opacity-85 mt-2">실시간 시설 운영 현황과 공지사항을 확인하세요.</p>
+      <div class="bg-gradient-to-br from-[#2D5A4C] via-[#3A6B5C] to-[#528574] rounded-3xl p-6 text-white shadow-md relative overflow-hidden">
+        <div class="absolute -right-6 -top-6 w-28 h-28 rounded-full bg-white/10 blur-xl"></div>
+        <p class="text-[11px] font-semibold tracking-wider text-emerald-100/90 uppercase">COMMUNITY LOUNGE</p>
+        <h2 class="text-xl font-extrabold mt-1 leading-snug tracking-tight">입주민 전용 라운지</h2>
+        <p class="text-xs text-emerald-50/85 mt-1.5">실시간 시설 운영 현황과 단지 소식을 한눈에 확인하세요.</p>
       </div>
 
       <!-- 실시간 운영 상태 -->
       <div class="grid grid-cols-2 gap-3">
         <div onclick="switchMainTab('library')" class="bg-white rounded-2xl p-4 naver-shadow border border-gray-100 cursor-pointer active:scale-[0.98] transition space-y-2.5">
           <div class="flex items-center justify-between">
-            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-[#03C75A] flex items-center justify-center">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-[#2E7D67] flex items-center justify-center">
               <i data-lucide="book-open" class="w-5 h-5"></i>
             </div>
-            <span id="homeLibBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-[#03C75A]">확인중</span>
+            <span id="homeLibBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-[#2E7D67]">확인중</span>
           </div>
           <div>
             <h3 class="text-sm font-extrabold text-gray-900">작은도서관</h3>
@@ -86,10 +93,10 @@
 
         <div onclick="switchMainTab('fitness')" class="bg-white rounded-2xl p-4 naver-shadow border border-gray-100 cursor-pointer active:scale-[0.98] transition space-y-2.5">
           <div class="flex items-center justify-between">
-            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+            <div class="w-9 h-9 rounded-xl bg-[#EEF2F9] text-[#3B5998] flex items-center justify-center">
               <i data-lucide="dumbbell" class="w-5 h-5"></i>
             </div>
-            <span id="homeFitBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-50 text-blue-600">확인중</span>
+            <span id="homeFitBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-[#EEF2F9] text-[#3B5998]">확인중</span>
           </div>
           <div>
             <h3 class="text-sm font-extrabold text-gray-900">휘트니스센터</h3>
@@ -106,7 +113,7 @@
             <h3 class="text-sm font-extrabold text-gray-900">커뮤니티 공지사항</h3>
           </div>
           <div class="flex items-center gap-2">
-            <button onclick="openModal('modal-add-notice')" class="admin-only hidden px-2.5 py-1 bg-[#03C75A] text-white text-[11px] font-bold rounded-lg">+ 공지 등록</button>
+            <button onclick="openModal('modal-add-notice')" class="admin-only hidden px-2.5 py-1 bg-[#2E7D67] text-white text-[11px] font-bold rounded-lg">+ 공지 등록</button>
             <button id="noticeMoreBtn" onclick="toggleNoticeExpand()" class="hidden w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-extrabold text-sm transition" title="공지 전체보기">+</button>
           </div>
         </div>
@@ -116,9 +123,9 @@
       </div>
 
       <!-- 관리자 전용: 운영시간 설정 -->
-      <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border-2 border-[#03C75A] space-y-4">
+      <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border-2 border-[#2E7D67] space-y-4">
         <h3 class="text-sm font-extrabold text-gray-900 flex items-center gap-1.5">
-          <i data-lucide="clock" class="w-4 h-4 text-[#03C75A]"></i> 관리자: 시설 운영시간 및 요일 설정
+          <i data-lucide="clock" class="w-4 h-4 text-[#2E7D67]"></i> 관리자: 시설 운영시간 및 요일 설정
         </h3>
         <div class="p-3.5 bg-gray-50 rounded-xl space-y-2 text-xs">
           <p class="font-extrabold text-gray-800">📚 작은도서관 운영 설정</p>
@@ -127,7 +134,7 @@
             <input type="time" id="libCloseTime" value="21:00" class="p-2 bg-white border border-gray-200 rounded-lg">
           </div>
           <div id="libDaysContainer" class="flex flex-wrap gap-1 pt-1"></div>
-          <button onclick="saveOperatingSettings('library')" class="w-full py-2 bg-[#03C75A] text-white font-bold rounded-lg">도서관 시간 저장</button>
+          <button onclick="saveOperatingSettings('library')" class="w-full py-2 bg-[#2E7D67] text-white font-bold rounded-lg">도서관 시간 저장</button>
         </div>
         <div class="p-3.5 bg-gray-50 rounded-xl space-y-2 text-xs">
           <p class="font-extrabold text-gray-800">💪 휘트니스센터 운영 설정</p>
@@ -136,7 +143,7 @@
             <input type="time" id="fitCloseTime" value="23:00" class="p-2 bg-white border border-gray-200 rounded-lg">
           </div>
           <div id="fitDaysContainer" class="flex flex-wrap gap-1 pt-1"></div>
-          <button onclick="saveOperatingSettings('fitness')" class="w-full py-2 bg-blue-600 text-white font-bold rounded-lg">휘트니스 시간 저장</button>
+          <button onclick="saveOperatingSettings('fitness')" class="w-full py-2 bg-[#3B5998] text-white font-bold rounded-lg">휘트니스 시간 저장</button>
         </div>
       </div>
     </main>
@@ -147,14 +154,14 @@
         <div class="admin-only hidden bg-white rounded-2xl p-3.5 naver-shadow border border-emerald-200 space-y-2.5">
           <div class="flex items-center justify-between">
             <span class="text-xs font-extrabold text-gray-800">도서 및 엑셀 관리</span>
-            <button onclick="openModal('modal-add-book')" class="px-3 py-1.5 bg-[#03C75A] text-white text-xs font-bold rounded-lg">+ 도서 등록</button>
+            <button onclick="openModal('modal-add-book')" class="px-3 py-1.5 bg-[#2E7D67] text-white text-xs font-bold rounded-lg">+ 도서 등록</button>
           </div>
           <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
             <button onclick="exportBooksToExcel()" class="py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1">
-              <i data-lucide="download" class="w-3.5 h-3.5 text-[#03C75A]"></i> 엑셀 백업
+              <i data-lucide="download" class="w-3.5 h-3.5 text-[#2E7D67]"></i> 엑셀 백업
             </button>
             <label class="py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1 cursor-pointer">
-              <i data-lucide="upload" class="w-3.5 h-3.5 text-blue-600"></i> 엑셀 복구
+              <i data-lucide="upload" class="w-3.5 h-3.5 text-[#3B5998]"></i> 엑셀 복구
               <input type="file" accept=".xlsx, .xls" onchange="importBooksFromExcel(event)" class="hidden">
             </label>
           </div>
@@ -162,7 +169,7 @@
 
         <div class="relative">
           <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5"></i>
-          <input type="text" id="bookSearchInput" onkeyup="renderBooks()" placeholder="도서명, 저자, 출판사, 분류 검색" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#03C75A] naver-shadow">
+          <input type="text" id="bookSearchInput" onkeyup="renderBooks()" placeholder="도서명, 저자, 출판사, 분류 검색" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#2E7D67] naver-shadow">
         </div>
 
         <div id="bookListContainer" class="space-y-2.5"></div>
@@ -189,12 +196,12 @@
               <input type="date" id="volDate" onchange="updateVolunteerTimeOptions()" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 시간대 <span id="volDayTypeBadge" class="text-[#03C75A]"></span></label>
+              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 시간대 <span id="volDayTypeBadge" class="text-[#2E7D67]"></span></label>
               <select id="volTimeSlot" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
                 <option value="">날짜를 먼저 선택해 주세요</option>
               </select>
             </div>
-            <button onclick="submitVolunteer()" class="w-full py-3.5 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm shadow-sm active:scale-[0.99] transition">봉사 신청 접수</button>
+            <button onclick="submitVolunteer()" class="w-full py-3.5 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm shadow-sm active:scale-[0.99] transition">봉사 신청 접수</button>
           </div>
           <p id="volLockHint" class="text-center text-xs text-amber-600 font-bold">👆 상단 [공지필독] 버튼을 눌러 확인하시면 입력창이 열립니다.</p>
         </div>
@@ -202,7 +209,7 @@
         <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border border-emerald-200 space-y-3">
           <div class="flex justify-between items-center">
             <h3 class="text-sm font-extrabold text-gray-900">📋 관리자: 봉사 신청 내역</h3>
-            <button onclick="openModal('modal-edit-notice')" class="text-xs font-bold text-[#03C75A] underline">봉사공지 수정</button>
+            <button onclick="openModal('modal-edit-notice')" class="text-xs font-bold text-[#2E7D67] underline">봉사공지 수정</button>
           </div>
           <div id="volunteerAdminList" class="space-y-2"></div>
         </div>
@@ -213,7 +220,7 @@
           <h2 class="text-base font-extrabold text-gray-900">희망도서 신청</h2>
           <input type="text" id="wishBookTitle" placeholder="희망 도서명 및 저자" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
           <input type="text" id="wishBookReason" placeholder="간단한 신청 사유" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-          <button onclick="submitWishBook()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">희망도서 등록</button>
+          <button onclick="submitWishBook()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">희망도서 등록</button>
         </div>
         <div class="space-y-2.5">
           <h3 class="text-xs font-bold text-gray-500 px-1">희망도서 진행 현황 (전체 공개)</h3>
@@ -227,7 +234,7 @@
       <div id="view-fit-equip" class="space-y-3">
         <div class="admin-only hidden bg-white rounded-2xl p-3.5 naver-shadow border border-blue-200 flex items-center justify-between">
           <span class="text-xs font-extrabold text-gray-800">휘트니스 기구 관리</span>
-          <button onclick="openModal('modal-add-equip')" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg">+ 기구 등록</button>
+          <button onclick="openModal('modal-add-equip')" class="px-3 py-1.5 bg-[#3B5998] text-white text-xs font-bold rounded-lg">+ 기구 등록</button>
         </div>
 
         <div class="flex gap-1.5">
@@ -247,7 +254,7 @@
             <option value="">수리할 기구를 선택해 주세요</option>
           </select>
           <input type="text" id="repairPartInput" placeholder="고장 부위 및 증상" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-          <button onclick="submitRepair()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">수리 요청 접수</button>
+          <button onclick="submitRepair()" class="w-full py-3 bg-[#3B5998] text-white font-extrabold rounded-xl text-sm">수리 요청 접수</button>
         </div>
         <div class="space-y-2.5">
           <h3 class="text-xs font-bold text-gray-500 px-1">수리 접수 및 처리 현황</h3>
@@ -266,7 +273,7 @@
           </select>
           <input type="text" id="wishEquipName" placeholder="구매 희망 기구명" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
           <textarea id="wishEquipReason" rows="2" placeholder="추천 사유를 적어주세요" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></textarea>
-          <button onclick="submitWishEquip()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">희망기구 등록</button>
+          <button onclick="submitWishEquip()" class="w-full py-3 bg-[#3B5998] text-white font-extrabold rounded-xl text-sm">희망기구 등록</button>
         </div>
         <div class="space-y-2.5">
           <h3 class="text-xs font-bold text-gray-500 px-1">희망기구 진행 현황 (전체 공개)</h3>
@@ -300,7 +307,7 @@
 
     <!-- ================= 하단 네비게이션 ================= -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 px-2 py-2 z-40 grid grid-cols-4 items-center shadow-[0_-4px_16px_rgba(0,0,0,0.03)]">
-      <button onclick="switchMainTab('home')" id="nav-btn-home" class="flex flex-col items-center gap-1 py-1 text-[#03C75A]">
+      <button onclick="switchMainTab('home')" id="nav-btn-home" class="flex flex-col items-center gap-1 py-1 text-[#2E7D67]">
         <i data-lucide="home" class="w-5 h-5"></i>
         <span class="text-[11px] font-extrabold">홈</span>
       </button>
@@ -330,7 +337,7 @@
       </div>
       <input type="email" id="adminEmail" placeholder="관리자 이메일" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <input type="password" id="adminPassword" placeholder="비밀번호" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <button onclick="loginAdmin()" class="w-full py-3.5 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">로그인</button>
+      <button onclick="loginAdmin()" class="w-full py-3.5 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">로그인</button>
     </div>
   </div>
 
@@ -339,7 +346,7 @@
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4">
       <div class="flex items-start justify-between gap-2">
         <div>
-          <span id="noticeDetailTag" class="px-2 py-0.5 rounded bg-emerald-50 text-[#03C75A] text-[10px] font-extrabold">공지</span>
+          <span id="noticeDetailTag" class="px-2 py-0.5 rounded bg-emerald-50 text-[#2E7D67] text-[10px] font-extrabold">공지</span>
           <h3 id="noticeDetailTitle" class="text-base font-extrabold text-gray-900 mt-1.5">공지 제목</h3>
           <p id="noticeDetailDate" class="text-[11px] text-gray-400 mt-0.5">2026-11-18</p>
         </div>
@@ -364,25 +371,25 @@
       </select>
       <input type="text" id="newNoticeTitle" placeholder="공지 제목 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <textarea id="newNoticeContent" rows="5" placeholder="공지 내용을 입력하세요 *" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs leading-relaxed"></textarea>
-      <button onclick="addNoticeBoard()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">공지 등록</button>
+      <button onclick="addNoticeBoard()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">공지 등록</button>
     </div>
   </div>
 
   <!-- 도서 위치 안내 -->
   <div id="modal-book-location" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 text-center space-y-4">
-      <div class="w-12 h-12 bg-emerald-50 text-[#03C75A] rounded-2xl flex items-center justify-center mx-auto">
+      <div class="w-12 h-12 bg-emerald-50 text-[#2E7D67] rounded-2xl flex items-center justify-center mx-auto">
         <i data-lucide="map-pin" class="w-6 h-6"></i>
       </div>
       <div>
-        <span id="locBookCat" class="text-[11px] font-bold text-[#03C75A] bg-emerald-50 px-2.5 py-0.5 rounded-full">분류</span>
+        <span id="locBookCat" class="text-[11px] font-bold text-[#2E7D67] bg-emerald-50 px-2.5 py-0.5 rounded-full">분류</span>
         <h3 id="locBookTitle" class="text-lg font-extrabold text-gray-900 mt-2">제목</h3>
         <p id="locBookAuthor" class="text-xs text-gray-500">저자</p>
         <p id="locBookPub" class="text-[11px] text-gray-400 mt-0.5">출판사</p>
       </div>
       <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4">
         <p class="text-xs text-gray-400 font-bold">도서 비치 위치</p>
-        <p id="locBookShelf" class="text-xl font-black text-[#03C75A] mt-1">A책장 3칸</p>
+        <p id="locBookShelf" class="text-xl font-black text-[#2E7D67] mt-1">A책장 3칸</p>
       </div>
       <button onclick="closeModal('modal-book-location')" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl text-sm">확인</button>
     </div>
@@ -404,10 +411,10 @@
         <input type="text" id="newBookShelf" placeholder="책장 (예: A책장) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
         <input type="text" id="newBookShelfBin" placeholder="칸 (예: 3칸) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       </div>
-      <label class="flex items-center gap-2 text-xs font-bold text-[#03C75A] pt-1">
+      <label class="flex items-center gap-2 text-xs font-bold text-[#2E7D67] pt-1">
         <input type="checkbox" id="newBookIsNew" class="w-4 h-4 rounded"> 신간 도서로 상단 하이라이트 표시
       </label>
-      <button onclick="addBook()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">등록하기</button>
+      <button onclick="addBook()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">등록하기</button>
     </div>
   </div>
 
@@ -428,13 +435,13 @@
       <!-- 사진 등록 (내 컴퓨터 파일 선택 또는 URL 입력) -->
       <div class="p-3 bg-gray-50 border border-gray-200 rounded-xl space-y-2">
         <label class="block text-xs font-extrabold text-gray-700">기구 사진 등록 (파일 선택 또는 URL)</label>
-        <input type="file" id="newEquipFile" accept="image/*" onchange="previewEquipFile(event)" class="w-full text-xs text-gray-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600">
+        <input type="file" id="newEquipFile" accept="image/*" onchange="previewEquipFile(event)" class="w-full text-xs text-gray-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-[#EEF2F9] file:text-[#3B5998]">
         <input type="url" id="newEquipImg" placeholder="또는 사진 이미지 URL 직접 입력" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs">
         <img id="equipFilePreview" class="hidden w-full h-32 object-cover rounded-lg border border-gray-200">
       </div>
 
       <input type="url" id="newEquipYoutube" placeholder="사용법 유튜브 영상 URL" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <button onclick="addEquipment()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">등록하기</button>
+      <button onclick="addEquipment()" class="w-full py-3 bg-[#3B5998] text-white font-extrabold rounded-xl text-sm">등록하기</button>
     </div>
   </div>
 
@@ -458,12 +465,28 @@
     </div>
   </div>
 
+  <!-- 휘트니스 기구 사진 크게 보기 팝업 -->
+  <div id="modal-equip-image" onclick="closeModal('modal-equip-image')" class="fixed inset-0 bg-black/85 z-50 hidden items-center justify-center p-4">
+    <div onclick="event.stopPropagation()" class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl">
+      <div class="px-5 py-3.5 flex items-center justify-between border-b border-gray-100">
+        <h3 id="equipZoomTitle" class="text-sm font-extrabold text-gray-900 truncate">기구 사진</h3>
+        <button onclick="closeModal('modal-equip-image')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <div class="bg-gray-950 flex items-center justify-center max-h-[70vh] overflow-hidden">
+        <img id="equipZoomImg" src="" alt="기구 확대 사진" class="w-full h-auto max-h-[70vh] object-contain">
+      </div>
+      <div class="p-3.5">
+        <button onclick="closeModal('modal-equip-image')" class="w-full py-2.5 bg-gray-900 text-white text-xs font-bold rounded-xl">닫기</button>
+      </div>
+    </div>
+  </div>
+
   <!-- 봉사 공지 확인 -->
   <div id="modal-vol-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4">
       <h3 class="text-base font-extrabold text-gray-900">📢 자원봉사 안내 공지</h3>
       <div id="volNoticeContent" class="bg-amber-50 rounded-2xl p-4 text-xs text-gray-700 leading-relaxed whitespace-pre-line"></div>
-      <button onclick="confirmVolunteerNotice()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">확인했습니다 (신청하기)</button>
+      <button onclick="confirmVolunteerNotice()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">확인했습니다 (신청하기)</button>
     </div>
   </div>
 
@@ -474,7 +497,7 @@
       <textarea id="editNoticeTextarea" rows="5" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
       <div class="flex gap-2">
         <button onclick="closeModal('modal-edit-notice')" class="flex-1 py-2.5 bg-gray-100 rounded-xl text-xs font-bold">취소</button>
-        <button onclick="saveVolunteerNotice()" class="flex-1 py-2.5 bg-[#03C75A] text-white rounded-xl text-xs font-bold">저장</button>
+        <button onclick="saveVolunteerNotice()" class="flex-1 py-2.5 bg-[#2E7D67] text-white rounded-xl text-xs font-bold">저장</button>
       </div>
     </div>
   </div>
@@ -515,7 +538,14 @@
       async add(col, item) {
         if (!useLocalFallback) {
           try { await addDoc(collection(db, col), item); return; } 
-          catch (e) { alert("DB 저장 오류: " + e.message); throw e; }
+          catch (e) {
+            if (e.message && e.message.includes("Missing or insufficient permissions")) {
+              alert("Firebase 보안 규칙(Firestore Rules)에서 '" + col + "' 컬렉션 쓰기 권한이 허용되지 않았습니다.\nFirebase 콘솔 > Firestore Database > 규칙(Rules)에서 write 권한을 허용해 주세요.");
+            } else {
+              alert("DB 저장 오류: " + e.message);
+            }
+            throw e;
+          }
         }
         const list = this.getLocal(col);
         list.unshift({ id: 'id_' + Date.now(), ...item });
@@ -569,6 +599,33 @@
     let currentVolNotice = "1. 도서관 내 정숙을 유지해 주세요.\n2. 평일 봉사는 18:00~20:00 (2시간) 운영됩니다.";
 
     const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
+    function formatDateTime(ts) {
+      const d = ts ? new Date(ts) : new Date();
+      if (isNaN(d.getTime())) return '';
+      const yyyy = d.getFullYear();
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const hh = String(d.getHours()).padStart(2, '0');
+      const min = String(d.getMinutes()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
+    }
+
+    window.copyFullHtmlCode = async () => {
+      const fullDoc = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+      try {
+        await navigator.clipboard.writeText(fullDoc);
+        alert('전체 HTML 코드가 클립보드에 복사되었습니다!\nGitHub index.html에 바로 붙여넣기 하시면 됩니다.');
+      } catch (err) {
+        const ta = document.createElement('textarea');
+        ta.value = fullDoc;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        alert('전체 HTML 코드가 클립보드에 복사되었습니다!');
+      }
+    };
     lucide.createIcons();
 
     ['lib', 'fit'].forEach(fac => {
@@ -587,7 +644,7 @@
       const authBtn = document.getElementById('adminAuthBtn');
       if (loggedIn) {
         btnText.innerText = '로그아웃';
-        authBtn.className = "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-[#03C75A] text-white transition";
+        authBtn.className = "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-[#2E7D67] text-white transition";
       } else {
         btnText.innerText = '관리자';
         authBtn.className = "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-700 transition";
@@ -634,7 +691,7 @@
 
       document.getElementById(`section-${tab}`).classList.remove('hidden');
       const activeNav = document.getElementById(`nav-btn-${tab}`);
-      activeNav.className = "flex flex-col items-center gap-1 py-1 text-[#03C75A]";
+      activeNav.className = "flex flex-col items-center gap-1 py-1 text-[#2E7D67]";
       activeNav.querySelector('span').className = "text-[11px] font-extrabold";
 
       const titleEl = document.getElementById('headerTitle');
@@ -658,7 +715,7 @@
       });
       document.getElementById(`view-${group}-${sub}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`sub-${group}-${sub}`);
-      activeBtn.className = "py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition";
+      activeBtn.className = "py-3 text-xs font-extrabold text-[#2E7D67] border-b-2 border-[#2E7D67] transition";
     };
 
     window.openModal = (id) => { const m = document.getElementById(id); m.classList.remove('hidden'); m.classList.add('flex'); };
@@ -714,7 +771,7 @@
         hours.innerText = `${s.open} ~ ${s.close} (${s.days.map(d=>dayNames[d]).join(',')})`;
         if (isOpen) {
           badge.innerText = "● 운영중";
-          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-[#03C75A]";
+          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-[#2E7D67]";
         } else {
           badge.innerText = "● 운영종료";
           badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-600";
@@ -788,12 +845,12 @@
         return `
           <div onclick="openNoticePopup('${n.id}')" class="py-3 px-2 rounded-xl flex items-center justify-between gap-2 cursor-pointer transition ${isTop5 ? 'bg-emerald-50/45 hover:bg-emerald-50/80 my-1' : 'hover:bg-gray-50'}">
             <div class="flex items-center gap-2 min-w-0">
-              ${isTop5 ? `<span class="px-1.5 py-0.5 rounded bg-[#03C75A] text-white text-[9px] font-extrabold shrink-0">주요</span>` : `<span class="px-1.5 py-0.5 rounded bg-gray-200 text-gray-600 text-[9px] font-bold shrink-0">일반</span>`}
+              ${isTop5 ? `<span class="px-1.5 py-0.5 rounded bg-[#2E7D67] text-white text-[9px] font-extrabold shrink-0">주요</span>` : `<span class="px-1.5 py-0.5 rounded bg-gray-200 text-gray-600 text-[9px] font-bold shrink-0">일반</span>`}
               <span class="text-[11px] font-bold text-gray-500 shrink-0">[${n.category || '공통'}]</span>
               <p class="text-xs ${isTop5 ? 'font-extrabold text-gray-900' : 'font-medium text-gray-700'} truncate">${n.title}</p>
             </div>
             <div class="flex items-center gap-2 shrink-0">
-              <span class="text-[10px] text-gray-400">${n.date || ''}</span>
+              <span class="text-[10px] text-gray-400">${n.createdAt ? formatDateTime(n.createdAt) : (n.date || '')}</span>
               ${isAdmin ? `<button onclick="event.stopPropagation(); deleteItem('notices', '${n.id}')" class="text-[10px] text-rose-500 font-bold">삭제</button>` : ''}
             </div>
           </div>
@@ -817,10 +874,10 @@
       const content = document.getElementById('newNoticeContent').value.trim();
       if (!title || !content) return alert('공지 제목과 내용을 모두 입력해 주세요.');
 
-      const now = new Date();
-      const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+      const nowTs = Date.now();
+      const dateStr = formatDateTime(nowTs);
 
-      await Store.add('notices', { category, title, content, date: dateStr, createdAt: Date.now() });
+      await Store.add('notices', { category, title, content, date: dateStr, createdAt: nowTs });
       closeModal('modal-add-notice');
       document.getElementById('newNoticeTitle').value = '';
       document.getElementById('newNoticeContent').value = '';
@@ -839,8 +896,8 @@
       );
 
       document.getElementById('bookListContainer').innerHTML = filtered.length ? filtered.map(b => `
-        <div onclick="showBookLocation('${b.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl bg-white naver-shadow transition cursor-pointer ${b.isNew ? 'border-2 border-[#03C75A]' : 'border border-gray-100'}">
-          ${b.isNew ? `<span class="absolute -top-2.5 left-3 px-2 py-0.5 bg-[#03C75A] text-white text-[10px] font-extrabold rounded-full">NEW 신간</span>` : ''}
+        <div onclick="showBookLocation('${b.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl bg-white naver-shadow transition cursor-pointer ${b.isNew ? 'border-2 border-[#2E7D67]' : 'border border-gray-100'}">
+          ${b.isNew ? `<span class="absolute -top-2.5 left-3 px-2 py-0.5 bg-[#2E7D67] text-white text-[10px] font-extrabold rounded-full">NEW 신간</span>` : ''}
           <div class="w-14 h-20 rounded-xl bg-gray-100 shrink-0 overflow-hidden">
             <img src="${b.coverUrl || 'https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK';">
           </div>
@@ -851,10 +908,10 @@
               <p class="text-xs text-gray-500 truncate">${b.author} ${b.publisher ? '· ' + b.publisher : ''}</p>
             </div>
             <div class="flex items-center justify-between mt-1.5">
-              <span class="text-[11px] font-bold text-[#03C75A]">📍 책장 위치보기</span>
+              <span class="text-[11px] font-bold text-[#2E7D67]">📍 책장 위치보기</span>
               ${isAdmin ? `
                 <div class="flex gap-1" onclick="event.stopPropagation()">
-                  <button onclick="Store.update('books', '${b.id}', {isNew: ${!b.isNew}})" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#03C75A]">${b.isNew ? '신간해제' : '신간지정'}</button>
+                  <button onclick="Store.update('books', '${b.id}', {isNew: ${!b.isNew}})" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#2E7D67]">${b.isNew ? '신간해제' : '신간지정'}</button>
                   <button onclick="deleteItem('books', '${b.id}')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-600">삭제</button>
                 </div>
               ` : ''}
@@ -968,7 +1025,7 @@
       const date = document.getElementById('volDate').value;
       const timeSlot = document.getElementById('volTimeSlot').value;
       if (!dong || !ho || !name || !date || !timeSlot) return alert('모든 항목을 입력해 주세요.');
-      await Store.add('volunteers', { dong, ho, name, date, timeSlot, createdAt: Date.now() });
+      const ts = Date.now(); await Store.add('volunteers', { dong, ho, name, date, timeSlot, regDateTime: formatDateTime(ts), createdAt: ts });
       ['volDong', 'volHo', 'volName', 'volDate'].forEach(id => document.getElementById(id).value = '');
       alert('자원봉사 신청이 접수되었습니다.');
     };
@@ -977,25 +1034,26 @@
       const title = document.getElementById('wishBookTitle').value.trim();
       const reason = document.getElementById('wishBookReason').value.trim();
       if (!title) return alert('도서명을 입력해 주세요.');
-      await Store.add('wishBooks', { title, reason, status: '검토', rejectReason: '', createdAt: Date.now() });
+      const ts = Date.now(); await Store.add('wishBooks', { title, reason, status: '검토', rejectReason: '', regDateTime: formatDateTime(ts), createdAt: ts });
       document.getElementById('wishBookTitle').value = '';
       document.getElementById('wishBookReason').value = '';
       alert('희망도서가 신청되었습니다.');
     };
 
     window.renderWishBooks = () => {
-      const colors = { '검토': 'bg-gray-100 text-gray-600', '구매예정': 'bg-blue-50 text-blue-600', '구매불가': 'bg-rose-50 text-rose-600', '구매완료': 'bg-emerald-50 text-[#03C75A]' };
+      const colors = { '검토': 'bg-gray-100 text-gray-600', '구매예정': 'bg-[#EEF2F9] text-[#3B5998]', '구매불가': 'bg-rose-50 text-rose-600', '구매완료': 'bg-emerald-50 text-[#2E7D67]' };
       document.getElementById('wishBookListContainer').innerHTML = wishBooksData.map(item => `
         <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-2">
           <div class="flex justify-between items-start gap-2">
             <h4 class="text-sm font-extrabold text-gray-900">${item.title}</h4>
             <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold shrink-0 ${colors[item.status] || 'bg-gray-100'}">${item.status}</span>
           </div>
+          <p class="text-[11px] text-gray-400">등록일시: ${item.regDateTime || formatDateTime(item.createdAt)}</p>
           ${item.reason ? `<p class="text-xs text-gray-500">사유: ${item.reason}</p>` : ''}
           ${item.status === '구매불가' && item.rejectReason ? `<p class="text-xs text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">불가 사유: ${item.rejectReason}</p>` : ''}
           ${isAdmin ? `
             <div class="pt-2 border-t border-gray-100 flex flex-wrap gap-1">
-              ${['검토', '구매예정', '구매불가', '구매완료'].map(st => `<button onclick="changeWishBookStatus('${item.id}', '${st}')" class="px-2 py-1 rounded text-[11px] font-bold border ${item.status===st ? 'bg-[#03C75A] text-white border-[#03C75A]' : 'bg-gray-50 text-gray-600'}">${st}</button>`).join('')}
+              ${['검토', '구매예정', '구매불가', '구매완료'].map(st => `<button onclick="changeWishBookStatus('${item.id}', '${st}')" class="px-2 py-1 rounded text-[11px] font-bold border ${item.status===st ? 'bg-[#2E7D67] text-white border-[#2E7D67]' : 'bg-gray-50 text-gray-600'}">${st}</button>`).join('')}
               <button onclick="deleteItem('wishBooks', '${item.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
             </div>
           ` : ''}
@@ -1069,29 +1127,43 @@
 
       const filtered = currentEquipFilter === '전체' ? allEquipments : allEquipments.filter(e => e.category === currentEquipFilter);
       document.getElementById('equipListContainer').innerHTML = filtered.length ? filtered.map(eq => `
-        <div class="bg-white rounded-2xl overflow-hidden naver-shadow border border-gray-100">
+        <div class="bg-white rounded-2xl p-3.5 naver-shadow border border-gray-100 flex items-center gap-3.5">
           ${eq.imageUrl ? `
-            <div class="w-full h-48 bg-gray-100 overflow-hidden relative">
-              <img src="${eq.imageUrl}" alt="${eq.name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class='flex items-center justify-center h-full text-xs text-gray-400'>이미지를 불러올 수 없습니다</div>';">
+            <div onclick="openEquipImageZoom('${eq.id}')" class="w-16 h-16 rounded-xl bg-white border border-gray-200/80 shrink-0 overflow-hidden relative cursor-pointer">
+              <img src="${eq.imageUrl}" alt="${eq.name}" class="w-full h-full object-contain" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'flex items-center justify-center h-full text-[10px] text-gray-400 text-center px-1\'>이미지<br>오류</div>';">
+              <span class="absolute bottom-0.5 right-0.5 bg-black/60 text-white text-[9px] font-bold px-1 rounded">확대</span>
             </div>
-          ` : ''}
-          <div class="p-4 flex items-center justify-between gap-3">
-            <div class="space-y-1 min-w-0">
-              <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-600">${eq.category}</span>
-              <h4 class="text-base font-extrabold text-gray-900 truncate">${eq.name}</h4>
+          ` : `
+            <div class="w-16 h-16 rounded-xl bg-gray-50 border border-gray-100 shrink-0 flex items-center justify-center text-gray-300">
+              <i data-lucide="dumbbell" class="w-6 h-6"></i>
             </div>
-            <div class="flex items-center gap-2 shrink-0">
-              ${eq.youtubeUrl ? `
-                <button onclick="openYoutubeGuide('${eq.name.replace(/'/g, "\'")}', '${eq.youtubeUrl}')" title="유튜브 사용법 보기" class="w-11 h-11 rounded-2xl bg-rose-600 text-white flex items-center justify-center shadow-md shadow-rose-200 active:scale-95 transition">
-                  <i data-lucide="youtube" class="w-6 h-6"></i>
-                </button>
-              ` : ''}
-              ${isAdmin ? `<button onclick="deleteItem('equipments', '${eq.id}')" class="px-2 py-1 text-xs text-rose-500 font-bold">삭제</button>` : ''}
-            </div>
+          `}
+          <div class="flex-1 min-w-0 space-y-1">
+            <span class="inline-block px-2 py-0.5 rounded-md text-[10px] font-extrabold bg-[#EEF2F9] text-[#3B5998]">${eq.category}</span>
+            <h4 class="text-sm font-extrabold text-gray-900 truncate">${eq.name}</h4>
+            ${eq.imageUrl ? `<p onclick="openEquipImageZoom('${eq.id}')" class="text-[11px] text-gray-400 cursor-pointer">사진 터치 시 크게 보기</p>` : ''}
+          </div>
+          <div class="flex flex-col items-end gap-1.5 shrink-0">
+            ${eq.youtubeUrl ? `
+              <button onclick="openYoutubeGuide('${eq.name.replace(/'/g, "\\'")}', '${eq.youtubeUrl}')" class="px-3 py-2 rounded-xl bg-gray-900 hover:bg-gray-800 text-white text-xs font-extrabold flex items-center gap-1 shadow-xs active:scale-95 transition">
+                <i data-lucide="play-circle" class="w-3.5 h-3.5 text-rose-400"></i>
+                <span>사용방법</span>
+              </button>
+            ` : ''}
+            ${isAdmin ? `<button onclick="deleteItem('equipments', '${eq.id}')" class="px-2 py-0.5 text-[11px] text-rose-500 font-bold">삭제</button>` : ''}
           </div>
         </div>
       `).join('') : `<div class="text-center py-12 text-xs text-gray-400">등록된 운동기구가 없습니다.</div>`;
       lucide.createIcons();
+    };
+
+    // 기구 사진 크게 보기 팝업
+    window.openEquipImageZoom = (id) => {
+      const eq = allEquipments.find(x => x.id === id);
+      if (!eq || !eq.imageUrl) return;
+      document.getElementById('equipZoomTitle').innerText = eq.name;
+      document.getElementById('equipZoomImg').src = eq.imageUrl;
+      openModal('modal-equip-image');
     };
 
     // 유튜브 팝업 플레이어 실행
@@ -1123,23 +1195,24 @@
       const equipName = document.getElementById('repairEquipSelect').value;
       const part = document.getElementById('repairPartInput').value.trim();
       if (!equipName || !part) return alert('기구 선택과 수리 요청 내용을 입력해 주세요.');
-      await Store.add('repairs', { equipName, part, status: '접수완료', createdAt: Date.now() });
+      const ts = Date.now(); await Store.add('repairs', { equipName, part, status: '접수완료', regDateTime: formatDateTime(ts), createdAt: ts });
       document.getElementById('repairPartInput').value = '';
       alert('수리 요청이 접수되었습니다.');
     };
 
     window.renderRepairs = () => {
-      const map = { '접수완료': 'bg-amber-50 text-amber-700', '수리예정': 'bg-blue-50 text-blue-600', '교체예정': 'bg-purple-50 text-purple-600', '수리완료': 'bg-emerald-50 text-[#03C75A]' };
+      const map = { '접수완료': 'bg-amber-50 text-amber-700', '수리예정': 'bg-[#EEF2F9] text-[#3B5998]', '교체예정': 'bg-purple-50 text-purple-600', '수리완료': 'bg-emerald-50 text-[#2E7D67]' };
       document.getElementById('repairListContainer').innerHTML = repairsData.map(r => `
         <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-2">
           <div class="flex justify-between items-center">
             <span class="text-sm font-extrabold text-gray-900">${r.equipName}</span>
             <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${map[r.status] || 'bg-gray-100'}">${r.status}</span>
           </div>
+          <p class="text-[11px] text-gray-400">접수일시: ${r.regDateTime || formatDateTime(r.createdAt)}</p>
           <p class="text-xs text-gray-600">증상: ${r.part}</p>
           ${isAdmin ? `
             <div class="pt-2 border-t border-gray-100 flex flex-wrap gap-1">
-              ${['접수완료', '수리예정', '교체예정', '수리완료'].map(st => `<button onclick="Store.update('repairs', '${r.id}', {status: '${st}'})" class="px-2 py-1 rounded text-[11px] font-bold border ${r.status===st ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-600'}">${st}</button>`).join('')}
+              ${['접수완료', '수리예정', '교체예정', '수리완료'].map(st => `<button onclick="Store.update('repairs', '${r.id}', {status: '${st}'})" class="px-2 py-1 rounded text-[11px] font-bold border ${r.status===st ? 'bg-[#3B5998] text-white border-blue-600' : 'bg-gray-50 text-gray-600'}">${st}</button>`).join('')}
               <button onclick="deleteItem('repairs', '${r.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
             </div>
           ` : ''}
@@ -1153,30 +1226,31 @@
       const name = document.getElementById('wishEquipName').value.trim();
       const reason = document.getElementById('wishEquipReason').value.trim();
       if (!name) return alert('기구명을 입력해 주세요.');
-      await Store.add('wishEquipments', { category, name, reason, status: '구매검토', rejectReason: '', createdAt: Date.now() });
+      const ts = Date.now(); await Store.add('wishEquipments', { category, name, reason, status: '구매검토', rejectReason: '', regDateTime: formatDateTime(ts), createdAt: ts });
       document.getElementById('wishEquipName').value = '';
       document.getElementById('wishEquipReason').value = '';
       alert('희망기구 추천이 등록되었습니다.');
     };
 
     window.renderWishEquips = () => {
-      const colors = { '구매검토': 'bg-gray-100 text-gray-600', '구매예정': 'bg-blue-50 text-blue-600', '구매불가': 'bg-rose-50 text-rose-600', '구매완료': 'bg-emerald-50 text-[#03C75A]' };
+      const colors = { '구매검토': 'bg-gray-100 text-gray-600', '구매예정': 'bg-[#EEF2F9] text-[#3B5998]', '구매불가': 'bg-rose-50 text-rose-600', '구매완료': 'bg-emerald-50 text-[#2E7D67]' };
       document.getElementById('wishEquipListContainer').innerHTML = wishEquipsData.map(item => {
         const st = item.status || '구매검토';
         return `
           <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-2">
             <div class="flex justify-between items-start gap-2">
               <div>
-                <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${item.category}</span>
+                <span class="text-[10px] font-bold text-[#3B5998] bg-[#EEF2F9] px-2 py-0.5 rounded">${item.category}</span>
                 <h4 class="text-sm font-extrabold text-gray-900 mt-1">${item.name}</h4>
               </div>
               <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold shrink-0 ${colors[st] || 'bg-gray-100'}">${st}</span>
             </div>
+            <p class="text-[11px] text-gray-400">등록일시: ${item.regDateTime || formatDateTime(item.createdAt)}</p>
             ${item.reason ? `<p class="text-xs text-gray-500">추천 사유: ${item.reason}</p>` : ''}
             ${st === '구매불가' && item.rejectReason ? `<p class="text-xs text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">불가 사유: ${item.rejectReason}</p>` : ''}
             ${isAdmin ? `
               <div class="pt-2 border-t border-gray-100 flex flex-wrap gap-1">
-                ${['구매검토', '구매예정', '구매불가', '구매완료'].map(s => `<button onclick="changeWishEquipStatus('${item.id}', '${s}')" class="px-2 py-1 rounded text-[11px] font-bold border ${st===s ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-600'}">${s}</button>`).join('')}
+                ${['구매검토', '구매예정', '구매불가', '구매완료'].map(s => `<button onclick="changeWishEquipStatus('${item.id}', '${s}')" class="px-2 py-1 rounded text-[11px] font-bold border ${st===s ? 'bg-[#3B5998] text-white border-blue-600' : 'bg-gray-50 text-gray-600'}">${s}</button>`).join('')}
                 <button onclick="deleteItem('wishEquipments', '${item.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
               </div>
             ` : ''}
@@ -1197,7 +1271,7 @@
       const author = document.getElementById('suggestAuthor').value.trim() || '익명 입주민';
       const content = document.getElementById('suggestContent').value.trim();
       if (!content) return alert('건의 내용을 입력해 주세요.');
-      await Store.add('suggestions', { facility, author, content, createdAt: Date.now() });
+      const ts = Date.now(); await Store.add('suggestions', { facility, author, content, regDateTime: formatDateTime(ts), createdAt: ts });
       document.getElementById('suggestAuthor').value = '';
       document.getElementById('suggestContent').value = '';
       alert('비공개 건의사항이 접수되었습니다.');
@@ -1206,14 +1280,14 @@
     function renderAdminLists() {
       document.getElementById('volunteerAdminList').innerHTML = volunteersData.length ? volunteersData.map(v => `
         <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 flex justify-between items-center text-xs">
-          <div><p class="font-extrabold text-gray-900">${v.dong}동 ${v.ho}호 ${v.name}</p><p class="text-[#03C75A] font-bold">${v.date} · ${v.timeSlot}</p></div>
+          <div><p class="font-extrabold text-gray-900">${v.dong}동 ${v.ho}호 ${v.name}</p><p class="text-[#2E7D67] font-bold">${v.date} · ${v.timeSlot}</p><p class="text-[10px] text-gray-400 mt-0.5">접수일시: ${v.regDateTime || formatDateTime(v.createdAt)}</p></div>
           <button onclick="deleteItem('volunteers', '${v.id}')" class="text-rose-500 font-bold">삭제</button>
         </div>
       `).join('') : `<p class="text-xs text-gray-400">접수된 봉사 신청이 없습니다.</p>`;
 
       document.getElementById('suggestionAdminList').innerHTML = suggestionsData.length ? suggestionsData.map(s => `
         <div class="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1 text-xs">
-          <div class="flex justify-between"><span class="font-extrabold text-gray-900">[${s.facility}] ${s.author}</span><button onclick="deleteItem('suggestions', '${s.id}')" class="text-rose-500 font-bold">삭제</button></div>
+          <div class="flex justify-between items-start"><div><span class="font-extrabold text-gray-900">[${s.facility}] ${s.author}</span><p class="text-[10px] text-gray-400 mt-0.5">접수일시: ${s.regDateTime || formatDateTime(s.createdAt)}</p></div><button onclick="deleteItem('suggestions', '${s.id}')" class="text-rose-500 font-bold">삭제</button></div>
           <p class="text-gray-700 whitespace-pre-line pt-1">${s.content}</p>
         </div>
       `).join('') : `<p class="text-xs text-gray-400">접수된 건의사항이 없습니다.</p>`;
