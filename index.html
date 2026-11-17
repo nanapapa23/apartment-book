@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>남율효성해링턴플레이스 2단지 커뮤니티</title>
   
-  <!-- Pretendard 폰트 & Tailwind CSS & Lucide 아이콘 & SheetJS(엑셀) -->
   <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -13,419 +12,442 @@
 
   <style>
     body {
-      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
-      background-color: #EEF2F6;
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: #E9ECEF;
       -webkit-tap-highlight-color: transparent;
     }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @keyframes slideUp {
-      from { transform: translateY(100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
+    .naver-shadow { box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04); }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
     }
-    .animate-slide-up { animation: slideUp 0.25s cubic-bezier(0.16, 1, 0.3, 1); }
+    .animate-fade { animation: fadeIn 0.2s ease-out; }
   </style>
 </head>
-<body class="text-slate-800 antialiased select-none">
+<body class="text-[#191F28] antialiased select-none">
 
-  <!-- 모바일 앱 컨테이너 (최대폭 제한으로 PC에서도 완벽한 모바일 비율 유지) -->
-  <div class="max-w-md mx-auto min-h-screen bg-[#F8FAFC] shadow-2xl relative flex flex-col pb-28">
+  <!-- 모바일 앱 프레임 -->
+  <div class="max-w-md mx-auto min-h-screen bg-[#F4F6F8] relative flex flex-col pb-24 shadow-xl">
     
-    <!-- 1. 상단 깔끔한 헤더 -->
-    <header class="sticky top-0 z-30 bg-white/90 backdrop-blur-md border-b border-slate-100 px-5 py-3.5 flex items-center justify-between">
-      <div class="flex items-center gap-2">
-        <div class="w-8 h-8 rounded-xl bg-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-md shadow-indigo-200">남율</div>
-        <div>
-          <h1 class="text-xs font-bold text-slate-400 tracking-tight">남율효성해링턴플레이스 2단지</h1>
-          <p class="text-sm font-extrabold text-slate-900 leading-tight">입주민 커뮤니티</p>
+    <!-- ================= 상단 동적 헤더 ================= -->
+    <header class="sticky top-0 z-30 bg-white border-b border-gray-100">
+      <div class="px-5 h-14 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span id="headerBadge" class="px-2 py-0.5 rounded-md text-[11px] font-extrabold bg-[#03C75A] text-white">2단지</span>
+          <h1 id="headerTitle" class="text-[17px] font-extrabold tracking-tight text-[#191F28]">남율효성해링턴플레이스 2단지</h1>
         </div>
+        <button id="adminAuthBtn" onclick="openAdminModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-700 active:scale-95 transition">
+          <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
+          <span id="adminBtnText">관리자</span>
+        </button>
       </div>
-      <button id="adminAuthBtn" onclick="openAdminModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-slate-100 text-slate-600 hover:bg-slate-200 transition">
-        <i data-lucide="shield" class="w-3.5 h-3.5"></i>
-        <span id="adminBtnText">관리자</span>
-      </button>
+
+      <!-- 상단바 바로 아래 자동 맞춤 소메뉴 (도서관 전용) -->
+      <div id="subnav-library" class="hidden grid grid-cols-3 border-t border-gray-100 bg-white">
+        <button onclick="switchSubTab('lib', 'books')" id="sub-lib-books" class="py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition">도서목록</button>
+        <button onclick="switchSubTab('lib', 'volunteer')" id="sub-lib-volunteer" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">봉사신청</button>
+        <button onclick="switchSubTab('lib', 'wishbook')" id="sub-lib-wishbook" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">희망도서</button>
+      </div>
+
+      <!-- 상단바 바로 아래 자동 맞춤 소메뉴 (휘트니스 전용) -->
+      <div id="subnav-fitness" class="hidden grid grid-cols-3 border-t border-gray-100 bg-white">
+        <button onclick="switchSubTab('fit', 'equip')" id="sub-fit-equip" class="py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition">보유기구</button>
+        <button onclick="switchSubTab('fit', 'repair')" id="sub-fit-repair" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">수리요청</button>
+        <button onclick="switchSubTab('fit', 'wishequip')" id="sub-fit-wishequip" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">희망기구</button>
+      </div>
     </header>
 
-    <!-- ================= 2. 작은도서관 섹션 ================= -->
-    <main id="section-library" class="p-4 space-y-4 flex-1">
+    <!-- 연결 상태 안내 알림바 (Firebase 미설정 시 표시) -->
+    <div id="dbModeBanner" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-2 text-[11px] text-amber-800 flex items-center justify-between">
+      <span>⚠️ 현재 브라우저 임시저장 모드입니다. (Firebase 설정 입력 시 실시간 동기화)</span>
+    </div>
+
+    <!-- ================= 1. 홈(HOME) 대시보드 섹션 ================= -->
+    <main id="section-home" class="p-4 space-y-4 flex-1 animate-fade">
       
-      <!-- 실시간 운영 상태 배너 -->
-      <div id="libStatusBanner" class="p-3.5 rounded-2xl border transition-all shadow-xs flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span id="libStatusDot" class="w-3 h-3 rounded-full"></span>
+      <!-- 웰컴 카드 -->
+      <div class="bg-gradient-to-br from-[#03C75A] to-[#02A64B] rounded-3xl p-5 text-white shadow-md">
+        <p class="text-xs font-semibold opacity-90">스마트 커뮤니티 안내</p>
+        <h2 class="text-lg font-extrabold mt-0.5 leading-snug">남율효성해링턴플레이스 2단지<br>입주민 전용 라운지</h2>
+        <p class="text-[11px] opacity-85 mt-2">실시간 시설 운영 현황과 공지사항을 확인하세요.</p>
+      </div>
+
+      <!-- 실시간 시설 운영 상태 2단 카드 -->
+      <div class="grid grid-cols-2 gap-3">
+        <!-- 작은도서관 상태 카드 -->
+        <div onclick="switchMainTab('library')" class="bg-white rounded-2xl p-4 naver-shadow border border-gray-100 cursor-pointer active:scale-[0.98] transition space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="w-9 h-9 rounded-xl bg-emerald-50 text-[#03C75A] flex items-center justify-center">
+              <i data-lucide="book-open" class="w-5 h-5"></i>
+            </div>
+            <span id="homeLibBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-[#03C75A]">확인중</span>
+          </div>
           <div>
-            <h3 id="libStatusTitle" class="text-xs font-extrabold">도서관 운영 상태 확인 중...</h3>
-            <p id="libStatusTime" class="text-[11px] text-slate-500 mt-0.5">설정 시간: 로딩중</p>
+            <h3 class="text-sm font-extrabold text-gray-900">작은도서관</h3>
+            <p id="homeLibHours" class="text-[11px] text-gray-400 mt-0.5">09:00 ~ 21:00</p>
           </div>
         </div>
-        <span class="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-white/80 border border-slate-200/60 shadow-xs">작은도서관</span>
+
+        <!-- 휘트니스 상태 카드 -->
+        <div onclick="switchMainTab('fitness')" class="bg-white rounded-2xl p-4 naver-shadow border border-gray-100 cursor-pointer active:scale-[0.98] transition space-y-2.5">
+          <div class="flex items-center justify-between">
+            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center">
+              <i data-lucide="dumbbell" class="w-5 h-5"></i>
+            </div>
+            <span id="homeFitBadge" class="px-2 py-0.5 rounded-full text-[11px] font-extrabold bg-blue-50 text-blue-600">확인중</span>
+          </div>
+          <div>
+            <h3 class="text-sm font-extrabold text-gray-900">휘트니스센터</h3>
+            <p id="homeFitHours" class="text-[11px] text-gray-400 mt-0.5">06:00 ~ 23:00</p>
+          </div>
+        </div>
       </div>
 
-      <!-- 서브 탭 -->
-      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-        <button onclick="switchSubTab('lib', 'books')" id="sub-lib-books" class="sub-lib px-4 py-2 rounded-full text-xs font-bold bg-indigo-600 text-white whitespace-nowrap shadow-sm shadow-indigo-100">도서목록</button>
-        <button onclick="switchSubTab('lib', 'volunteer')" id="sub-lib-volunteer" class="sub-lib px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">봉사신청</button>
-        <button onclick="switchSubTab('lib', 'wishbook')" id="sub-lib-wishbook" class="sub-lib px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">희망도서신청</button>
-      </div>
-
-      <!-- 관리자 전용 설정 (운영시간 및 도서관리) -->
-      <div class="admin-only hidden bg-indigo-50/90 border border-indigo-100 rounded-3xl p-4 space-y-3">
+      <!-- 커뮤니티 통합 공지사항 카드 -->
+      <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3">
         <div class="flex items-center justify-between">
-          <span class="text-xs font-extrabold text-indigo-900 flex items-center gap-1"><i data-lucide="settings" class="w-4 h-4"></i> 도서관 운영시간 및 관리</span>
-          <button onclick="openModal('modal-add-book')" class="px-3 py-1.5 bg-indigo-600 text-white text-xs font-bold rounded-xl shadow-xs">+ 도서 등록</button>
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 bg-gray-900 text-white text-[10px] font-extrabold rounded-md">NOTICE</span>
+            <h3 class="text-sm font-extrabold text-gray-900">커뮤니티 주요 공지</h3>
+          </div>
+          <button onclick="openModal('modal-edit-home-notice')" class="admin-only hidden text-xs font-bold text-[#03C75A]">공지 수정</button>
         </div>
+        <div id="homeNoticeDisplay" class="bg-gray-50 rounded-xl p-3.5 text-xs text-gray-700 leading-relaxed whitespace-pre-line">
+          남율효성해링턴플레이스 2단지 작은도서관 및 휘트니스 센터를 이용해 주셔서 감사합니다. 쾌적한 이용을 위해 실내화 착용 및 정숙을 부탁드립니다.
+        </div>
+      </div>
+
+      <!-- 관리자 전용: 시설별 운영요일 및 시간 설정 -->
+      <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border-2 border-[#03C75A] space-y-4">
+        <h3 class="text-sm font-extrabold text-gray-900 flex items-center gap-1.5">
+          <i data-lucide="clock" class="w-4 h-4 text-[#03C75A]"></i> 관리자: 시설 운영시간 및 요일 설정
+        </h3>
         
-        <!-- 운영시간 설정 박스 -->
-        <div class="bg-white p-3 rounded-2xl border border-indigo-100 space-y-2 text-xs">
-          <p class="font-bold text-slate-700">도서관 운영시간 및 요일 설정</p>
+        <!-- 도서관 설정 -->
+        <div class="p-3.5 bg-gray-50 rounded-xl space-y-2 text-xs">
+          <p class="font-extrabold text-gray-800">📚 작은도서관 운영 설정</p>
           <div class="grid grid-cols-2 gap-2">
-            <div><label class="text-[10px] text-slate-400">시작 시간</label><input type="time" id="libOpenTime" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl"></div>
-            <div><label class="text-[10px] text-slate-400">종료 시간</label><input type="time" id="libCloseTime" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl"></div>
+            <input type="time" id="libOpenTime" value="09:00" class="p-2 bg-white border border-gray-200 rounded-lg">
+            <input type="time" id="libCloseTime" value="21:00" class="p-2 bg-white border border-gray-200 rounded-lg">
           </div>
-          <div class="flex flex-wrap gap-1 pt-1" id="libDaysContainer">
-            <!-- 요일 체크박스 동적 생성 -->
-          </div>
-          <button onclick="saveOperatingSettings('library')" class="w-full py-2 bg-indigo-600 text-white font-bold rounded-xl text-xs">운영시간 저장</button>
+          <div id="libDaysContainer" class="flex flex-wrap gap-1 pt-1"></div>
+          <button onclick="saveOperatingSettings('library')" class="w-full py-2 bg-[#03C75A] text-white font-bold rounded-lg">도서관 시간 저장</button>
         </div>
 
-        <div class="grid grid-cols-2 gap-2 pt-1">
-          <button onclick="exportBooksToExcel()" class="flex items-center justify-center gap-1.5 py-2.5 bg-white text-emerald-700 border border-emerald-200 rounded-xl text-xs font-bold shadow-xs">
-            <i data-lucide="download" class="w-3.5 h-3.5"></i> 도서 엑셀 백업
-          </button>
-          <label class="flex items-center justify-center gap-1.5 py-2.5 bg-white text-indigo-700 border border-indigo-200 rounded-xl text-xs font-bold shadow-xs cursor-pointer">
-            <i data-lucide="upload" class="w-3.5 h-3.5"></i> 엑셀 복구/업로드
-            <input type="file" accept=".xlsx, .xls" onchange="importBooksFromExcel(event)" class="hidden">
-          </label>
+        <!-- 휘트니스 설정 -->
+        <div class="p-3.5 bg-gray-50 rounded-xl space-y-2 text-xs">
+          <p class="font-extrabold text-gray-800">💪 휘트니스센터 운영 설정</p>
+          <div class="grid grid-cols-2 gap-2">
+            <input type="time" id="fitOpenTime" value="06:00" class="p-2 bg-white border border-gray-200 rounded-lg">
+            <input type="time" id="fitCloseTime" value="23:00" class="p-2 bg-white border border-gray-200 rounded-lg">
+          </div>
+          <div id="fitDaysContainer" class="flex flex-wrap gap-1 pt-1"></div>
+          <button onclick="saveOperatingSettings('fitness')" class="w-full py-2 bg-blue-600 text-white font-bold rounded-lg">휘트니스 시간 저장</button>
         </div>
       </div>
+    </main>
 
-      <!-- 1-1. 도서 목록 뷰 -->
+    <!-- ================= 2. 작은도서관 섹션 ================= -->
+    <main id="section-library" class="hidden p-4 space-y-4 flex-1 animate-fade">
+      
+      <!-- 2-1. 도서 목록 -->
       <div id="view-lib-books" class="space-y-3">
-        <div class="relative">
-          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3.5 top-3.5"></i>
-          <input type="text" id="bookSearchInput" onkeyup="renderBooks()" placeholder="책 이름, 저자, 분류 검색..." class="w-full pl-10 pr-4 py-3 bg-white border border-slate-200/80 rounded-2xl text-sm focus:outline-none focus:border-indigo-500 shadow-xs">
+        <!-- 관리자 도구 바 -->
+        <div class="admin-only hidden bg-white rounded-2xl p-3.5 naver-shadow border border-emerald-200 space-y-2.5">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold text-gray-800">도서 및 엑셀 관리</span>
+            <button onclick="openModal('modal-add-book')" class="px-3 py-1.5 bg-[#03C75A] text-white text-xs font-bold rounded-lg">+ 도서 등록</button>
+          </div>
+          <div class="grid grid-cols-2 gap-2 pt-2 border-t border-gray-100">
+            <button onclick="exportBooksToExcel()" class="py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1">
+              <i data-lucide="download" class="w-3.5 h-3.5 text-[#03C75A]"></i> 엑셀 백업
+            </button>
+            <label class="py-2 bg-gray-50 text-gray-700 border border-gray-200 rounded-lg text-xs font-bold flex items-center justify-center gap-1 cursor-pointer">
+              <i data-lucide="upload" class="w-3.5 h-3.5 text-blue-600"></i> 엑셀 복구
+              <input type="file" accept=".xlsx, .xls" onchange="importBooksFromExcel(event)" class="hidden">
+            </label>
+          </div>
         </div>
-        <div id="bookListContainer" class="space-y-3"></div>
+
+        <!-- 검색창 -->
+        <div class="relative">
+          <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5"></i>
+          <input type="text" id="bookSearchInput" onkeyup="renderBooks()" placeholder="도서명, 저자, 분류를 검색하세요" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#03C75A] naver-shadow">
+        </div>
+
+        <div id="bookListContainer" class="space-y-2.5"></div>
       </div>
 
-      <!-- 1-2. 봉사 신청 뷰 -->
+      <!-- 2-2. 봉사 신청 -->
       <div id="view-lib-volunteer" class="hidden space-y-4">
-        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs space-y-4">
+        <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-4">
           <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-base font-extrabold text-slate-900">도서관 자원봉사 신청</h2>
-              <p class="text-xs text-slate-500 mt-0.5">신청 전 필독 공지사항을 확인해 주세요.</p>
+              <h2 class="text-base font-extrabold text-gray-900">도서관 자원봉사 신청</h2>
+              <p class="text-xs text-gray-500 mt-0.5">공지사항 확인 후 신청이 가능합니다.</p>
             </div>
-            <button onclick="openVolunteerNotice()" class="px-3.5 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-xs font-bold flex items-center gap-1">
-              <i data-lucide="megaphone" class="w-3.5 h-3.5"></i> 공지확인
-            </button>
+            <button onclick="openVolunteerNotice()" class="px-3.5 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-xl text-xs font-extrabold">공지필독</button>
           </div>
 
-          <div id="volunteerFormWrapper" class="space-y-3.5 pt-2 border-t border-slate-100 opacity-40 pointer-events-none transition-opacity">
+          <div id="volunteerFormWrapper" class="space-y-3 pt-3 border-t border-gray-100 opacity-40 pointer-events-none transition">
             <div class="grid grid-cols-3 gap-2">
-              <input type="text" id="volDong" placeholder="동 (예: 201)" class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-              <input type="text" id="volHo" placeholder="호 (예: 1204)" class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-              <input type="text" id="volName" placeholder="성함" class="px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+              <input type="text" id="volDong" placeholder="동 (201)" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+              <input type="text" id="volHo" placeholder="호 (101)" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+              <input type="text" id="volName" placeholder="성함" class="px-3 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">봉사 희망일 선택</label>
-              <input type="date" id="volDate" onchange="updateVolunteerTimeOptions()" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 희망일</label>
+              <input type="date" id="volDate" onchange="updateVolunteerTimeOptions()" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
             </div>
             <div>
-              <label class="block text-xs font-bold text-slate-600 mb-1">봉사 시간 선택 <span id="volDayTypeBadge" class="text-indigo-600 font-normal"></span></label>
-              <select id="volTimeSlot" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+              <label class="block text-xs font-bold text-gray-600 mb-1">봉사 시간대 <span id="volDayTypeBadge" class="text-[#03C75A]"></span></label>
+              <select id="volTimeSlot" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
                 <option value="">날짜를 먼저 선택해 주세요</option>
               </select>
             </div>
-            <button onclick="submitVolunteer()" class="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-2xl text-sm shadow-md shadow-indigo-100 hover:bg-indigo-700 transition">
-              봉사 신청하기
-            </button>
+            <button onclick="submitVolunteer()" class="w-full py-3.5 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm shadow-sm active:scale-[0.99] transition">봉사 신청 접수</button>
           </div>
-          <p id="volLockHint" class="text-center text-xs text-amber-600 font-semibold">👆 상단의 [공지확인] 버튼을 눌러 내용을 확인하시면 신청이 활성화됩니다.</p>
+          <p id="volLockHint" class="text-center text-xs text-amber-600 font-bold">👆 상단 [공지필독] 버튼을 눌러 확인하시면 입력창이 열립니다.</p>
         </div>
 
-        <div class="admin-only hidden bg-white rounded-3xl p-5 border border-indigo-200 shadow-xs space-y-4">
-          <div class="flex items-center justify-between">
-            <h3 class="text-sm font-extrabold text-indigo-900">📋 관리자: 봉사 신청자 현황</h3>
-            <button onclick="openModal('modal-edit-notice')" class="text-xs font-bold text-indigo-600 underline">공지 수정</button>
+        <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border border-emerald-200 space-y-3">
+          <div class="flex justify-between items-center">
+            <h3 class="text-sm font-extrabold text-gray-900">📋 관리자: 봉사 신청 내역</h3>
+            <button onclick="openModal('modal-edit-notice')" class="text-xs font-bold text-[#03C75A] underline">봉사공지 수정</button>
           </div>
-          <div id="volunteerAdminList" class="space-y-2.5"></div>
+          <div id="volunteerAdminList" class="space-y-2"></div>
         </div>
       </div>
 
-      <!-- 1-3. 희망도서 신청 뷰 -->
+      <!-- 2-3. 희망도서 신청 -->
       <div id="view-lib-wishbook" class="hidden space-y-4">
-        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs space-y-3">
-          <h2 class="text-base font-extrabold text-slate-900">희망도서 신청</h2>
-          <input type="text" id="wishBookTitle" placeholder="신청할 도서명 (저자 포함 권장)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-          <input type="text" id="wishBookReason" placeholder="간단한 신청 사유를 적어주세요" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-          <button onclick="submitWishBook()" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-2xl text-sm shadow-xs">신청 등록하기</button>
+        <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3">
+          <h2 class="text-base font-extrabold text-gray-900">희망도서 신청</h2>
+          <input type="text" id="wishBookTitle" placeholder="희망 도서명 및 저자" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+          <input type="text" id="wishBookReason" placeholder="간단한 신청 사유" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+          <button onclick="submitWishBook()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">희망도서 등록</button>
         </div>
         <div class="space-y-2.5">
-          <h3 class="text-xs font-bold text-slate-500 px-1">실시간 희망도서 진행 현황 (전체 공개)</h3>
+          <h3 class="text-xs font-bold text-gray-500 px-1">희망도서 진행 현황 (전체 공개)</h3>
           <div id="wishBookListContainer" class="space-y-2.5"></div>
         </div>
       </div>
     </main>
 
     <!-- ================= 3. 휘트니스 섹션 ================= -->
-    <main id="section-fitness" class="hidden p-4 space-y-4 flex-1">
+    <main id="section-fitness" class="hidden p-4 space-y-4 flex-1 animate-fade">
       
-      <!-- 실시간 운영 상태 배너 -->
-      <div id="fitStatusBanner" class="p-3.5 rounded-2xl border transition-all shadow-xs flex items-center justify-between">
-        <div class="flex items-center gap-2">
-          <span id="fitStatusDot" class="w-3 h-3 rounded-full"></span>
-          <div>
-            <h3 id="fitStatusTitle" class="text-xs font-extrabold">휘트니스 운영 상태 확인 중...</h3>
-            <p id="fitStatusTime" class="text-[11px] text-slate-500 mt-0.5">설정 시간: 로딩중</p>
-          </div>
-        </div>
-        <span class="text-[11px] font-bold px-2.5 py-1 rounded-xl bg-white/80 border border-slate-200/60 shadow-xs">휘트니스센터</span>
-      </div>
-
-      <!-- 서브 탭 -->
-      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
-        <button onclick="switchSubTab('fit', 'equip')" id="sub-fit-equip" class="sub-fit px-4 py-2 rounded-full text-xs font-bold bg-emerald-600 text-white whitespace-nowrap shadow-sm shadow-emerald-100">보유기구안내</button>
-        <button onclick="switchSubTab('fit', 'repair')" id="sub-fit-repair" class="sub-fit px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">수리요청</button>
-        <button onclick="switchSubTab('fit', 'wishequip')" id="sub-fit-wishequip" class="sub-fit px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap">희망기구추천</button>
-      </div>
-
-      <!-- 관리자 전용 휘트니스 설정 -->
-      <div class="admin-only hidden bg-emerald-50/90 border border-emerald-100 rounded-3xl p-4 space-y-3">
-        <div class="flex items-center justify-between">
-          <span class="text-xs font-extrabold text-emerald-900 flex items-center gap-1"><i data-lucide="settings" class="w-4 h-4"></i> 휘트니스 운영시간 및 기구관리</span>
-          <button onclick="openModal('modal-add-equip')" class="px-3 py-1.5 bg-emerald-600 text-white text-xs font-bold rounded-xl shadow-xs">+ 기구 등록</button>
-        </div>
-
-        <!-- 운영시간 설정 박스 -->
-        <div class="bg-white p-3 rounded-2xl border border-emerald-100 space-y-2 text-xs">
-          <p class="font-bold text-slate-700">휘트니스 센터 운영시간 및 요일 설정</p>
-          <div class="grid grid-cols-2 gap-2">
-            <div><label class="text-[10px] text-slate-400">시작 시간</label><input type="time" id="fitOpenTime" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl"></div>
-            <div><label class="text-[10px] text-slate-400">종료 시간</label><input type="time" id="fitCloseTime" class="w-full p-2 bg-slate-50 border border-slate-200 rounded-xl"></div>
-          </div>
-          <div class="flex flex-wrap gap-1 pt-1" id="fitDaysContainer"></div>
-          <button onclick="saveOperatingSettings('fitness')" class="w-full py-2 bg-emerald-600 text-white font-bold rounded-xl text-xs">운영시간 저장</button>
-        </div>
-      </div>
-
-      <!-- 2-1. 보유기구 뷰 -->
+      <!-- 3-1. 보유기구 안내 -->
       <div id="view-fit-equip" class="space-y-3">
-        <div class="flex gap-1.5">
-          <button onclick="filterEquip('전체')" class="eq-filter px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-white shadow-xs">전체</button>
-          <button onclick="filterEquip('유산소기구')" class="eq-filter px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200">유산소</button>
-          <button onclick="filterEquip('웨이트기구')" class="eq-filter px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200">웨이트</button>
-          <button onclick="filterEquip('기타')" class="eq-filter px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200">기타</button>
+        <div class="admin-only hidden bg-white rounded-2xl p-3.5 naver-shadow border border-blue-200 flex items-center justify-between">
+          <span class="text-xs font-extrabold text-gray-800">휘트니스 기구 관리</span>
+          <button onclick="openModal('modal-add-equip')" class="px-3 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg">+ 기구 등록</button>
         </div>
-        <div id="equipListContainer" class="grid grid-cols-1 gap-3.5"></div>
+
+        <div class="flex gap-1.5">
+          <button onclick="filterEquip('전체')" class="eq-filter px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-gray-900 text-white">전체</button>
+          <button onclick="filterEquip('유산소기구')" class="eq-filter px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200">유산소</button>
+          <button onclick="filterEquip('웨이트기구')" class="eq-filter px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200">웨이트</button>
+          <button onclick="filterEquip('기타')" class="eq-filter px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200">기타</button>
+        </div>
+
+        <div id="equipListContainer" class="space-y-3"></div>
       </div>
 
-      <!-- 2-2. 기구 수리요청 뷰 -->
+      <!-- 3-2. 기구 수리요청 -->
       <div id="view-fit-repair" class="hidden space-y-4">
-        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs space-y-3">
-          <h2 class="text-base font-extrabold text-slate-900">운동기구 고장 · 수리 요청</h2>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">고장난 기구 선택</label>
-            <select id="repairEquipSelect" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-              <option value="">보유 기구를 선택해 주세요</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-xs font-bold text-slate-600 mb-1">수리 요청 부분 및 증상</label>
-            <input type="text" id="repairPartInput" placeholder="예: 런닝머신 2번 벨트 소음 발생" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-          </div>
-          <button onclick="submitRepair()" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-2xl text-sm shadow-xs">수리 요청 접수</button>
+        <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3">
+          <h2 class="text-base font-extrabold text-gray-900">기구 고장 · 수리 요청</h2>
+          <select id="repairEquipSelect" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+            <option value="">수리할 기구를 선택해 주세요</option>
+          </select>
+          <input type="text" id="repairPartInput" placeholder="고장 부위 및 증상 (예: 런닝머신 1번 벨트 소음)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+          <button onclick="submitRepair()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">수리 요청 접수</button>
         </div>
         <div class="space-y-2.5">
-          <h3 class="text-xs font-bold text-slate-500 px-1">수리 접수 및 처리 현황</h3>
+          <h3 class="text-xs font-bold text-gray-500 px-1">수리 접수 및 처리 현황</h3>
           <div id="repairListContainer" class="space-y-2.5"></div>
         </div>
       </div>
 
-      <!-- 2-3. 희망기구 추천 뷰 -->
+      <!-- 3-3. 희망기구 추천 -->
       <div id="view-fit-wishequip" class="hidden space-y-4">
-        <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs space-y-3">
-          <h2 class="text-base font-extrabold text-slate-900">신규 희망기구 추천</h2>
-          <select id="wishEquipCat" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+        <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3">
+          <h2 class="text-base font-extrabold text-gray-900">희망 기구 추천</h2>
+          <select id="wishEquipCat" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
             <option value="유산소">유산소 기구</option>
             <option value="웨이트">웨이트 기구</option>
-            <option value="기타">기타 용품/기구</option>
+            <option value="기타">기타 용품</option>
           </select>
-          <input type="text" id="wishEquipName" placeholder="구매 희망 기구명 (예: 천국의 계단)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-          <textarea id="wishEquipReason" rows="2" placeholder="추천 및 요청 사유를 적어주세요" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm"></textarea>
-          <button onclick="submitWishEquip()" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-2xl text-sm shadow-xs">희망기구 추천하기</button>
+          <input type="text" id="wishEquipName" placeholder="구매 희망 기구명" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+          <textarea id="wishEquipReason" rows="2" placeholder="추천 사유를 적어주세요" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></textarea>
+          <button onclick="submitWishEquip()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">희망기구 등록</button>
         </div>
         <div class="space-y-2.5">
-          <h3 class="text-xs font-bold text-slate-500 px-1">입주민 추천 기구 목록</h3>
+          <h3 class="text-xs font-bold text-gray-500 px-1">입주민 추천 기구 목록</h3>
           <div id="wishEquipListContainer" class="space-y-2.5"></div>
         </div>
       </div>
     </main>
 
-    <!-- ================= 4. 통합 건의사항 섹션 ================= -->
-    <main id="section-suggest" class="hidden p-4 space-y-4 flex-1">
-      <div class="bg-white rounded-3xl p-5 border border-slate-100 shadow-xs space-y-3.5">
-        <div class="flex items-center gap-2">
-          <span class="p-2 bg-slate-100 rounded-xl text-slate-700"><i data-lucide="lock" class="w-4 h-4"></i></span>
-          <div>
-            <h2 class="text-base font-extrabold text-slate-900">비공개 커뮤니티 건의함</h2>
-            <p class="text-xs text-slate-500">작성된 내용은 관리자만 열람할 수 있습니다.</p>
-          </div>
+    <!-- ================= 4. 통합 건의함 섹션 ================= -->
+    <main id="section-suggest" class="hidden p-4 space-y-4 flex-1 animate-fade">
+      <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3.5">
+        <div>
+          <h2 class="text-base font-extrabold text-gray-900">비공개 통합 건의함</h2>
+          <p class="text-xs text-gray-500 mt-0.5">작성된 내용은 관리자만 열람 가능하며 타 입주민에게 공개되지 않습니다.</p>
         </div>
-        <select id="suggestFacility" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-          <option value="작은도서관">📚 작은도서관 관련 건의</option>
-          <option value="휘트니스센터">💪 휘트니스센터 관련 건의</option>
-          <option value="기타/공통">🏢 아파트 단지 공통 건의</option>
+        <select id="suggestFacility" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+          <option value="작은도서관">📚 작은도서관 건의</option>
+          <option value="휘트니스센터">💪 휘트니스센터 건의</option>
+          <option value="단지공통">🏢 기타 공통 건의</option>
         </select>
-        <input type="text" id="suggestAuthor" placeholder="동·호수 및 성함 (선택사항)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-        <textarea id="suggestContent" rows="4" placeholder="불편사항이나 개선 의견을 자유롭게 남겨주세요." class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm"></textarea>
-        <button onclick="submitSuggestion()" class="w-full py-3.5 bg-slate-900 text-white font-bold rounded-2xl text-sm shadow-md">
-          비공개 건의 등록하기
-        </button>
+        <input type="text" id="suggestAuthor" placeholder="동·호수 및 성함 (선택)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <textarea id="suggestContent" rows="4" placeholder="건의 및 불편사항을 자세히 적어주세요." class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></textarea>
+        <button onclick="submitSuggestion()" class="w-full py-3.5 bg-gray-900 text-white font-extrabold rounded-xl text-sm">비공개 건의 접수</button>
       </div>
 
-      <div class="admin-only hidden bg-white rounded-3xl p-5 border border-slate-300 shadow-xs space-y-3">
-        <h3 class="text-sm font-extrabold text-slate-900 flex items-center gap-1.5">
-          <i data-lucide="inbox" class="w-4 h-4 text-indigo-600"></i> 관리자 전용: 접수된 건의사항
-        </h3>
+      <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border border-gray-300 space-y-3">
+        <h3 class="text-sm font-extrabold text-gray-900">🔒 관리자 전용: 접수된 건의사항</h3>
         <div id="suggestionAdminList" class="space-y-2.5"></div>
       </div>
     </main>
 
-    <!-- ================= 5. 하단 고정 네비게이션 바 (하단 클릭 아이콘) ================= -->
-    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white/95 backdrop-blur-md border-t border-slate-100 px-6 py-2.5 z-40 flex justify-around items-center shadow-lg">
-      <button onclick="switchMainTab('library')" id="nav-btn-library" class="flex flex-col items-center gap-1 text-indigo-600 transition group">
-        <div class="p-1.5 rounded-2xl bg-indigo-50 group-hover:bg-indigo-100 transition">
-          <i data-lucide="book-open" class="w-5 h-5"></i>
-        </div>
-        <span class="text-[11px] font-extrabold">작은도서관</span>
+    <!-- ================= 5. 하단 고정 4단 네비게이션 바 ================= -->
+    <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 px-2 py-2 z-40 grid grid-cols-4 items-center shadow-[0_-4px_16px_rgba(0,0,0,0.03)]">
+      <button onclick="switchMainTab('home')" id="nav-btn-home" class="flex flex-col items-center gap-1 py-1 text-[#03C75A]">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span class="text-[11px] font-extrabold">홈</span>
       </button>
-
-      <button onclick="switchMainTab('fitness')" id="nav-btn-fitness" class="flex flex-col items-center gap-1 text-slate-400 transition group">
-        <div class="p-1.5 rounded-2xl group-hover:bg-emerald-50 transition">
-          <i data-lucide="dumbbell" class="w-5 h-5"></i>
-        </div>
+      <button onclick="switchMainTab('library')" id="nav-btn-library" class="flex flex-col items-center gap-1 py-1 text-gray-400">
+        <i data-lucide="book-open" class="w-5 h-5"></i>
+        <span class="text-[11px] font-medium">작은도서관</span>
+      </button>
+      <button onclick="switchMainTab('fitness')" id="nav-btn-fitness" class="flex flex-col items-center gap-1 py-1 text-gray-400">
+        <i data-lucide="dumbbell" class="w-5 h-5"></i>
         <span class="text-[11px] font-medium">휘트니스</span>
       </button>
-
-      <button onclick="switchMainTab('suggest')" id="nav-btn-suggest" class="flex flex-col items-center gap-1 text-slate-400 transition group">
-        <div class="p-1.5 rounded-2xl group-hover:bg-slate-100 transition">
-          <i data-lucide="message-square-text" class="w-5 h-5"></i>
-        </div>
-        <span class="text-[11px] font-medium">통합건의함</span>
+      <button onclick="switchMainTab('suggest')" id="nav-btn-suggest" class="flex flex-col items-center gap-1 py-1 text-gray-400">
+        <i data-lucide="message-square" class="w-5 h-5"></i>
+        <span class="text-[11px] font-medium">건의함</span>
       </button>
     </nav>
 
   </div>
 
-  <!-- ================= 모달 팝업들 ================= -->
+  <!-- ================= 모달 팝업 ================= -->
 
-  <!-- 1. 관리자 로그인 모달 -->
-  <div id="modal-admin-login" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 animate-slide-up shadow-2xl">
+  <!-- 관리자 로그인 -->
+  <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4">
       <div class="flex justify-between items-center">
         <h3 class="text-base font-extrabold">관리자 로그인</h3>
-        <button onclick="closeModal('modal-admin-login')"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+        <button onclick="closeModal('modal-admin-login')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
       </div>
-      <input type="email" id="adminEmail" placeholder="관리자 이메일" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <input type="password" id="adminPassword" placeholder="비밀번호" class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <button onclick="loginAdmin()" class="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-2xl text-sm">로그인</button>
+      <input type="email" id="adminEmail" placeholder="관리자 이메일" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="password" id="adminPassword" placeholder="비밀번호" class="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <button onclick="loginAdmin()" class="w-full py-3.5 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">로그인</button>
     </div>
   </div>
 
-  <!-- 2. 도서 위치 팝업 -->
-  <div id="modal-book-location" class="fixed inset-0 bg-black/50 backdrop-blur-xs z-50 hidden items-center justify-center p-5">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 text-center space-y-4 animate-slide-up shadow-2xl">
-      <div class="w-14 h-14 bg-indigo-50 text-indigo-600 rounded-2xl flex items-center justify-center mx-auto shadow-inner">
-        <i data-lucide="map-pin" class="w-7 h-7"></i>
+  <!-- 도서 위치 안내 -->
+  <div id="modal-book-location" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 text-center space-y-4">
+      <div class="w-12 h-12 bg-emerald-50 text-[#03C75A] rounded-2xl flex items-center justify-center mx-auto">
+        <i data-lucide="map-pin" class="w-6 h-6"></i>
       </div>
       <div>
-        <span id="locBookCat" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-2.5 py-1 rounded-full">분류</span>
-        <h3 id="locBookTitle" class="text-lg font-extrabold text-slate-900 mt-2">제목</h3>
-        <p id="locBookAuthor" class="text-xs text-slate-500 mt-0.5">저자</p>
+        <span id="locBookCat" class="text-[11px] font-bold text-[#03C75A] bg-emerald-50 px-2.5 py-0.5 rounded-full">분류</span>
+        <h3 id="locBookTitle" class="text-lg font-extrabold text-gray-900 mt-2">제목</h3>
+        <p id="locBookAuthor" class="text-xs text-gray-500">저자</p>
       </div>
-      <div class="bg-slate-50 border border-slate-200/80 rounded-2xl p-4">
-        <p class="text-xs text-slate-400 font-semibold">도서 비치 위치</p>
-        <p id="locBookShelf" class="text-xl font-black text-indigo-700 mt-1">A책장 3번째 칸</p>
+      <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4">
+        <p class="text-xs text-gray-400 font-bold">도서 비치 책장 위치</p>
+        <p id="locBookShelf" class="text-xl font-black text-[#03C75A] mt-1">A책장 3칸</p>
       </div>
-      <button onclick="closeModal('modal-book-location')" class="w-full py-3 bg-slate-900 text-white font-bold rounded-2xl text-sm">확인</button>
+      <button onclick="closeModal('modal-book-location')" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl text-sm">확인</button>
     </div>
   </div>
 
-  <!-- 3. 도서 등록 모달 -->
-  <div id="modal-add-book" class="fixed inset-0 bg-black/50 z-50 hidden items-end sm:items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3 animate-slide-up shadow-2xl">
+  <!-- 도서 등록 -->
+  <div id="modal-add-book" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
       <div class="flex justify-between items-center">
         <h3 class="text-base font-extrabold">새 도서 등록</h3>
-        <button onclick="closeModal('modal-add-book')"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+        <button onclick="closeModal('modal-add-book')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
       </div>
-      <input type="text" id="newBookTitle" placeholder="책 이름 *" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <input type="text" id="newBookAuthor" placeholder="저자 *" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <input type="text" id="newBookCat" placeholder="책 분류 (예: 소설, 아동)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <input type="text" id="newBookShelf" placeholder="위치 (예: A책장 3칸) *" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <input type="url" id="newBookCover" placeholder="책 표지 이미지 URL (선택)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <label class="flex items-center gap-2 text-xs font-bold text-indigo-700 pt-1">
-        <input type="checkbox" id="newBookIsNew" class="w-4 h-4 rounded text-indigo-600"> 신간 도서로 상단 하이라이트 표시
+      <input type="text" id="newBookTitle" placeholder="책 이름 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="newBookAuthor" placeholder="저자 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="newBookCat" placeholder="책 분류 (예: 소설, 아동)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="newBookShelf" placeholder="책장 위치 (예: A책장 3칸) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="url" id="newBookCover" placeholder="책 표지 이미지 URL (선택)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <label class="flex items-center gap-2 text-xs font-bold text-[#03C75A] pt-1">
+        <input type="checkbox" id="newBookIsNew" class="w-4 h-4 rounded"> 신간 도서로 상단 하이라이트 표시
       </label>
-      <button onclick="addBook()" class="w-full py-3 bg-indigo-600 text-white font-bold rounded-2xl text-sm">등록 완료</button>
+      <button onclick="addBook()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">등록하기</button>
     </div>
   </div>
 
-  <!-- 4. 봉사 공지 팝업 -->
-  <div id="modal-vol-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 animate-slide-up shadow-2xl">
-      <div class="flex items-center gap-2 text-amber-600">
-        <i data-lucide="bell-ring" class="w-5 h-5"></i>
-        <h3 class="text-base font-extrabold text-slate-900">자원봉사 신청 안내 공지</h3>
-      </div>
-      <div id="volNoticeContent" class="bg-amber-50/70 border border-amber-100 rounded-2xl p-4 text-xs leading-relaxed text-slate-700 whitespace-pre-line max-h-60 overflow-y-auto">
-        공지 로딩중...
-      </div>
-      <button onclick="confirmVolunteerNotice()" class="w-full py-3.5 bg-indigo-600 text-white font-bold rounded-2xl text-sm">
-        내용을 확인했습니다 (신청하기)
-      </button>
-    </div>
-  </div>
-
-  <!-- 5. 봉사 공지 수정 모달 -->
-  <div id="modal-edit-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3 animate-slide-up shadow-2xl">
-      <h3 class="text-base font-extrabold">봉사 공지사항 수정</h3>
-      <textarea id="editNoticeTextarea" rows="5" class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-xs leading-relaxed"></textarea>
-      <div class="flex gap-2">
-        <button onclick="closeModal('modal-edit-notice')" class="flex-1 py-2.5 bg-slate-100 text-slate-600 font-bold rounded-xl text-xs">취소</button>
-        <button onclick="saveVolunteerNotice()" class="flex-1 py-2.5 bg-indigo-600 text-white font-bold rounded-xl text-xs">저장</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- 6. 휘트니스 기구 등록 모달 -->
-  <div id="modal-add-equip" class="fixed inset-0 bg-black/50 z-50 hidden items-end sm:items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3 animate-slide-up shadow-2xl">
+  <!-- 기구 등록 -->
+  <div id="modal-add-equip" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
       <div class="flex justify-between items-center">
         <h3 class="text-base font-extrabold">운동기구 등록</h3>
-        <button onclick="closeModal('modal-add-equip')"><i data-lucide="x" class="w-5 h-5 text-slate-400"></i></button>
+        <button onclick="closeModal('modal-add-equip')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
       </div>
-      <select id="newEquipCat" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
+      <select id="newEquipCat" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
         <option value="유산소기구">유산소기구</option>
         <option value="웨이트기구">웨이트기구</option>
         <option value="기타">기타</option>
       </select>
-      <input type="text" id="newEquipName" placeholder="기구 이름 (예: 스미스 머신) *" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <input type="url" id="newEquipImg" placeholder="기구 사진 URL (선택)" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <input type="url" id="newEquipYoutube" placeholder="유튜브 사용법 영상 URL" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm">
-      <button onclick="addEquipment()" class="w-full py-3 bg-emerald-600 text-white font-bold rounded-2xl text-sm">기구 등록 완료</button>
+      <input type="text" id="newEquipName" placeholder="기구 이름 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="url" id="newEquipImg" placeholder="기구 사진 URL (선택)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="url" id="newEquipYoutube" placeholder="사용법 유튜브 URL" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <button onclick="addEquipment()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">등록하기</button>
     </div>
   </div>
 
-  <!-- ================= Firebase 및 로직 스크립트 ================= -->
+  <!-- 봉사 공지 확인 팝업 -->
+  <div id="modal-vol-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4">
+      <h3 class="text-base font-extrabold text-gray-900">📢 자원봉사 안내 공지</h3>
+      <div id="volNoticeContent" class="bg-amber-50 rounded-2xl p-4 text-xs text-gray-700 leading-relaxed whitespace-pre-line"></div>
+      <button onclick="confirmVolunteerNotice()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">확인했습니다 (신청하기)</button>
+    </div>
+  </div>
+
+  <!-- 봉사 공지 수정 -->
+  <div id="modal-edit-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
+      <h3 class="text-base font-extrabold">봉사 공지사항 수정</h3>
+      <textarea id="editNoticeTextarea" rows="5" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
+      <div class="flex gap-2">
+        <button onclick="closeModal('modal-edit-notice')" class="flex-1 py-2.5 bg-gray-100 rounded-xl text-xs font-bold">취소</button>
+        <button onclick="saveVolunteerNotice()" class="flex-1 py-2.5 bg-[#03C75A] text-white rounded-xl text-xs font-bold">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 홈 공지 수정 -->
+  <div id="modal-edit-home-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
+      <h3 class="text-base font-extrabold">홈 통합 공지 수정</h3>
+      <textarea id="editHomeNoticeTextarea" rows="5" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
+      <div class="flex gap-2">
+        <button onclick="closeModal('modal-edit-home-notice')" class="flex-1 py-2.5 bg-gray-100 rounded-xl text-xs font-bold">취소</button>
+        <button onclick="saveHomeNotice()" class="flex-1 py-2.5 bg-[#03C75A] text-white rounded-xl text-xs font-bold">저장</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= 스크립트 로직 (Firebase + 자동 폴백 엔진) ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
-    import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, setDoc, getDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, setDoc, getDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // ⚠️ [필수] 본인의 Firebase 설정값을 아래에 입력하세요!
-const firebaseConfig = {
+    // ⚠️ [필수] 본인의 Firebase 프로젝트 설정값을 아래에 입력하세요!
+    const firebaseConfig = {
   apiKey: "AIzaSyDkf11w1Bu5IZ_sggCT_GqMjTKnFy9fyuE",
   authDomain: "chilgokbookcafe.firebaseapp.com",
   projectId: "chilgokbookcafe",
@@ -434,244 +456,345 @@ const firebaseConfig = {
   appId: "1:150579513603:web:bc76fe94bbddf244084136"
 };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
+    const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY" && firebaseConfig.apiKey !== "";
+    let app, auth, db;
+    let useLocalFallback = !isFirebaseConfigured;
 
+    if (isFirebaseConfigured) {
+      try {
+        app = initializeApp(firebaseConfig);
+        auth = getAuth(app);
+        db = getFirestore(app);
+      } catch (err) {
+        console.error("Firebase 초기화 실패:", err);
+        useLocalFallback = true;
+      }
+    }
+
+    if (useLocalFallback) {
+      document.getElementById('dbModeBanner').classList.remove('hidden');
+    }
+
+    // 통합 데이터 저장소 (Firebase + LocalStorage 자동 호환)
+    const Store = {
+      getLocal(col) { return JSON.parse(localStorage.getItem('nh_' + col) || '[]'); },
+      setLocal(col, data) { localStorage.setItem('nh_' + col, JSON.stringify(data)); window.dispatchEvent(new Event('localDataUpdated')); },
+      async add(col, item) {
+        if (!useLocalFallback) {
+          try { await addDoc(collection(db, col), item); return; } 
+          catch (e) { alert("DB 저장 오류(Firebase 규칙 확인 필요): " + e.message); throw e; }
+        }
+        const list = this.getLocal(col);
+        list.unshift({ id: 'id_' + Date.now(), ...item });
+        this.setLocal(col, list);
+      },
+      async update(col, id, fields) {
+        if (!useLocalFallback) {
+          try { await updateDoc(doc(db, col, id), fields); return; }
+          catch (e) { alert("수정 오류: " + e.message); throw e; }
+        }
+        const list = this.getLocal(col).map(x => x.id === id ? { ...x, ...fields } : x);
+        this.setLocal(col, list);
+      },
+      async remove(col, id) {
+        if (!useLocalFallback) {
+          try { await deleteDoc(doc(db, col, id)); return; }
+          catch (e) { alert("삭제 오류: " + e.message); throw e; }
+        }
+        const list = this.getLocal(col).filter(x => x.id !== id);
+        this.setLocal(col, list);
+      },
+      async setSetting(key, val) {
+        if (!useLocalFallback) {
+          try { await setDoc(doc(db, "settings", key), val); return; }
+          catch (e) { alert("설정 저장 오류: " + e.message); }
+        }
+        localStorage.setItem('nh_set_' + key, JSON.stringify(val));
+      },
+      async getSetting(key) {
+        if (!useLocalFallback) {
+          try { const s = await getDoc(doc(db, "settings", key)); return s.exists() ? s.data() : null; }
+          catch (e) { return null; }
+        }
+        const raw = localStorage.getItem('nh_set_' + key);
+        return raw ? JSON.parse(raw) : null;
+      }
+    };
+
+    // 전역 상태
     let isAdmin = false;
     let allBooks = [];
+    let wishBooksData = [];
     let allEquipments = [];
+    let repairsData = [];
+    let wishEquipsData = [];
+    let volunteersData = [];
+    let suggestionsData = [];
     let currentEquipFilter = '전체';
-    let currentNoticeText = "1. 도서관 내 정숙을 유지해 주세요.\n2. 평일 봉사는 18:00~20:00 (2시간), 주말은 희망 시간대(2시간/4시간)로 운영됩니다.";
+    let currentVolNotice = "1. 도서관 내 정숙을 유지해 주세요.\n2. 평일 봉사는 18:00~20:00 (2시간), 주말은 희망 시간대(2시간/4시간)로 운영됩니다.";
+    let currentHomeNotice = "남율효성해링턴플레이스 2단지 작은도서관 및 휘트니스 센터를 이용해 주셔서 감사합니다.\n쾌적한 시설 이용을 위해 실내 운동화 착용 및 이용 수칙 준수를 부탁드립니다.";
 
-    // 요일 이름 배열
     const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
-
     lucide.createIcons();
 
-    // 초기 요일 체크박스 렌더링
-    function initDayCheckboxes(facility) {
-      const container = document.getElementById(`${facility}DaysContainer`);
-      if (!container) return;
-      container.innerHTML = dayNames.map((d, idx) => `
-        <label class="flex items-center gap-1 px-2 py-1 bg-slate-50 rounded-lg border border-slate-200 text-[11px] cursor-pointer">
-          <input type="checkbox" value="${idx}" class="${facility}-day-chk rounded text-indigo-600" checked> ${d}
+    // 요일 체크박스 생성
+    ['lib', 'fit'].forEach(fac => {
+      const el = document.getElementById(`${fac}DaysContainer`);
+      el.innerHTML = dayNames.map((d, idx) => `
+        <label class="flex items-center gap-1 px-2 py-1 bg-white rounded-md border border-gray-200 text-[11px] font-bold">
+          <input type="checkbox" value="${idx}" class="${fac}-day-chk" checked> ${d}
         </label>
       `).join('');
-    }
-    initDayCheckboxes('lib');
-    initDayCheckboxes('fit');
+    });
 
     // ---------------- 관리자 인증 ----------------
-    onAuthStateChanged(auth, (user) => {
-      isAdmin = !!user;
-      const adminEls = document.querySelectorAll('.admin-only');
+    function applyAdminUI(loggedIn) {
+      isAdmin = loggedIn;
+      document.querySelectorAll('.admin-only').forEach(el => loggedIn ? el.classList.remove('hidden') : el.classList.add('hidden'));
       const btnText = document.getElementById('adminBtnText');
       const authBtn = document.getElementById('adminAuthBtn');
-
-      if (isAdmin) {
-        adminEls.forEach(el => el.classList.remove('hidden'));
+      if (loggedIn) {
         btnText.innerText = '로그아웃';
-        authBtn.classList.replace('bg-slate-100', 'bg-indigo-600');
-        authBtn.classList.replace('text-slate-600', 'text-white');
-        loadPrivateAdminData();
+        authBtn.className = "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-[#03C75A] text-white transition";
       } else {
-        adminEls.forEach(el => el.classList.add('hidden'));
         btnText.innerText = '관리자';
-        authBtn.classList.replace('bg-indigo-600', 'bg-slate-100');
-        authBtn.classList.replace('text-white', 'text-slate-600');
+        authBtn.className = "flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-700 transition";
       }
-      renderBooks();
-      renderWishBooks();
-      renderEquipments();
-      renderRepairs();
-    });
+      renderAll();
+    }
+
+    if (!useLocalFallback && auth) {
+      onAuthStateChanged(auth, (user) => applyAdminUI(!!user));
+    }
 
     window.openAdminModal = () => {
       if (isAdmin) {
-        if (confirm('관리자 로그아웃 하시겠습니까?')) signOut(auth);
+        if (confirm('관리자 로그아웃 하시겠습니까?')) {
+          if (!useLocalFallback && auth) signOut(auth);
+          else applyAdminUI(false);
+        }
       } else {
         openModal('modal-admin-login');
       }
     };
 
     window.loginAdmin = async () => {
-      const email = document.getElementById('adminEmail').value;
-      const pw = document.getElementById('adminPassword').value;
+      const email = document.getElementById('adminEmail').value.trim();
+      const pw = document.getElementById('adminPassword').value.trim();
+      if (useLocalFallback) {
+        applyAdminUI(true);
+        closeModal('modal-admin-login');
+        alert('임시저장 모드에서 관리자 모드가 활성화되었습니다.');
+        return;
+      }
       try {
         await signInWithEmailAndPassword(auth, email, pw);
         closeModal('modal-admin-login');
-        alert('관리자 모드로 로그인되었습니다.');
+        alert('관리자 로그인 성공!');
       } catch (e) {
-        alert('로그인 실패: 이메일과 비밀번호를 확인해 주세요.');
+        alert('로그인 실패: 이메일과 비밀번호를 확인해 주세요.\n(' + e.message + ')');
       }
     };
 
-    // ---------------- 하단 네비게이션 및 메인 탭 전환 ----------------
+    // ---------------- 네비게이션 및 동적 헤더 전환 ----------------
     window.switchMainTab = (tab) => {
-      ['library', 'fitness', 'suggest'].forEach(t => {
+      ['home', 'library', 'fitness', 'suggest'].forEach(t => {
         document.getElementById(`section-${t}`).classList.add('hidden');
         const navBtn = document.getElementById(`nav-btn-${t}`);
-        navBtn.className = "flex flex-col items-center gap-1 text-slate-400 transition group";
-        navBtn.querySelector('div').className = "p-1.5 rounded-2xl group-hover:bg-slate-100 transition";
+        navBtn.className = "flex flex-col items-center gap-1 py-1 text-gray-400";
         navBtn.querySelector('span').className = "text-[11px] font-medium";
       });
 
       document.getElementById(`section-${tab}`).classList.remove('hidden');
       const activeNav = document.getElementById(`nav-btn-${tab}`);
-      const activeColorClass = tab === 'library' ? 'text-indigo-600 bg-indigo-50' : tab === 'fitness' ? 'text-emerald-600 bg-emerald-50' : 'text-slate-900 bg-slate-100';
-      
-      activeNav.className = `flex flex-col items-center gap-1 ${tab === 'library' ? 'text-indigo-600' : tab === 'fitness' ? 'text-emerald-600' : 'text-slate-900'} transition`;
-      activeNav.querySelector('div').className = `p-1.5 rounded-2xl ${activeColorClass}`;
+      activeNav.className = "flex flex-col items-center gap-1 py-1 text-[#03C75A]";
       activeNav.querySelector('span').className = "text-[11px] font-extrabold";
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // 상단 헤더 타이틀 및 상단바 바로 아래 소메뉴 자동 전환
+      const titleEl = document.getElementById('headerTitle');
+      const badgeEl = document.getElementById('headerBadge');
+      document.getElementById('subnav-library').classList.add('hidden');
+      document.getElementById('subnav-fitness').classList.add('hidden');
+
+      if (tab === 'home') {
+        badgeEl.innerText = "2단지";
+        titleEl.innerText = "남율효성해링턴플레이스 2단지";
+      } else if (tab === 'library') {
+        badgeEl.innerText = "커뮤니티";
+        titleEl.innerText = "작은도서관";
+        document.getElementById('subnav-library').classList.remove('hidden');
+      } else if (tab === 'fitness') {
+        badgeEl.innerText = "커뮤니티";
+        titleEl.innerText = "휘트니스센터";
+        document.getElementById('subnav-fitness').classList.remove('hidden');
+      } else if (tab === 'suggest') {
+        badgeEl.innerText = "커뮤니티";
+        titleEl.innerText = "통합 건의함";
+      }
+      window.scrollTo({ top: 0 });
     };
 
     window.switchSubTab = (group, sub) => {
       const views = group === 'lib' ? ['books', 'volunteer', 'wishbook'] : ['equip', 'repair', 'wishequip'];
-      const activeColor = group === 'lib' ? 'bg-indigo-600 shadow-indigo-100' : 'bg-emerald-600 shadow-emerald-100';
-
       views.forEach(v => {
         document.getElementById(`view-${group}-${v}`).classList.add('hidden');
         const btn = document.getElementById(`sub-${group}-${v}`);
-        btn.className = `sub-${group} px-4 py-2 rounded-full text-xs font-bold bg-white text-slate-600 border border-slate-200 whitespace-nowrap`;
+        btn.className = "py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition";
       });
       document.getElementById(`view-${group}-${sub}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`sub-${group}-${sub}`);
-      activeBtn.className = `sub-${group} px-4 py-2 rounded-full text-xs font-bold ${activeColor} text-white whitespace-nowrap shadow-sm`;
+      activeBtn.className = "py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition";
     };
 
     window.openModal = (id) => { const m = document.getElementById(id); m.classList.remove('hidden'); m.classList.add('flex'); };
     window.closeModal = (id) => { const m = document.getElementById(id); m.classList.add('hidden'); m.classList.remove('flex'); };
 
-    // ---------------- 운영시간 및 실시간 상태 관리 로직 ----------------
-    let operatingSettings = {
+    // ---------------- 운영시간 & 공지 초기화 ----------------
+    let opSettings = {
       library: { open: "09:00", close: "21:00", days: [1,2,3,4,5,6] },
       fitness: { open: "06:00", close: "23:00", days: [0,1,2,3,4,5,6] }
     };
 
-    async function loadOperatingSettings() {
-      for (const fac of ['library', 'fitness']) {
-        const snap = await getDoc(doc(db, "settings", `${fac}Hours`));
-        if (snap.exists()) {
-          operatingSettings[fac] = snap.data();
-          document.getElementById(`${fac === 'library' ? 'lib' : 'fit'}OpenTime`).value = operatingSettings[fac].open;
-          document.getElementById(`${fac === 'library' ? 'lib' : 'fit'}CloseTime`).value = operatingSettings[fac].close;
-          
-          const checkboxes = document.querySelectorAll(`.${fac === 'library' ? 'lib' : 'fit'}-day-chk`);
-          checkboxes.forEach((chk, idx) => {
-            chk.checked = operatingSettings[fac].days.includes(idx);
-          });
-        }
-      }
-      updateAllOperatingStatus();
+    async function initSettings() {
+      const libH = await Store.getSetting('libraryHours');
+      const fitH = await Store.getSetting('fitnessHours');
+      const vNot = await Store.getSetting('volunteerNotice');
+      const hNot = await Store.getSetting('homeNotice');
+
+      if (libH) opSettings.library = libH;
+      if (fitH) opSettings.fitness = fitH;
+      if (vNot && vNot.text) currentVolNotice = vNot.text;
+      if (hNot && hNot.text) currentHomeNotice = hNot.text;
+
+      document.getElementById('homeNoticeDisplay').innerText = currentHomeNotice;
+      document.getElementById('editHomeNoticeTextarea').value = currentHomeNotice;
+      document.getElementById('editNoticeTextarea').value = currentVolNotice;
+
+      ['library', 'fitness'].forEach(fac => {
+        const p = fac === 'library' ? 'lib' : 'fit';
+        document.getElementById(`${p}OpenTime`).value = opSettings[fac].open;
+        document.getElementById(`${p}CloseTime`).value = opSettings[fac].close;
+        document.querySelectorAll(`.${p}-day-chk`).forEach((chk, i) => chk.checked = opSettings[fac].days.includes(i));
+      });
+      refreshOperatingBadges();
     }
-    loadOperatingSettings();
+    initSettings();
 
     window.saveOperatingSettings = async (fac) => {
-      const prefix = fac === 'library' ? 'lib' : 'fit';
-      const open = document.getElementById(`${prefix}OpenTime`).value;
-      const close = document.getElementById(`${prefix}CloseTime`).value;
-      const days = Array.from(document.querySelectorAll(`.${prefix}-day-chk`))
-                        .map((chk, idx) => chk.checked ? idx : null)
-                        .filter(val => val !== null);
-
-      await setDoc(doc(db, "settings", `${fac}Hours`), { open, close, days });
-      operatingSettings[fac] = { open, close, days };
-      updateAllOperatingStatus();
-      alert('운영시간 및 요일 설정이 저장되었습니다.');
+      const p = fac === 'library' ? 'lib' : 'fit';
+      const open = document.getElementById(`${p}OpenTime`).value;
+      const close = document.getElementById(`${p}CloseTime`).value;
+      const days = Array.from(document.querySelectorAll(`.${p}-day-chk`)).map((c, i) => c.checked ? i : null).filter(v => v !== null);
+      opSettings[fac] = { open, close, days };
+      await Store.setSetting(`${fac}Hours`, opSettings[fac]);
+      refreshOperatingBadges();
+      alert('운영시간 및 요일이 저장되었습니다.');
     };
 
-    function updateAllOperatingStatus() {
-      checkAndRenderStatus('library');
-      checkAndRenderStatus('fitness');
-    }
-    setInterval(updateAllOperatingStatus, 30000); // 30초마다 갱신
-
-    function checkAndRenderStatus(fac) {
+    function refreshOperatingBadges() {
       const now = new Date();
-      const currentDay = now.getDay();
-      const currentTimeStr = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
-      
-      const settings = operatingSettings[fac];
-      const isDayActive = settings.days.includes(currentDay);
-      const isOpenTime = currentTimeStr >= settings.open && currentTimeStr <= settings.close;
-      const isOpen = isDayActive && isOpenTime;
+      const day = now.getDay();
+      const time = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
 
-      const prefix = fac === 'library' ? 'lib' : 'fit';
-      const banner = document.getElementById(`${prefix}StatusBanner`);
-      const dot = document.getElementById(`${prefix}StatusDot`);
-      const title = document.getElementById(`${prefix}StatusTitle`);
-      const timeInfo = document.getElementById(`${prefix}StatusTime`);
+      ['library', 'fitness'].forEach(fac => {
+        const s = opSettings[fac];
+        const isOpen = s.days.includes(day) && time >= s.open && time <= s.close;
+        const badge = document.getElementById(fac === 'library' ? 'homeLibBadge' : 'homeFitBadge');
+        const hours = document.getElementById(fac === 'library' ? 'homeLibHours' : 'homeFitHours');
 
-      const facName = fac === 'library' ? '작은도서관' : '휘트니스센터';
+        hours.innerText = `${s.open} ~ ${s.close} (${s.days.map(d=>dayNames[d]).join(',')})`;
+        if (isOpen) {
+          badge.innerText = "● 운영중";
+          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-emerald-50 text-[#03C75A]";
+        } else {
+          badge.innerText = "● 운영종료";
+          badge.className = "px-2.5 py-0.5 rounded-full text-[11px] font-extrabold bg-rose-50 text-rose-600";
+        }
+      });
+    }
+    setInterval(refreshOperatingBadges, 30000);
 
-      timeInfo.innerText = `운영시간: ${settings.open} ~ ${settings.close} (${settings.days.map(d=>dayNames[d]).join(', ')})`;
+    window.saveHomeNotice = async () => {
+      currentHomeNotice = document.getElementById('editHomeNoticeTextarea').value;
+      await Store.setSetting('homeNotice', { text: currentHomeNotice });
+      document.getElementById('homeNoticeDisplay').innerText = currentHomeNotice;
+      closeModal('modal-edit-home-notice');
+      alert('홈 공지사항이 저장되었습니다.');
+    };
 
-      if (isOpen) {
-        banner.className = "p-3.5 rounded-2xl border bg-emerald-50/80 border-emerald-200 text-emerald-900 shadow-xs flex items-center justify-between transition-all";
-        dot.className = "w-3 h-3 rounded-full bg-emerald-500 animate-pulse";
-        title.innerText = `🟢 현재 ${facName} [운영중]입니다`;
+    // ---------------- 실시간 데이터 구독 (Firebase / Local 자동 전환) ----------------
+    function bindDataListeners() {
+      if (!useLocalFallback) {
+        onSnapshot(collection(db, "books"), s => { allBooks = s.docs.map(d => ({ id: d.id, ...d.data() })); renderBooks(); });
+        onSnapshot(query(collection(db, "wishBooks"), orderBy("createdAt", "desc")), s => { wishBooksData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderWishBooks(); });
+        onSnapshot(collection(db, "equipments"), s => { allEquipments = s.docs.map(d => ({ id: d.id, ...d.data() })); renderEquipments(); });
+        onSnapshot(query(collection(db, "repairs"), orderBy("createdAt", "desc")), s => { repairsData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderRepairs(); });
+        onSnapshot(query(collection(db, "wishEquipments"), orderBy("createdAt", "desc")), s => { wishEquipsData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderWishEquips(); });
+        onSnapshot(query(collection(db, "volunteers"), orderBy("createdAt", "desc")), s => { volunteersData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminLists(); });
+        onSnapshot(query(collection(db, "suggestions"), orderBy("createdAt", "desc")), s => { suggestionsData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminLists(); });
       } else {
-        banner.className = "p-3.5 rounded-2xl border bg-rose-50/80 border-rose-200 text-rose-900 shadow-xs flex items-center justify-between transition-all";
-        dot.className = "w-3 h-3 rounded-full bg-rose-500";
-        title.innerText = `🔴 현재 ${facName} [운영종료 / 마감]`;
+        const reloadLocal = () => {
+          allBooks = Store.getLocal('books');
+          wishBooksData = Store.getLocal('wishBooks');
+          allEquipments = Store.getLocal('equipments');
+          repairsData = Store.getLocal('repairs');
+          wishEquipsData = Store.getLocal('wishEquipments');
+          volunteersData = Store.getLocal('volunteers');
+          suggestionsData = Store.getLocal('suggestions');
+          renderAll();
+        };
+        window.addEventListener('localDataUpdated', reloadLocal);
+        reloadLocal();
       }
     }
+    bindDataListeners();
 
-    // ---------------- 1. 작은도서관 로직 ----------------
-    onSnapshot(collection(db, "books"), (snapshot) => {
-      allBooks = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
-      allBooks.sort((a, b) => (b.isNew === true) - (a.isNew === true));
+    function renderAll() {
       renderBooks();
-    });
+      renderWishBooks();
+      renderEquipments();
+      renderRepairs();
+      renderWishEquips();
+      renderAdminLists();
+    }
 
+    // ---------------- 도서 목록 렌더링 & CRUD ----------------
     window.renderBooks = () => {
-      const keyword = document.getElementById('bookSearchInput').value.toLowerCase();
-      const container = document.getElementById('bookListContainer');
-      const filtered = allBooks.filter(b => 
-        (b.title || '').toLowerCase().includes(keyword) || 
-        (b.author || '').toLowerCase().includes(keyword) ||
-        (b.category || '').toLowerCase().includes(keyword)
-      );
+      const kw = document.getElementById('bookSearchInput').value.toLowerCase();
+      const sorted = [...allBooks].sort((a, b) => (b.isNew === true) - (a.isNew === true));
+      const filtered = sorted.filter(b => (b.title||'').toLowerCase().includes(kw) || (b.author||'').toLowerCase().includes(kw) || (b.category||'').toLowerCase().includes(kw));
 
-      if (filtered.length === 0) {
-        container.innerHTML = `<div class="text-center py-10 text-xs text-slate-400">등록된 도서가 없습니다.</div>`;
-        return;
-      }
-
-      container.innerHTML = filtered.map(book => `
-        <div onclick="showBookLocation('${book.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl transition cursor-pointer ${book.isNew ? 'bg-gradient-to-r from-indigo-50/90 to-purple-50/70 border-2 border-indigo-400 shadow-md' : 'bg-white border border-slate-100 shadow-xs hover:border-indigo-200'}">
-          ${book.isNew ? `<span class="absolute -top-2.5 left-3 px-2.5 py-0.5 bg-indigo-600 text-white text-[10px] font-extrabold rounded-full shadow-xs">✨ NEW 신간</span>` : ''}
-          <img src="${book.coverUrl || 'https://placehold.co/120x160/e2e8f0/64748b?text=BOOK'}" alt="표지" class="w-16 h-22 object-cover rounded-xl bg-slate-100 shrink-0 shadow-xs">
-          <div class="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+      document.getElementById('bookListContainer').innerHTML = filtered.length ? filtered.map(b => `
+        <div onclick="showBookLocation('${b.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl bg-white naver-shadow transition cursor-pointer ${b.isNew ? 'border-2 border-[#03C75A]' : 'border border-gray-100'}">
+          ${b.isNew ? `<span class="absolute -top-2.5 left-3 px-2 py-0.5 bg-[#03C75A] text-white text-[10px] font-extrabold rounded-full">NEW 신간</span>` : ''}
+          <img src="${b.coverUrl || 'https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK'}" class="w-14 h-20 object-cover rounded-xl bg-gray-100 shrink-0">
+          <div class="flex-1 min-w-0 flex flex-col justify-between">
             <div>
-              <span class="inline-block text-[10px] font-bold px-2 py-0.5 rounded-md bg-slate-100 text-slate-600">${book.category || '일반'}</span>
-              <h4 class="text-sm font-extrabold text-slate-900 truncate mt-1">${book.title}</h4>
-              <p class="text-xs text-slate-500 truncate">${book.author}</p>
+              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600">${b.category || '일반'}</span>
+              <h4 class="text-sm font-extrabold text-gray-900 truncate mt-1">${b.title}</h4>
+              <p class="text-xs text-gray-500 truncate">${b.author}</p>
             </div>
-            <div class="flex items-center justify-between mt-2">
-              <span class="text-[11px] font-semibold text-indigo-600 flex items-center gap-0.5"><i data-lucide="map-pin" class="w-3 h-3"></i> 위치보기</span>
+            <div class="flex items-center justify-between mt-1.5">
+              <span class="text-[11px] font-bold text-[#03C75A]">📍 책장 위치보기</span>
               ${isAdmin ? `
-                <div class="flex gap-1.5" onclick="event.stopPropagation()">
-                  <button onclick="toggleNewBook('${book.id}', ${!book.isNew})" class="px-2 py-1 rounded-lg text-[10px] font-bold ${book.isNew ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-600'}">${book.isNew ? '신간해제' : '신간지정'}</button>
-                  <button onclick="deleteDocById('books', '${book.id}')" class="px-2 py-1 rounded-lg text-[10px] font-bold bg-rose-50 text-rose-600">삭제</button>
+                <div class="flex gap-1" onclick="event.stopPropagation()">
+                  <button onclick="Store.update('books', '${b.id}', {isNew: ${!b.isNew}})" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#03C75A]">${b.isNew ? '신간해제' : '신간지정'}</button>
+                  <button onclick="deleteItem('books', '${b.id}')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-600">삭제</button>
                 </div>
               ` : ''}
             </div>
           </div>
         </div>
-      `).join('');
-      lucide.createIcons();
+      `).join('') : `<div class="text-center py-12 text-xs text-gray-400">등록된 도서가 없습니다.</div>`;
     };
 
     window.showBookLocation = (id) => {
-      const book = allBooks.find(b => b.id === id);
-      if (!book) return;
-      document.getElementById('locBookCat').innerText = book.category || '일반도서';
-      document.getElementById('locBookTitle').innerText = book.title;
-      document.getElementById('locBookAuthor').innerText = book.author;
-      document.getElementById('locBookShelf').innerText = book.shelfLocation || '위치 미지정';
+      const b = allBooks.find(x => x.id === id);
+      if (!b) return;
+      document.getElementById('locBookCat').innerText = b.category || '일반';
+      document.getElementById('locBookTitle').innerText = b.title;
+      document.getElementById('locBookAuthor').innerText = b.author;
+      document.getElementById('locBookShelf').innerText = b.shelfLocation || '위치 미지정';
       openModal('modal-book-location');
     };
 
@@ -682,80 +805,70 @@ const firebaseConfig = {
       const shelfLocation = document.getElementById('newBookShelf').value.trim();
       const coverUrl = document.getElementById('newBookCover').value.trim();
       const isNew = document.getElementById('newBookIsNew').checked;
-
       if (!title || !author || !shelfLocation) return alert('책 이름, 저자, 책장 위치는 필수입니다.');
-      await addDoc(collection(db, "books"), { title, author, category, shelfLocation, coverUrl, isNew, createdAt: Date.now() });
+
+      await Store.add('books', { title, author, category, shelfLocation, coverUrl, isNew, createdAt: Date.now() });
       closeModal('modal-add-book');
       ['newBookTitle', 'newBookAuthor', 'newBookCat', 'newBookShelf', 'newBookCover'].forEach(id => document.getElementById(id).value = '');
+      document.getElementById('newBookIsNew').checked = false;
+      alert('도서가 등록되었습니다.');
     };
 
-    window.toggleNewBook = async (id, state) => { await updateDoc(doc(db, "books", id), { isNew: state }); };
-
+    // 엑셀 백업 / 복구
     window.exportBooksToExcel = () => {
-      if (allBooks.length === 0) return alert('백업할 도서 데이터가 없습니다.');
-      const excelData = allBooks.map(b => ({ '책이름': b.title, '저자': b.author, '책분류': b.category || '', '책장위치': b.shelfLocation || '', '표지URL': b.coverUrl || '', '신간여부': b.isNew ? 'Y' : 'N' }));
-      const ws = XLSX.utils.json_to_sheet(excelData);
+      if (!allBooks.length) return alert('백업할 도서가 없습니다.');
+      const ws = XLSX.utils.json_to_sheet(allBooks.map(b => ({ '책이름': b.title, '저자': b.author, '책분류': b.category||'', '책장위치': b.shelfLocation||'', '표지URL': b.coverUrl||'', '신간여부': b.isNew?'Y':'N' })));
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "도서목록");
       const now = new Date();
-      const dateStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
-      XLSX.writeFile(wb, `남율효성2단지_작은도서관_백업_${dateStr}.xlsx`);
+      const dStr = `${now.getFullYear()}${String(now.getMonth()+1).padStart(2,'0')}${String(now.getDate()).padStart(2,'0')}`;
+      XLSX.writeFile(wb, `남율효성2단지_작은도서관_도서백업_${dStr}.xlsx`);
     };
 
-    window.importBooksFromExcel = (event) => {
-      const file = event.target.files[0];
+    window.importBooksFromExcel = (e) => {
+      const file = e.target.files[0];
       if (!file) return;
       const reader = new FileReader();
-      reader.onload = async (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: 'array' });
-        const sheet = workbook.Sheets[workbook.SheetNames[0]];
-        const rows = XLSX.utils.sheet_to_json(sheet);
-        if (!confirm(`총 ${rows.length}권의 도서를 업로드하시겠습니까?`)) return;
-        for (const row of rows) {
-          if (!row['책이름']) continue;
-          await addDoc(collection(db, "books"), {
-            title: String(row['책이름']), author: String(row['저자']), category: String(row['책분류'] || '일반'),
-            shelfLocation: String(row['책장위치']), coverUrl: String(row['표지URL'] || ''), isNew: String(row['신간여부']).toUpperCase() === 'Y', createdAt: Date.now()
-          });
+      reader.onload = async (ev) => {
+        const wb = XLSX.read(new Uint8Array(ev.target.result), { type: 'array' });
+        const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+        if (!confirm(`총 ${rows.length}권의 도서를 복구(추가)하시겠습니까?`)) return;
+        for (const r of rows) {
+          if (!r['책이름']) continue;
+          await Store.add('books', { title: String(r['책이름']), author: String(r['저자']||''), category: String(r['책분류']||'일반'), shelfLocation: String(r['책장위치']||''), coverUrl: String(r['표지URL']||''), isNew: String(r['신간여부']).toUpperCase()==='Y', createdAt: Date.now() });
         }
-        alert('엑셀 복구가 완료되었습니다!');
+        alert('엑셀 복구가 완료되었습니다.');
       };
       reader.readAsArrayBuffer(file);
     };
 
-    // 봉사 신청 & 공지
-    getDoc(doc(db, "settings", "volunteerNotice")).then(snap => { if (snap.exists() && snap.data().text) currentNoticeText = snap.data().text; });
-    window.openVolunteerNotice = () => { document.getElementById('volNoticeContent').innerText = currentNoticeText; openModal('modal-vol-notice'); };
+    // ---------------- 봉사신청 & 희망도서 ----------------
+    window.openVolunteerNotice = () => { document.getElementById('volNoticeContent').innerText = currentVolNotice; openModal('modal-vol-notice'); };
     window.confirmVolunteerNotice = () => {
       closeModal('modal-vol-notice');
-      const wrapper = document.getElementById('volunteerFormWrapper');
-      wrapper.classList.remove('opacity-40', 'pointer-events-none');
+      document.getElementById('volunteerFormWrapper').classList.remove('opacity-40', 'pointer-events-none');
       document.getElementById('volLockHint').classList.add('hidden');
     };
     window.saveVolunteerNotice = async () => {
-      const text = document.getElementById('editNoticeTextarea').value;
-      await setDoc(doc(db, "settings", "volunteerNotice"), { text });
-      currentNoticeText = text;
+      currentVolNotice = document.getElementById('editNoticeTextarea').value;
+      await Store.setSetting('volunteerNotice', { text: currentVolNotice });
       closeModal('modal-edit-notice');
-      alert('공지사항이 저장되었습니다.');
+      alert('봉사 공지가 저장되었습니다.');
     };
-
     window.updateVolunteerTimeOptions = () => {
-      const dateVal = document.getElementById('volDate').value;
-      const select = document.getElementById('volTimeSlot');
+      const val = document.getElementById('volDate').value;
+      if (!val) return;
+      const day = new Date(val).getDay();
+      const sel = document.getElementById('volTimeSlot');
       const badge = document.getElementById('volDayTypeBadge');
-      if (!dateVal) return;
-      const day = new Date(dateVal).getDay();
       if (day === 0 || day === 6) {
         badge.innerText = "(주말: 2시간 / 4시간 단위)";
-        select.innerHTML = `<option value="오전 10:00~12:00 (2시간)">오전 10:00 ~ 12:00 (2시간)</option><option value="오후 13:00~15:00 (2시간)">오후 13:00 ~ 15:00 (2시간)</option><option value="오후 15:00~17:00 (2시간)">오후 15:00 ~ 17:00 (2시간)</option><option value="오전 10:00~14:00 (4시간)">오전 10:00 ~ 14:00 (4시간)</option><option value="오후 13:00~17:00 (4시간)">오후 13:00 ~ 17:00 (4시간)</option>`;
+        sel.innerHTML = `<option value="오전 10:00~12:00 (2시간)">오전 10:00~12:00 (2시간)</option><option value="오후 13:00~15:00 (2시간)">오후 13:00~15:00 (2시간)</option><option value="오후 15:00~17:00 (2시간)">오후 15:00~17:00 (2시간)</option><option value="오전 10:00~14:00 (4시간)">오전 10:00~14:00 (4시간)</option><option value="오후 13:00~17:00 (4시간)">오후 13:00~17:00 (4시간)</option>`;
       } else {
-        badge.innerText = "(평일 기본 2시간)";
-        select.innerHTML = `<option value="평일 18:00~20:00 (2시간)">18:00 ~ 20:00 (2시간 기본)</option>`;
+        badge.innerText = "(평일 2시간 기본)";
+        sel.innerHTML = `<option value="평일 18:00~20:00 (2시간)">18:00 ~ 20:00 (2시간)</option>`;
       }
     };
-
     window.submitVolunteer = async () => {
       const dong = document.getElementById('volDong').value.trim();
       const ho = document.getElementById('volHo').value.trim();
@@ -763,95 +876,80 @@ const firebaseConfig = {
       const date = document.getElementById('volDate').value;
       const timeSlot = document.getElementById('volTimeSlot').value;
       if (!dong || !ho || !name || !date || !timeSlot) return alert('모든 항목을 입력해 주세요.');
-      await addDoc(collection(db, "volunteers"), { dong, ho, name, date, timeSlot, createdAt: Date.now() });
-      alert('자원봉사 신청이 완료되었습니다!');
+      await Store.add('volunteers', { dong, ho, name, date, timeSlot, createdAt: Date.now() });
       ['volDong', 'volHo', 'volName', 'volDate'].forEach(id => document.getElementById(id).value = '');
+      alert('자원봉사 신청이 접수되었습니다.');
     };
-
-    // 희망도서
-    let wishBooksData = [];
-    onSnapshot(query(collection(db, "wishBooks"), orderBy("createdAt", "desc")), (snap) => {
-      wishBooksData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderWishBooks();
-    });
 
     window.submitWishBook = async () => {
       const title = document.getElementById('wishBookTitle').value.trim();
       const reason = document.getElementById('wishBookReason').value.trim();
       if (!title) return alert('도서명을 입력해 주세요.');
-      await addDoc(collection(db, "wishBooks"), { title, reason, status: '검토', rejectReason: '', createdAt: Date.now() });
+      await Store.add('wishBooks', { title, reason, status: '검토', rejectReason: '', createdAt: Date.now() });
       document.getElementById('wishBookTitle').value = '';
       document.getElementById('wishBookReason').value = '';
+      alert('희망도서가 신청되었습니다.');
     };
 
     window.renderWishBooks = () => {
-      const container = document.getElementById('wishBookListContainer');
-      const badgeColor = { '검토': 'bg-slate-100 text-slate-600', '구매예정': 'bg-blue-50 text-blue-600', '구매불가': 'bg-rose-50 text-rose-600', '구매완료': 'bg-emerald-50 text-emerald-600' };
-      container.innerHTML = wishBooksData.map(item => `
-        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-2">
-          <div class="flex items-start justify-between gap-2">
-            <h4 class="text-sm font-bold text-slate-900">${item.title}</h4>
-            <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold shrink-0 ${badgeColor[item.status]}">${item.status}</span>
+      const colors = { '검토': 'bg-gray-100 text-gray-600', '구매예정': 'bg-blue-50 text-blue-600', '구매불가': 'bg-rose-50 text-rose-600', '구매완료': 'bg-emerald-50 text-[#03C75A]' };
+      document.getElementById('wishBookListContainer').innerHTML = wishBooksData.map(item => `
+        <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-2">
+          <div class="flex justify-between items-start gap-2">
+            <h4 class="text-sm font-extrabold text-gray-900">${item.title}</h4>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold shrink-0 ${colors[item.status] || 'bg-gray-100'}">${item.status}</span>
           </div>
-          ${item.reason ? `<p class="text-xs text-slate-500">사유: ${item.reason}</p>` : ''}
-          ${item.status === '구매불가' && item.rejectReason ? `<p class="text-xs text-rose-600 bg-rose-50 px-2.5 py-1.5 rounded-lg">불가 사유: ${item.rejectReason}</p>` : ''}
+          ${item.reason ? `<p class="text-xs text-gray-500">사유: ${item.reason}</p>` : ''}
+          ${item.status === '구매불가' && item.rejectReason ? `<p class="text-xs text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">불가 사유: ${item.rejectReason}</p>` : ''}
           ${isAdmin ? `
-            <div class="pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
-              ${['검토', '구매예정', '구매불가', '구매완료'].map(st => `<button onclick="updateWishBookStatus('${item.id}', '${st}')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border ${item.status === st ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-slate-50 text-slate-600'}">${st}</button>`).join('')}
-              <button onclick="deleteDocById('wishBooks', '${item.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
+            <div class="pt-2 border-t border-gray-100 flex flex-wrap gap-1">
+              ${['검토', '구매예정', '구매불가', '구매완료'].map(st => `<button onclick="changeWishBookStatus('${item.id}', '${st}')" class="px-2 py-1 rounded text-[11px] font-bold border ${item.status===st ? 'bg-[#03C75A] text-white border-[#03C75A]' : 'bg-gray-50 text-gray-600'}">${st}</button>`).join('')}
+              <button onclick="deleteItem('wishBooks', '${item.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
             </div>
           ` : ''}
         </div>
       `).join('');
     };
 
-    window.updateWishBookStatus = async (id, status) => {
+    window.changeWishBookStatus = async (id, status) => {
       let rejectReason = '';
-      if (status === '구매불가') rejectReason = prompt('불가 사유를 입력하세요:') || '기준 미부합';
-      await updateDoc(doc(db, "wishBooks", id), { status, rejectReason });
+      if (status === '구매불가') rejectReason = prompt('구매 불가 사유를 입력해 주세요:') || '도서관 기준 미부합';
+      await Store.update('wishBooks', id, { status, rejectReason });
     };
 
-    // ---------------- 2. 휘트니스 로직 ----------------
-    onSnapshot(collection(db, "equipments"), (snap) => {
-      allEquipments = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderEquipments();
-      updateRepairEquipDropdown();
-    });
-
+    // ---------------- 휘트니스 기구 / 수리 / 희망기구 ----------------
     window.filterEquip = (cat) => {
       currentEquipFilter = cat;
-      document.querySelectorAll('.eq-filter').forEach(btn => {
-        if (btn.innerText.includes(cat.replace('기구', '')) || (cat === '전체' && btn.innerText === '전체')) {
-          btn.className = 'eq-filter px-3.5 py-1.5 rounded-xl text-xs font-bold bg-slate-800 text-white shadow-xs';
-        } else {
-          btn.className = 'eq-filter px-3.5 py-1.5 rounded-xl text-xs font-bold bg-white text-slate-600 border border-slate-200';
-        }
+      document.querySelectorAll('.eq-filter').forEach(b => {
+        b.className = (b.innerText.includes(cat.replace('기구','')) || (cat==='전체' && b.innerText==='전체'))
+          ? 'eq-filter px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-gray-900 text-white'
+          : 'eq-filter px-3.5 py-1.5 rounded-full text-xs font-bold bg-white text-gray-600 border border-gray-200';
       });
       renderEquipments();
     };
 
     window.renderEquipments = () => {
-      const container = document.getElementById('equipListContainer');
-      const filtered = currentEquipFilter === '전체' ? allEquipments : allEquipments.filter(e => e.category === currentEquipFilter);
-      if (filtered.length === 0) { container.innerHTML = `<div class="text-center py-10 text-xs text-slate-400">등록된 기구가 없습니다.</div>`; return; }
+      const sel = document.getElementById('repairEquipSelect');
+      sel.innerHTML = `<option value="">수리할 기구를 선택해 주세요</option>` + allEquipments.map(e => `<option value="${e.name}">[${e.category}] ${e.name}</option>`).join('');
 
-      container.innerHTML = filtered.map(eq => `
-        <div class="bg-white rounded-3xl overflow-hidden border border-slate-100 shadow-xs">
-          ${eq.imageUrl ? `<img src="${eq.imageUrl}" alt="${eq.name}" class="w-full h-44 object-cover bg-slate-100">` : ''}
+      const filtered = currentEquipFilter === '전체' ? allEquipments : allEquipments.filter(e => e.category === currentEquipFilter);
+      document.getElementById('equipListContainer').innerHTML = filtered.length ? filtered.map(eq => `
+        <div class="bg-white rounded-2xl overflow-hidden naver-shadow border border-gray-100">
+          ${eq.imageUrl ? `<img src="${eq.imageUrl}" class="w-full h-44 object-cover bg-gray-100">` : ''}
           <div class="p-4 space-y-2.5">
-            <div class="flex items-center justify-between">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-emerald-50 text-emerald-700">${eq.category}</span>
-              ${isAdmin ? `<button onclick="deleteDocById('equipments', '${eq.id}')" class="text-xs text-rose-500 font-bold">삭제</button>` : ''}
+            <div class="flex justify-between items-center">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-600">${eq.category}</span>
+              ${isAdmin ? `<button onclick="deleteItem('equipments', '${eq.id}')" class="text-xs text-rose-500 font-bold">삭제</button>` : ''}
             </div>
-            <h4 class="text-base font-extrabold text-slate-900">${eq.name}</h4>
+            <h4 class="text-base font-extrabold text-gray-900">${eq.name}</h4>
             ${eq.youtubeUrl ? `
-              <a href="${eq.youtubeUrl}" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1.5 w-full py-2.5 bg-rose-50 text-rose-600 hover:bg-rose-100 rounded-xl text-xs font-extrabold transition">
+              <a href="${eq.youtubeUrl}" target="_blank" class="flex items-center justify-center gap-1.5 w-full py-2.5 bg-rose-50 text-rose-600 rounded-xl text-xs font-extrabold">
                 <i data-lucide="youtube" class="w-4 h-4"></i> 기구 사용법 유튜브 바로보기
               </a>
             ` : ''}
           </div>
         </div>
-      `).join('');
+      `).join('') : `<div class="text-center py-12 text-xs text-gray-400">등록된 운동기구가 없습니다.</div>`;
       lucide.createIcons();
     };
 
@@ -861,110 +959,94 @@ const firebaseConfig = {
       const imageUrl = document.getElementById('newEquipImg').value.trim();
       const youtubeUrl = document.getElementById('newEquipYoutube').value.trim();
       if (!name) return alert('기구 이름을 입력해 주세요.');
-      await addDoc(collection(db, "equipments"), { category, name, imageUrl, youtubeUrl, createdAt: Date.now() });
+      await Store.add('equipments', { category, name, imageUrl, youtubeUrl, createdAt: Date.now() });
       closeModal('modal-add-equip');
       ['newEquipName', 'newEquipImg', 'newEquipYoutube'].forEach(id => document.getElementById(id).value = '');
+      alert('기구가 등록되었습니다.');
     };
-
-    function updateRepairEquipDropdown() {
-      const select = document.getElementById('repairEquipSelect');
-      select.innerHTML = `<option value="">보유 기구를 선택해 주세요</option>` + allEquipments.map(eq => `<option value="${eq.name}">[${eq.category}] ${eq.name}</option>`).join('');
-    }
-
-    let repairsData = [];
-    onSnapshot(query(collection(db, "repairs"), orderBy("createdAt", "desc")), (snap) => {
-      repairsData = snap.docs.map(d => ({ id: d.id, ...d.data() }));
-      renderRepairs();
-    });
 
     window.submitRepair = async () => {
       const equipName = document.getElementById('repairEquipSelect').value;
       const part = document.getElementById('repairPartInput').value.trim();
-      if (!equipName || !part) return alert('기구 선택과 수리 요청 내용을 입력해 주세요.');
-      await addDoc(collection(db, "repairs"), { equipName, part, status: '접수완료', createdAt: Date.now() });
+      if (!equipName || !part) return alert('기구 선택과 수리 요청 부분을 입력해 주세요.');
+      await Store.add('repairs', { equipName, part, status: '접수완료', createdAt: Date.now() });
       document.getElementById('repairPartInput').value = '';
       alert('수리 요청이 접수되었습니다.');
     };
 
     window.renderRepairs = () => {
-      const container = document.getElementById('repairListContainer');
-      const badgeMap = { '접수완료': 'bg-amber-50 text-amber-700', '수리예정': 'bg-blue-50 text-blue-700', '교체예정': 'bg-purple-50 text-purple-700', '수리완료': 'bg-emerald-50 text-emerald-700' };
-      container.innerHTML = repairsData.map(r => `
-        <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-2">
-          <div class="flex items-center justify-between">
-            <span class="text-sm font-extrabold text-slate-900">${r.equipName}</span>
-            <span class="px-2.5 py-1 rounded-full text-[11px] font-extrabold ${badgeMap[r.status]}">${r.status}</span>
+      const map = { '접수완료': 'bg-amber-50 text-amber-700', '수리예정': 'bg-blue-50 text-blue-600', '교체예정': 'bg-purple-50 text-purple-600', '수리완료': 'bg-emerald-50 text-[#03C75A]' };
+      document.getElementById('repairListContainer').innerHTML = repairsData.map(r => `
+        <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-sm font-extrabold text-gray-900">${r.equipName}</span>
+            <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold ${map[r.status] || 'bg-gray-100'}">${r.status}</span>
           </div>
-          <p class="text-xs text-slate-600">증상: ${r.part}</p>
+          <p class="text-xs text-gray-600">증상: ${r.part}</p>
           ${isAdmin ? `
-            <div class="pt-2 border-t border-slate-100 flex flex-wrap gap-1.5">
-              ${['접수완료', '수리예정', '교체예정', '수리완료'].map(st => `<button onclick="updateDocStatus('repairs', '${r.id}', '${st}')" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border ${r.status === st ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-slate-50 text-slate-600'}">${st}</button>`).join('')}
-              <button onclick="deleteDocById('repairs', '${r.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
+            <div class="pt-2 border-t border-gray-100 flex flex-wrap gap-1">
+              ${['접수완료', '수리예정', '교체예정', '수리완료'].map(st => `<button onclick="Store.update('repairs', '${r.id}', {status: '${st}'})" class="px-2 py-1 rounded text-[11px] font-bold border ${r.status===st ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-600'}">${st}</button>`).join('')}
+              <button onclick="deleteItem('repairs', '${r.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
             </div>
           ` : ''}
         </div>
       `).join('');
     };
 
-    // 희망기구
-    onSnapshot(query(collection(db, "wishEquipments"), orderBy("createdAt", "desc")), (snap) => {
-      document.getElementById('wishEquipListContainer').innerHTML = snap.docs.map(d => {
-        const item = d.data();
-        return `
-          <div class="bg-white p-4 rounded-2xl border border-slate-100 shadow-xs space-y-1.5">
-            <div class="flex items-center justify-between">
-              <span class="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">${item.category}</span>
-              ${isAdmin ? `<button onclick="deleteDocById('wishEquipments', '${d.id}')" class="text-[11px] text-rose-500 font-bold">삭제</button>` : ''}
-            </div>
-            <h4 class="text-sm font-extrabold text-slate-900">${item.name}</h4>
-            <p class="text-xs text-slate-500">${item.reason}</p>
-          </div>
-        `;
-      }).join('');
-    });
-
     window.submitWishEquip = async () => {
       const category = document.getElementById('wishEquipCat').value;
       const name = document.getElementById('wishEquipName').value.trim();
       const reason = document.getElementById('wishEquipReason').value.trim();
       if (!name) return alert('기구명을 입력해 주세요.');
-      await addDoc(collection(db, "wishEquipments"), { category, name, reason, createdAt: Date.now() });
+      await Store.add('wishEquipments', { category, name, reason, createdAt: Date.now() });
       document.getElementById('wishEquipName').value = '';
       document.getElementById('wishEquipReason').value = '';
       alert('희망기구 추천이 등록되었습니다.');
     };
 
-    // ---------------- 3. 통합 건의사항 로직 ----------------
+    window.renderWishEquips = () => {
+      document.getElementById('wishEquipListContainer').innerHTML = wishEquipsData.map(item => `
+        <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-1">
+          <div class="flex justify-between items-center">
+            <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${item.category}</span>
+            ${isAdmin ? `<button onclick="deleteItem('wishEquipments', '${item.id}')" class="text-[11px] text-rose-500 font-bold">삭제</button>` : ''}
+          </div>
+          <h4 class="text-sm font-extrabold text-gray-900">${item.name}</h4>
+          <p class="text-xs text-gray-500">${item.reason}</p>
+        </div>
+      `).join('');
+    };
+
+    // ---------------- 통합 건의사항 & 관리자 전용 열람 ----------------
     window.submitSuggestion = async () => {
       const facility = document.getElementById('suggestFacility').value;
       const author = document.getElementById('suggestAuthor').value.trim() || '익명 입주민';
       const content = document.getElementById('suggestContent').value.trim();
       if (!content) return alert('건의 내용을 입력해 주세요.');
-      await addDoc(collection(db, "suggestions"), { facility, author, content, createdAt: Date.now() });
+      await Store.add('suggestions', { facility, author, content, createdAt: Date.now() });
       document.getElementById('suggestAuthor').value = '';
       document.getElementById('suggestContent').value = '';
-      alert('건의사항이 비공개 접수되었습니다.');
+      alert('비공개 건의사항이 접수되었습니다.');
     };
 
-    function loadPrivateAdminData() {
-      onSnapshot(query(collection(db, "volunteers"), orderBy("createdAt", "desc")), (snap) => {
-        document.getElementById('editNoticeTextarea').value = currentNoticeText;
-        document.getElementById('volunteerAdminList').innerHTML = snap.docs.map(d => {
-          const v = d.data();
-          return `<div class="p-3 bg-slate-50 rounded-xl border border-slate-200 flex items-center justify-between text-xs"><div><p class="font-extrabold text-slate-900">${v.dong}동 ${v.ho}호 ${v.name}</p><p class="text-indigo-600 font-semibold mt-0.5">${v.date} · ${v.timeSlot}</p></div><button onclick="deleteDocById('volunteers', '${d.id}')" class="text-rose-500 font-bold">삭제</button></div>`;
-        }).join('') || '<p class="text-xs text-slate-400">신청 내역이 없습니다.</p>';
-      });
+    function renderAdminLists() {
+      document.getElementById('volunteerAdminList').innerHTML = volunteersData.length ? volunteersData.map(v => `
+        <div class="p-3 bg-gray-50 rounded-xl border border-gray-200 flex justify-between items-center text-xs">
+          <div><p class="font-extrabold text-gray-900">${v.dong}동 ${v.ho}호 ${v.name}</p><p class="text-[#03C75A] font-bold">${v.date} · ${v.timeSlot}</p></div>
+          <button onclick="deleteItem('volunteers', '${v.id}')" class="text-rose-500 font-bold">삭제</button>
+        </div>
+      `).join('') : `<p class="text-xs text-gray-400">접수된 봉사 신청이 없습니다.</p>`;
 
-      onSnapshot(query(collection(db, "suggestions"), orderBy("createdAt", "desc")), (snap) => {
-        document.getElementById('suggestionAdminList').innerHTML = snap.docs.map(d => {
-          const s = d.data();
-          return `<div class="p-3.5 bg-slate-50 rounded-xl border border-slate-200 space-y-1 text-xs"><div class="flex justify-between items-center"><span class="font-extrabold text-indigo-700">[${s.facility}] ${s.author}</span><button onclick="deleteDocById('suggestions', '${d.id}')" class="text-rose-500 font-bold">삭제</button></div><p class="text-slate-700 whitespace-pre-line leading-relaxed pt-1">${s.content}</p></div>`;
-        }).join('') || '<p class="text-xs text-slate-400">접수된 건의사항이 없습니다.</p>';
-      });
+      document.getElementById('suggestionAdminList').innerHTML = suggestionsData.length ? suggestionsData.map(s => `
+        <div class="p-3.5 bg-gray-50 rounded-xl border border-gray-200 space-y-1 text-xs">
+          <div class="flex justify-between"><span class="font-extrabold text-gray-900">[${s.facility}] ${s.author}</span><button onclick="deleteItem('suggestions', '${s.id}')" class="text-rose-500 font-bold">삭제</button></div>
+          <p class="text-gray-700 whitespace-pre-line pt-1">${s.content}</p>
+        </div>
+      `).join('') : `<p class="text-xs text-gray-400">접수된 건의사항이 없습니다.</p>`;
     }
 
-    window.updateDocStatus = async (col, id, status) => { await updateDoc(doc(db, col, id), { status }); };
-    window.deleteDocById = async (col, id) => { if (confirm('정말 삭제하시겠습니까?')) await deleteDoc(doc(db, col, id)); };
+    window.Store = Store;
+    window.deleteItem = async (col, id) => { if (confirm('정말 삭제하시겠습니까?')) await Store.remove(col, id); };
   </script>
 </body>
 </html>
