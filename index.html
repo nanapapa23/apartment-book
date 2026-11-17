@@ -172,6 +172,18 @@
           <input type="text" id="bookSearchInput" onkeyup="renderBooks()" placeholder="도서명, 저자, 출판사, 분류 검색" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#2E7D67] naver-shadow">
         </div>
 
+        <!-- 총 권수 요약 & 카테고리(목록)별 필터 칩 -->
+        <div class="bg-white rounded-2xl p-3.5 naver-shadow border border-gray-100 space-y-2.5">
+          <div class="flex items-center justify-between text-xs">
+            <span class="font-extrabold text-gray-800 flex items-center gap-1.5">
+              <i data-lucide="library" class="w-3.5 h-3.5 text-[#2E7D67]"></i>
+              총 등록 도서 <strong id="totalBookCount" class="text-[#2E7D67] text-sm">0</strong>권
+            </span>
+            <span id="filteredBookCountBadge" class="text-[11px] font-bold text-gray-500">현재 표시: 0권</span>
+          </div>
+          <div id="bookCategoryFilterBar" class="flex gap-1.5 overflow-x-auto pb-1" style="scrollbar-width: none;"></div>
+        </div>
+
         <div id="bookListContainer" class="space-y-2.5"></div>
       </div>
 
@@ -1055,19 +1067,76 @@
     };
 
     // ---------------- 도서 목록 & 엑셀 ----------------
+    let currentBookCategoryFilter = '전체';
+
+    window.setBookCategoryFilter = (cat) => {
+      currentBookCategoryFilter = cat;
+      renderBooks();
+    };
+
+    function formatBookRegDate(b) {
+      if (b.regDate) return String(b.regDate).slice(0, 10);
+      if (b.createdAt) {
+        const d = new Date(b.createdAt);
+        if (!isNaN(d.getTime())) {
+          return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        }
+      }
+      return '';
+    }
+
     window.renderBooks = () => {
       syncBookDropdownOptions();
       const kw = document.getElementById('bookSearchInput').value.toLowerCase();
-      const newBooks = allBooks.filter(b => b.isNew);
-      const filtered = allBooks.filter(b => 
-        (b.title||'').toLowerCase().includes(kw) || 
-        (b.author||'').toLowerCase().includes(kw) || 
-        (b.publisher||'').toLowerCase().includes(kw) || 
-        (b.category||'').toLowerCase().includes(kw)
+
+      // 전체 도서 가나다라 순 정렬
+      const sortedBooks = [...allBooks].sort((a, b) =>
+        (a.title || '').localeCompare(b.title || '', 'ko')
       );
 
+      // 카테고리별 권수 집계
+      const catCounts = {};
+      sortedBooks.forEach(b => {
+        const c = (b.category || '일반').trim();
+        catCounts[c] = (catCounts[c] || 0) + 1;
+      });
+      const catList = ['전체', ...Object.keys(catCounts).sort((a, b) => a.localeCompare(b, 'ko'))];
+      if (!catList.includes(currentBookCategoryFilter)) currentBookCategoryFilter = '전체';
+
+      // 총 권수 & 필터 칩 렌더링
+      const totalEl = document.getElementById('totalBookCount');
+      if (totalEl) totalEl.innerText = sortedBooks.length.toLocaleString();
+
+      const filterBar = document.getElementById('bookCategoryFilterBar');
+      if (filterBar) {
+        filterBar.innerHTML = catList.map(cat => {
+          const count = cat === '전체' ? sortedBooks.length : (catCounts[cat] || 0);
+          const active = currentBookCategoryFilter === cat;
+          return `<button onclick="setBookCategoryFilter('${cat.replace(/'/g, "\'")}')" class="px-3 py-1.5 rounded-full text-[11px] font-extrabold shrink-0 transition ${active ? 'bg-[#2E7D67] text-white' : 'bg-gray-100 text-gray-600 hover:bg-gray-200'}">${cat} (${count})</button>`;
+        }).join('');
+      }
+
+      const newBooks = sortedBooks.filter(b => b.isNew);
+      const filtered = sortedBooks.filter(b => {
+        const bookCat = (b.category || '일반').trim();
+        const matchCat = currentBookCategoryFilter === '전체' || bookCat === currentBookCategoryFilter;
+        const matchKw = !kw ||
+          (b.title||'').toLowerCase().includes(kw) || 
+          (b.author||'').toLowerCase().includes(kw) || 
+          (b.publisher||'').toLowerCase().includes(kw) || 
+          bookCat.toLowerCase().includes(kw);
+        return matchCat && matchKw;
+      });
+
+      const filteredBadge = document.getElementById('filteredBookCountBadge');
+      if (filteredBadge) {
+        filteredBadge.innerText = currentBookCategoryFilter === '전체' && !kw
+          ? `가나다순 정렬`
+          : `[${currentBookCategoryFilter}] ${filtered.length}권`;
+      }
+
       let htmlContent = '';
-      if (newBooks.length && !kw) {
+      if (newBooks.length && !kw && currentBookCategoryFilter === '전체') {
         htmlContent += `
           <div class="space-y-2 mb-4">
             <h3 class="text-xs font-extrabold text-[#2E7D67] flex items-center gap-1 px-1">
@@ -1091,16 +1160,21 @@
         `;
       }
 
-      htmlContent += `<div class="space-y-2.5">` + (filtered.length ? filtered.map(b => `
+      htmlContent += `<div class="space-y-2.5">` + (filtered.length ? filtered.map(b => {
+        const regDateStr = formatBookRegDate(b);
+        return `
         <div onclick="showBookLocation('${b.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl bg-white naver-shadow transition cursor-pointer border border-gray-100">
           <div class="w-14 h-20 rounded-xl bg-gray-100 shrink-0 overflow-hidden">
             <img src="${b.coverUrl || 'https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK';">
           </div>
           <div class="flex-1 min-w-0 flex flex-col justify-between">
             <div>
-              <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600">${b.category || '일반'}</span>
-                ${b.isNew ? '<span class="text-[9px] font-extrabold text-[#2E7D67] bg-emerald-50 px-1.5 py-0.5 rounded">NEW</span>' : ''}
+              <div class="flex items-center justify-between gap-1.5">
+                <div class="flex items-center gap-1.5">
+                  <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600">${b.category || '일반'}</span>
+                  ${b.isNew ? '<span class="text-[9px] font-extrabold text-[#2E7D67] bg-emerald-50 px-1.5 py-0.5 rounded">NEW</span>' : ''}
+                </div>
+                ${regDateStr ? `<span class="text-[10px] text-gray-400 shrink-0">${regDateStr}</span>` : ''}
               </div>
               <h4 class="text-sm font-extrabold text-gray-900 truncate mt-1">${b.title}</h4>
               <p class="text-xs text-gray-500 truncate">${b.author} ${b.publisher ? '· ' + b.publisher : ''}</p>
@@ -1117,7 +1191,8 @@
             </div>
           </div>
         </div>
-      `).join('') : `<div class="text-center py-12 text-xs text-gray-400">등록된 도서가 없습니다.</div>`) + `</div>`;
+      `;
+      }).join('') : `<div class="text-center py-12 text-xs text-gray-400">해당 목록에 등록된 도서가 없습니다.</div>`) + `</div>`;
 
       document.getElementById('bookListContainer').innerHTML = htmlContent;
       lucide.createIcons();
@@ -1129,7 +1204,8 @@
       document.getElementById('locBookCat').innerText = b.category || '일반';
       document.getElementById('locBookTitle').innerText = b.title;
       document.getElementById('locBookAuthor').innerText = b.author;
-      document.getElementById('locBookPub').innerText = b.publisher ? '출판사: ' + b.publisher : '';
+      const rDate = formatBookRegDate(b);
+      document.getElementById('locBookPub').innerText = [b.publisher ? '출판사: ' + b.publisher : '', rDate ? '등록일: ' + rDate : ''].filter(Boolean).join(' · ');
       document.getElementById('locBookShelf').innerText = `${b.shelf || '미지정 책장'} / ${b.shelfBin || '미지정 칸'}`;
       openModal('modal-book-location');
     };
@@ -1150,7 +1226,7 @@
 
       await Store.add('books', { title, author, publisher, coverUrl, regDate, category, shelf, shelfBin, isNew, createdAt: Date.now() });
       closeModal('modal-add-book');
-      ['newBookTitle', 'newBookAuthor', 'newBookPublisher', 'newBookCover', 'newBookCat', 'newBookShelf', 'newBookShelfBin'].forEach(id => document.getElementById(id).value = '');
+      ['newBookTitle', 'newBookAuthor', 'newBookPublisher', 'newBookCover'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('newBookIsNew').checked = false;
       alert('도서가 등록되었습니다.');
     };
