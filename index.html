@@ -42,14 +42,14 @@
         </button>
       </div>
 
-      <!-- 상단바 바로 아래 자동 맞춤 소메뉴 (도서관 전용) -->
+      <!-- 도서관 소메뉴 -->
       <div id="subnav-library" class="hidden grid grid-cols-3 border-t border-gray-100 bg-white">
         <button onclick="switchSubTab('lib', 'books')" id="sub-lib-books" class="py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition">도서목록</button>
         <button onclick="switchSubTab('lib', 'volunteer')" id="sub-lib-volunteer" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">봉사신청</button>
         <button onclick="switchSubTab('lib', 'wishbook')" id="sub-lib-wishbook" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">희망도서</button>
       </div>
 
-      <!-- 상단바 바로 아래 자동 맞춤 소메뉴 (휘트니스 전용) -->
+      <!-- 휘트니스 소메뉴 -->
       <div id="subnav-fitness" class="hidden grid grid-cols-3 border-t border-gray-100 bg-white">
         <button onclick="switchSubTab('fit', 'equip')" id="sub-fit-equip" class="py-3 text-xs font-extrabold text-[#03C75A] border-b-2 border-[#03C75A] transition">보유기구</button>
         <button onclick="switchSubTab('fit', 'repair')" id="sub-fit-repair" class="py-3 text-xs font-semibold text-gray-500 border-b-2 border-transparent transition">수리요청</button>
@@ -57,22 +57,19 @@
       </div>
     </header>
 
-    <!-- 연결 상태 안내 알림바 (Firebase 미설정 시 표시) -->
     <div id="dbModeBanner" class="hidden bg-amber-50 border-b border-amber-200 px-4 py-2 text-[11px] text-amber-800 flex items-center justify-between">
       <span>⚠️ 현재 브라우저 임시저장 모드입니다. (Firebase 설정 입력 시 실시간 동기화)</span>
     </div>
 
-    <!-- ================= 1. 홈(HOME) 대시보드 섹션 ================= -->
+    <!-- ================= 1. 홈(HOME) 대시보드 ================= -->
     <main id="section-home" class="p-4 space-y-4 flex-1 animate-fade">
-      
-      <!-- 웰컴 카드 -->
       <div class="bg-gradient-to-br from-[#03C75A] to-[#02A64B] rounded-3xl p-5 text-white shadow-md">
         <p class="text-xs font-semibold opacity-90">스마트 커뮤니티 안내</p>
         <h2 class="text-lg font-extrabold mt-0.5 leading-snug">남율효성해링턴플레이스 2단지<br>입주민 전용 라운지</h2>
         <p class="text-[11px] opacity-85 mt-2">실시간 시설 운영 현황과 공지사항을 확인하세요.</p>
       </div>
 
-      <!-- 실시간 시설 운영 상태 2단 카드 -->
+      <!-- 실시간 운영 상태 -->
       <div class="grid grid-cols-2 gap-3">
         <div onclick="switchMainTab('library')" class="bg-white rounded-2xl p-4 naver-shadow border border-gray-100 cursor-pointer active:scale-[0.98] transition space-y-2.5">
           <div class="flex items-center justify-between">
@@ -101,26 +98,28 @@
         </div>
       </div>
 
-      <!-- 공지사항 카드 -->
+      <!-- 게시판 형태 공지사항 (최근 5개 하이라이트 + 더보기 버튼) -->
       <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-1.5">
             <span class="px-2 py-0.5 bg-gray-900 text-white text-[10px] font-extrabold rounded-md">NOTICE</span>
-            <h3 class="text-sm font-extrabold text-gray-900">커뮤니티 주요 공지</h3>
+            <h3 class="text-sm font-extrabold text-gray-900">커뮤니티 공지사항</h3>
           </div>
-          <button onclick="openModal('modal-edit-home-notice')" class="admin-only hidden text-xs font-bold text-[#03C75A]">공지 수정</button>
+          <div class="flex items-center gap-2">
+            <button onclick="openModal('modal-add-notice')" class="admin-only hidden px-2.5 py-1 bg-[#03C75A] text-white text-[11px] font-bold rounded-lg">+ 공지 등록</button>
+            <button id="noticeMoreBtn" onclick="toggleNoticeExpand()" class="hidden w-7 h-7 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 flex items-center justify-center font-extrabold text-sm transition" title="공지 전체보기">+</button>
+          </div>
         </div>
-        <div id="homeNoticeDisplay" class="bg-gray-50 rounded-xl p-3.5 text-xs text-gray-700 leading-relaxed whitespace-pre-line">
-          남율효성해링턴플레이스 2단지 작은도서관 및 휘트니스 센터를 이용해 주셔서 감사합니다.
-        </div>
+
+        <!-- 공지 리스트 영역 -->
+        <div id="homeNoticeBoardList" class="divide-y divide-gray-100"></div>
       </div>
 
-      <!-- 관리자 전용 설정 -->
+      <!-- 관리자 전용: 운영시간 설정 -->
       <div class="admin-only hidden bg-white rounded-2xl p-5 naver-shadow border-2 border-[#03C75A] space-y-4">
         <h3 class="text-sm font-extrabold text-gray-900 flex items-center gap-1.5">
           <i data-lucide="clock" class="w-4 h-4 text-[#03C75A]"></i> 관리자: 시설 운영시간 및 요일 설정
         </h3>
-        
         <div class="p-3.5 bg-gray-50 rounded-xl space-y-2 text-xs">
           <p class="font-extrabold text-gray-800">📚 작은도서관 운영 설정</p>
           <div class="grid grid-cols-2 gap-2">
@@ -130,7 +129,6 @@
           <div id="libDaysContainer" class="flex flex-wrap gap-1 pt-1"></div>
           <button onclick="saveOperatingSettings('library')" class="w-full py-2 bg-[#03C75A] text-white font-bold rounded-lg">도서관 시간 저장</button>
         </div>
-
         <div class="p-3.5 bg-gray-50 rounded-xl space-y-2 text-xs">
           <p class="font-extrabold text-gray-800">💪 휘트니스센터 운영 설정</p>
           <div class="grid grid-cols-2 gap-2">
@@ -143,7 +141,7 @@
       </div>
     </main>
 
-    <!-- ================= 2. 작은도서관 섹션 ================= -->
+    <!-- ================= 2. 작은도서관 ================= -->
     <main id="section-library" class="hidden p-4 space-y-4 flex-1 animate-fade">
       <div id="view-lib-books" class="space-y-3">
         <div class="admin-only hidden bg-white rounded-2xl p-3.5 naver-shadow border border-emerald-200 space-y-2.5">
@@ -164,7 +162,7 @@
 
         <div class="relative">
           <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-3.5 top-3.5"></i>
-          <input type="text" id="bookSearchInput" onkeyup="renderBooks()" placeholder="도서명, 저자, 분류를 검색하세요" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#03C75A] naver-shadow">
+          <input type="text" id="bookSearchInput" onkeyup="renderBooks()" placeholder="도서명, 저자, 출판사, 분류 검색" class="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-2xl text-sm focus:outline-none focus:border-[#03C75A] naver-shadow">
         </div>
 
         <div id="bookListContainer" class="space-y-2.5"></div>
@@ -224,9 +222,8 @@
       </div>
     </main>
 
-    <!-- ================= 3. 휘트니스 섹션 ================= -->
+    <!-- ================= 3. 휘트니스 ================= -->
     <main id="section-fitness" class="hidden p-4 space-y-4 flex-1 animate-fade">
-      
       <div id="view-fit-equip" class="space-y-3">
         <div class="admin-only hidden bg-white rounded-2xl p-3.5 naver-shadow border border-blue-200 flex items-center justify-between">
           <span class="text-xs font-extrabold text-gray-800">휘트니스 기구 관리</span>
@@ -249,7 +246,7 @@
           <select id="repairEquipSelect" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
             <option value="">수리할 기구를 선택해 주세요</option>
           </select>
-          <input type="text" id="repairPartInput" placeholder="고장 부위 및 증상 (예: 런닝머신 1번 벨트 소음)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+          <input type="text" id="repairPartInput" placeholder="고장 부위 및 증상" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
           <button onclick="submitRepair()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">수리 요청 접수</button>
         </div>
         <div class="space-y-2.5">
@@ -258,6 +255,7 @@
         </div>
       </div>
 
+      <!-- 희망기구 추천 (상태 변경: 구매검토 / 구매불가+사유 / 구매예정 / 구매완료) -->
       <div id="view-fit-wishequip" class="hidden space-y-4">
         <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3">
           <h2 class="text-base font-extrabold text-gray-900">희망 기구 추천</h2>
@@ -271,18 +269,18 @@
           <button onclick="submitWishEquip()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">희망기구 등록</button>
         </div>
         <div class="space-y-2.5">
-          <h3 class="text-xs font-bold text-gray-500 px-1">입주민 추천 기구 목록</h3>
+          <h3 class="text-xs font-bold text-gray-500 px-1">희망기구 진행 현황 (전체 공개)</h3>
           <div id="wishEquipListContainer" class="space-y-2.5"></div>
         </div>
       </div>
     </main>
 
-    <!-- ================= 4. 통합 건의함 섹션 ================= -->
+    <!-- ================= 4. 통합 건의함 ================= -->
     <main id="section-suggest" class="hidden p-4 space-y-4 flex-1 animate-fade">
       <div class="bg-white rounded-2xl p-5 naver-shadow border border-gray-100 space-y-3.5">
         <div>
           <h2 class="text-base font-extrabold text-gray-900">비공개 통합 건의함</h2>
-          <p class="text-xs text-gray-500 mt-0.5">작성된 내용은 관리자만 열람 가능하며 타 입주민에게 공개되지 않습니다.</p>
+          <p class="text-xs text-gray-500 mt-0.5">작성된 내용은 관리자만 열람 가능합니다.</p>
         </div>
         <select id="suggestFacility" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
           <option value="작은도서관">📚 작은도서관 건의</option>
@@ -290,7 +288,7 @@
           <option value="단지공통">🏢 기타 공통 건의</option>
         </select>
         <input type="text" id="suggestAuthor" placeholder="동·호수 및 성함 (선택)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-        <textarea id="suggestContent" rows="4" placeholder="건의 및 불편사항을 자세히 적어주세요." class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></textarea>
+        <textarea id="suggestContent" rows="4" placeholder="불편사항을 자세히 적어주세요." class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm"></textarea>
         <button onclick="submitSuggestion()" class="w-full py-3.5 bg-gray-900 text-white font-extrabold rounded-xl text-sm">비공개 건의 접수</button>
       </div>
 
@@ -300,7 +298,7 @@
       </div>
     </main>
 
-    <!-- ================= 5. 하단 고정 4단 네비게이션 바 ================= -->
+    <!-- ================= 하단 네비게이션 ================= -->
     <nav class="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-100 px-2 py-2 z-40 grid grid-cols-4 items-center shadow-[0_-4px_16px_rgba(0,0,0,0.03)]">
       <button onclick="switchMainTab('home')" id="nav-btn-home" class="flex flex-col items-center gap-1 py-1 text-[#03C75A]">
         <i data-lucide="home" class="w-5 h-5"></i>
@@ -319,10 +317,9 @@
         <span class="text-[11px] font-medium">건의함</span>
       </button>
     </nav>
-
   </div>
 
-  <!-- ================= 모달 팝업 ================= -->
+  <!-- ================= 모달 팝업들 ================= -->
 
   <!-- 관리자 로그인 -->
   <div id="modal-admin-login" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
@@ -337,6 +334,40 @@
     </div>
   </div>
 
+  <!-- 공지사항 상세 팝업 -->
+  <div id="modal-notice-detail" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4">
+      <div class="flex items-start justify-between gap-2">
+        <div>
+          <span id="noticeDetailTag" class="px-2 py-0.5 rounded bg-emerald-50 text-[#03C75A] text-[10px] font-extrabold">공지</span>
+          <h3 id="noticeDetailTitle" class="text-base font-extrabold text-gray-900 mt-1.5">공지 제목</h3>
+          <p id="noticeDetailDate" class="text-[11px] text-gray-400 mt-0.5">2026-11-18</p>
+        </div>
+        <button onclick="closeModal('modal-notice-detail')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <div id="noticeDetailContent" class="bg-gray-50 rounded-2xl p-4 text-xs text-gray-700 leading-relaxed whitespace-pre-line max-h-64 overflow-y-auto"></div>
+      <button onclick="closeModal('modal-notice-detail')" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl text-sm">닫기</button>
+    </div>
+  </div>
+
+  <!-- 관리자: 새 공지 등록 모달 -->
+  <div id="modal-add-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-extrabold">공지사항 작성</h3>
+        <button onclick="closeModal('modal-add-notice')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <select id="newNoticeCategory" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <option value="공통공지">단지 공통 공지</option>
+        <option value="작은도서관">작은도서관 공지</option>
+        <option value="휘트니스">휘트니스 공지</option>
+      </select>
+      <input type="text" id="newNoticeTitle" placeholder="공지 제목 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <textarea id="newNoticeContent" rows="5" placeholder="공지 내용을 입력하세요 *" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs leading-relaxed"></textarea>
+      <button onclick="addNoticeBoard()" class="w-full py-3 bg-[#03C75A] text-white font-extrabold rounded-xl text-sm">공지 등록</button>
+    </div>
+  </div>
+
   <!-- 도서 위치 안내 -->
   <div id="modal-book-location" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 text-center space-y-4">
@@ -347,27 +378,32 @@
         <span id="locBookCat" class="text-[11px] font-bold text-[#03C75A] bg-emerald-50 px-2.5 py-0.5 rounded-full">분류</span>
         <h3 id="locBookTitle" class="text-lg font-extrabold text-gray-900 mt-2">제목</h3>
         <p id="locBookAuthor" class="text-xs text-gray-500">저자</p>
+        <p id="locBookPub" class="text-[11px] text-gray-400 mt-0.5">출판사</p>
       </div>
       <div class="bg-gray-50 border border-gray-200 rounded-2xl p-4">
-        <p class="text-xs text-gray-400 font-bold">도서 비치 책장 위치</p>
+        <p class="text-xs text-gray-400 font-bold">도서 비치 위치</p>
         <p id="locBookShelf" class="text-xl font-black text-[#03C75A] mt-1">A책장 3칸</p>
       </div>
       <button onclick="closeModal('modal-book-location')" class="w-full py-3 bg-gray-900 text-white font-bold rounded-xl text-sm">확인</button>
     </div>
   </div>
 
-  <!-- 도서 등록 -->
+  <!-- 도서 등록 모달 -->
   <div id="modal-add-book" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
         <h3 class="text-base font-extrabold">새 도서 등록</h3>
         <button onclick="closeModal('modal-add-book')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
       </div>
-      <input type="text" id="newBookTitle" placeholder="책 이름 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="newBookTitle" placeholder="제목 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <input type="text" id="newBookAuthor" placeholder="저자 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <input type="text" id="newBookCat" placeholder="책 분류 (예: 소설, 아동)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <input type="text" id="newBookShelf" placeholder="책장 위치 (예: A책장 3칸) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <input type="url" id="newBookCover" placeholder="책 표지 이미지 URL (선택)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="newBookPublisher" placeholder="출판사" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="url" id="newBookCover" placeholder="이미지 URL (선택)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="newBookCat" placeholder="카테고리 (예: 소설, 아동, 자기계발)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <div class="grid grid-cols-2 gap-2">
+        <input type="text" id="newBookShelf" placeholder="책장 (예: A책장) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <input type="text" id="newBookShelfBin" placeholder="칸 (예: 3칸) *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      </div>
       <label class="flex items-center gap-2 text-xs font-bold text-[#03C75A] pt-1">
         <input type="checkbox" id="newBookIsNew" class="w-4 h-4 rounded"> 신간 도서로 상단 하이라이트 표시
       </label>
@@ -375,9 +411,9 @@
     </div>
   </div>
 
-  <!-- 기구 등록 -->
+  <!-- 기구 등록 모달 (내 컴퓨터 사진 파일 업로드 + URL 둘 다 지원) -->
   <div id="modal-add-equip" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center">
         <h3 class="text-base font-extrabold">운동기구 등록</h3>
         <button onclick="closeModal('modal-add-equip')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
@@ -388,13 +424,41 @@
         <option value="기타">기타</option>
       </select>
       <input type="text" id="newEquipName" placeholder="기구 이름 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
-      <input type="url" id="newEquipImg" placeholder="기구 사진 이미지 URL (직접 이미지 주소)" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      
+      <!-- 사진 등록 (내 컴퓨터 파일 선택 또는 URL 입력) -->
+      <div class="p-3 bg-gray-50 border border-gray-200 rounded-xl space-y-2">
+        <label class="block text-xs font-extrabold text-gray-700">기구 사진 등록 (파일 선택 또는 URL)</label>
+        <input type="file" id="newEquipFile" accept="image/*" onchange="previewEquipFile(event)" class="w-full text-xs text-gray-600 file:mr-2 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-blue-50 file:text-blue-600">
+        <input type="url" id="newEquipImg" placeholder="또는 사진 이미지 URL 직접 입력" class="w-full px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs">
+        <img id="equipFilePreview" class="hidden w-full h-32 object-cover rounded-lg border border-gray-200">
+      </div>
+
       <input type="url" id="newEquipYoutube" placeholder="사용법 유튜브 영상 URL" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
       <button onclick="addEquipment()" class="w-full py-3 bg-blue-600 text-white font-extrabold rounded-xl text-sm">등록하기</button>
     </div>
   </div>
 
-  <!-- 봉사 공지 확인 팝업 -->
+  <!-- 유튜브 사용법 팝업 (임베드 플레이어 및 새창 연결) -->
+  <div id="modal-youtube-guide" class="fixed inset-0 bg-black/70 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl overflow-hidden shadow-2xl">
+      <div class="p-4 flex items-center justify-between border-b border-gray-100">
+        <div class="flex items-center gap-2">
+          <span class="w-7 h-7 rounded-full bg-rose-600 text-white flex items-center justify-center"><i data-lucide="play" class="w-3.5 h-3.5 fill-current"></i></span>
+          <h3 id="ytModalTitle" class="text-sm font-extrabold text-gray-900 truncate max-w-[210px]">기구 사용법 가이드</h3>
+        </div>
+        <button onclick="closeYoutubeModal()"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <div id="ytPlayerContainer" class="w-full aspect-video bg-black flex items-center justify-center"></div>
+      <div class="p-4 flex gap-2">
+        <a id="ytExternalLink" href="#" target="_blank" class="flex-1 py-2.5 bg-rose-600 text-white text-xs font-extrabold rounded-xl text-center flex items-center justify-center gap-1">
+          <i data-lucide="external-link" class="w-3.5 h-3.5"></i> 유튜브 앱에서 크게 보기
+        </a>
+        <button onclick="closeYoutubeModal()" class="px-4 py-2.5 bg-gray-100 text-gray-700 text-xs font-bold rounded-xl">닫기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 봉사 공지 확인 -->
   <div id="modal-vol-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-5">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4">
       <h3 class="text-base font-extrabold text-gray-900">📢 자원봉사 안내 공지</h3>
@@ -415,25 +479,12 @@
     </div>
   </div>
 
-  <!-- 홈 공지 수정 -->
-  <div id="modal-edit-home-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
-      <h3 class="text-base font-extrabold">홈 통합 공지 수정</h3>
-      <textarea id="editHomeNoticeTextarea" rows="5" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
-      <div class="flex gap-2">
-        <button onclick="closeModal('modal-edit-home-notice')" class="flex-1 py-2.5 bg-gray-100 rounded-xl text-xs font-bold">취소</button>
-        <button onclick="saveHomeNotice()" class="flex-1 py-2.5 bg-[#03C75A] text-white rounded-xl text-xs font-bold">저장</button>
-      </div>
-    </div>
-  </div>
-
   <!-- ================= 스크립트 로직 ================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
     import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, setDoc, getDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    // ⚠️ [필수] 본인의 Firebase 설정값을 아래에 입력하세요!
     const firebaseConfig = {
   apiKey: "AIzaSyDkf11w1Bu5IZ_sggCT_GqMjTKnFy9fyuE",
   authDomain: "chilgokbookcafe.firebaseapp.com",
@@ -442,6 +493,7 @@
   messagingSenderId: "150579513603",
   appId: "1:150579513603:web:bc76fe94bbddf244084136"
 };
+
 
     const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY" && firebaseConfig.apiKey !== "";
     let app, auth, db;
@@ -452,14 +504,10 @@
         app = initializeApp(firebaseConfig);
         auth = getAuth(app);
         db = getFirestore(app);
-      } catch (err) {
-        useLocalFallback = true;
-      }
+      } catch (err) { useLocalFallback = true; }
     }
 
-    if (useLocalFallback) {
-      document.getElementById('dbModeBanner').classList.remove('hidden');
-    }
+    if (useLocalFallback) document.getElementById('dbModeBanner').classList.remove('hidden');
 
     const Store = {
       getLocal(col) { return JSON.parse(localStorage.getItem('nh_' + col) || '[]'); },
@@ -507,6 +555,8 @@
     };
 
     let isAdmin = false;
+    let noticesData = [];
+    let isNoticeExpanded = false;
     let allBooks = [];
     let wishBooksData = [];
     let allEquipments = [];
@@ -515,8 +565,8 @@
     let volunteersData = [];
     let suggestionsData = [];
     let currentEquipFilter = '전체';
-    let currentVolNotice = "1. 도서관 내 정숙을 유지해 주세요.\n2. 평일 봉사는 18:00~20:00 (2시간), 주말은 희망 시간대(2시간/4시간)로 운영됩니다.";
-    let currentHomeNotice = "남율효성해링턴플레이스 2단지 작은도서관 및 휘트니스 센터를 이용해 주셔서 감사합니다.";
+    let uploadedEquipBase64 = '';
+    let currentVolNotice = "1. 도서관 내 정숙을 유지해 주세요.\n2. 평일 봉사는 18:00~20:00 (2시간) 운영됩니다.";
 
     const dayNames = ['일', '월', '화', '수', '목', '금', '토'];
     lucide.createIcons();
@@ -555,9 +605,7 @@
           if (!useLocalFallback && auth) signOut(auth);
           else applyAdminUI(false);
         }
-      } else {
-        openModal('modal-admin-login');
-      }
+      } else { openModal('modal-admin-login'); }
     };
 
     window.loginAdmin = async () => {
@@ -573,9 +621,7 @@
         await signInWithEmailAndPassword(auth, email, pw);
         closeModal('modal-admin-login');
         alert('관리자 로그인 성공!');
-      } catch (e) {
-        alert('로그인 실패: 이메일과 비밀번호를 확인해 주세요.');
-      }
+      } catch (e) { alert('로그인 실패: 이메일과 비밀번호를 확인해 주세요.'); }
     };
 
     window.switchMainTab = (tab) => {
@@ -596,21 +642,10 @@
       document.getElementById('subnav-library').classList.add('hidden');
       document.getElementById('subnav-fitness').classList.add('hidden');
 
-      if (tab === 'home') {
-        badgeEl.innerText = "2단지";
-        titleEl.innerText = "남율효성해링턴플레이스 2단지";
-      } else if (tab === 'library') {
-        badgeEl.innerText = "커뮤니티";
-        titleEl.innerText = "작은도서관";
-        document.getElementById('subnav-library').classList.remove('hidden');
-      } else if (tab === 'fitness') {
-        badgeEl.innerText = "커뮤니티";
-        titleEl.innerText = "휘트니스센터";
-        document.getElementById('subnav-fitness').classList.remove('hidden');
-      } else if (tab === 'suggest') {
-        badgeEl.innerText = "커뮤니티";
-        titleEl.innerText = "통합 건의함";
-      }
+      if (tab === 'home') { badgeEl.innerText = "2단지"; titleEl.innerText = "남율효성해링턴플레이스 2단지"; }
+      else if (tab === 'library') { badgeEl.innerText = "커뮤니티"; titleEl.innerText = "작은도서관"; document.getElementById('subnav-library').classList.remove('hidden'); }
+      else if (tab === 'fitness') { badgeEl.innerText = "커뮤니티"; titleEl.innerText = "휘트니스센터"; document.getElementById('subnav-fitness').classList.remove('hidden'); }
+      else if (tab === 'suggest') { badgeEl.innerText = "커뮤니티"; titleEl.innerText = "통합 건의함"; }
       window.scrollTo({ top: 0 });
     };
 
@@ -638,15 +673,10 @@
       const libH = await Store.getSetting('libraryHours');
       const fitH = await Store.getSetting('fitnessHours');
       const vNot = await Store.getSetting('volunteerNotice');
-      const hNot = await Store.getSetting('homeNotice');
 
       if (libH) opSettings.library = libH;
       if (fitH) opSettings.fitness = fitH;
       if (vNot && vNot.text) currentVolNotice = vNot.text;
-      if (hNot && hNot.text) currentHomeNotice = hNot.text;
-
-      document.getElementById('homeNoticeDisplay').innerText = currentHomeNotice;
-      document.getElementById('editHomeNoticeTextarea').value = currentHomeNotice;
       document.getElementById('editNoticeTextarea').value = currentVolNotice;
 
       ['library', 'fitness'].forEach(fac => {
@@ -693,16 +723,9 @@
     }
     setInterval(refreshOperatingBadges, 30000);
 
-    window.saveHomeNotice = async () => {
-      currentHomeNotice = document.getElementById('editHomeNoticeTextarea').value;
-      await Store.setSetting('homeNotice', { text: currentHomeNotice });
-      document.getElementById('homeNoticeDisplay').innerText = currentHomeNotice;
-      closeModal('modal-edit-home-notice');
-      alert('홈 공지사항이 저장되었습니다.');
-    };
-
     function bindDataListeners() {
       if (!useLocalFallback) {
+        onSnapshot(query(collection(db, "notices"), orderBy("createdAt", "desc")), s => { noticesData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderNotices(); });
         onSnapshot(collection(db, "books"), s => { allBooks = s.docs.map(d => ({ id: d.id, ...d.data() })); renderBooks(); });
         onSnapshot(query(collection(db, "wishBooks"), orderBy("createdAt", "desc")), s => { wishBooksData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderWishBooks(); });
         onSnapshot(collection(db, "equipments"), s => { allEquipments = s.docs.map(d => ({ id: d.id, ...d.data() })); renderEquipments(); });
@@ -712,6 +735,7 @@
         onSnapshot(query(collection(db, "suggestions"), orderBy("createdAt", "desc")), s => { suggestionsData = s.docs.map(d => ({ id: d.id, ...d.data() })); renderAdminLists(); });
       } else {
         const reloadLocal = () => {
+          noticesData = Store.getLocal('notices');
           allBooks = Store.getLocal('books');
           wishBooksData = Store.getLocal('wishBooks');
           allEquipments = Store.getLocal('equipments');
@@ -728,6 +752,7 @@
     bindDataListeners();
 
     function renderAll() {
+      renderNotices();
       renderBooks();
       renderWishBooks();
       renderEquipments();
@@ -736,20 +761,94 @@
       renderAdminLists();
     }
 
+    // ---------------- 게시판 형태 공지사항 (최근 5개 하이라이트 + 나머지 +버튼 확장 + 클릭 팝업) ----------------
+    window.toggleNoticeExpand = () => {
+      isNoticeExpanded = !isNoticeExpanded;
+      document.getElementById('noticeMoreBtn').innerText = isNoticeExpanded ? '−' : '+';
+      renderNotices();
+    };
+
+    window.renderNotices = () => {
+      const container = document.getElementById('homeNoticeBoardList');
+      const moreBtn = document.getElementById('noticeMoreBtn');
+
+      if (!noticesData.length) {
+        moreBtn.classList.add('hidden');
+        container.innerHTML = `<div class="py-6 text-center text-xs text-gray-400">등록된 공지사항이 없습니다.</div>`;
+        return;
+      }
+
+      if (noticesData.length > 5) moreBtn.classList.remove('hidden');
+      else moreBtn.classList.add('hidden');
+
+      const displayList = isNoticeExpanded ? noticesData : noticesData.slice(0, 5);
+
+      container.innerHTML = displayList.map((n, idx) => {
+        const isTop5 = idx < 5;
+        return `
+          <div onclick="openNoticePopup('${n.id}')" class="py-3 px-2 rounded-xl flex items-center justify-between gap-2 cursor-pointer transition ${isTop5 ? 'bg-emerald-50/45 hover:bg-emerald-50/80 my-1' : 'hover:bg-gray-50'}">
+            <div class="flex items-center gap-2 min-w-0">
+              ${isTop5 ? `<span class="px-1.5 py-0.5 rounded bg-[#03C75A] text-white text-[9px] font-extrabold shrink-0">주요</span>` : `<span class="px-1.5 py-0.5 rounded bg-gray-200 text-gray-600 text-[9px] font-bold shrink-0">일반</span>`}
+              <span class="text-[11px] font-bold text-gray-500 shrink-0">[${n.category || '공통'}]</span>
+              <p class="text-xs ${isTop5 ? 'font-extrabold text-gray-900' : 'font-medium text-gray-700'} truncate">${n.title}</p>
+            </div>
+            <div class="flex items-center gap-2 shrink-0">
+              <span class="text-[10px] text-gray-400">${n.date || ''}</span>
+              ${isAdmin ? `<button onclick="event.stopPropagation(); deleteItem('notices', '${n.id}')" class="text-[10px] text-rose-500 font-bold">삭제</button>` : ''}
+            </div>
+          </div>
+        `;
+      }).join('');
+    };
+
+    window.openNoticePopup = (id) => {
+      const n = noticesData.find(x => x.id === id);
+      if (!n) return;
+      document.getElementById('noticeDetailTag').innerText = n.category || '공지';
+      document.getElementById('noticeDetailTitle').innerText = n.title;
+      document.getElementById('noticeDetailDate').innerText = n.date || '';
+      document.getElementById('noticeDetailContent').innerText = n.content;
+      openModal('modal-notice-detail');
+    };
+
+    window.addNoticeBoard = async () => {
+      const category = document.getElementById('newNoticeCategory').value;
+      const title = document.getElementById('newNoticeTitle').value.trim();
+      const content = document.getElementById('newNoticeContent').value.trim();
+      if (!title || !content) return alert('공지 제목과 내용을 모두 입력해 주세요.');
+
+      const now = new Date();
+      const dateStr = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
+      await Store.add('notices', { category, title, content, date: dateStr, createdAt: Date.now() });
+      closeModal('modal-add-notice');
+      document.getElementById('newNoticeTitle').value = '';
+      document.getElementById('newNoticeContent').value = '';
+      alert('공지사항이 등록되었습니다.');
+    };
+
+    // ---------------- 도서 목록 & 엑셀 ----------------
     window.renderBooks = () => {
       const kw = document.getElementById('bookSearchInput').value.toLowerCase();
       const sorted = [...allBooks].sort((a, b) => (b.isNew === true) - (a.isNew === true));
-      const filtered = sorted.filter(b => (b.title||'').toLowerCase().includes(kw) || (b.author||'').toLowerCase().includes(kw) || (b.category||'').toLowerCase().includes(kw));
+      const filtered = sorted.filter(b => 
+        (b.title||'').toLowerCase().includes(kw) || 
+        (b.author||'').toLowerCase().includes(kw) || 
+        (b.publisher||'').toLowerCase().includes(kw) || 
+        (b.category||'').toLowerCase().includes(kw)
+      );
 
       document.getElementById('bookListContainer').innerHTML = filtered.length ? filtered.map(b => `
         <div onclick="showBookLocation('${b.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl bg-white naver-shadow transition cursor-pointer ${b.isNew ? 'border-2 border-[#03C75A]' : 'border border-gray-100'}">
           ${b.isNew ? `<span class="absolute -top-2.5 left-3 px-2 py-0.5 bg-[#03C75A] text-white text-[10px] font-extrabold rounded-full">NEW 신간</span>` : ''}
-          <img src="${b.coverUrl || 'https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK'}" class="w-14 h-20 object-cover rounded-xl bg-gray-100 shrink-0">
+          <div class="w-14 h-20 rounded-xl bg-gray-100 shrink-0 overflow-hidden">
+            <img src="${b.coverUrl || 'https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK';">
+          </div>
           <div class="flex-1 min-w-0 flex flex-col justify-between">
             <div>
               <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600">${b.category || '일반'}</span>
               <h4 class="text-sm font-extrabold text-gray-900 truncate mt-1">${b.title}</h4>
-              <p class="text-xs text-gray-500 truncate">${b.author}</p>
+              <p class="text-xs text-gray-500 truncate">${b.author} ${b.publisher ? '· ' + b.publisher : ''}</p>
             </div>
             <div class="flex items-center justify-between mt-1.5">
               <span class="text-[11px] font-bold text-[#03C75A]">📍 책장 위치보기</span>
@@ -771,29 +870,40 @@
       document.getElementById('locBookCat').innerText = b.category || '일반';
       document.getElementById('locBookTitle').innerText = b.title;
       document.getElementById('locBookAuthor').innerText = b.author;
-      document.getElementById('locBookShelf').innerText = b.shelfLocation || '위치 미지정';
+      document.getElementById('locBookPub').innerText = b.publisher ? '출판사: ' + b.publisher : '';
+      document.getElementById('locBookShelf').innerText = `${b.shelf || '미지정 책장'} / ${b.shelfBin || '미지정 칸'}`;
       openModal('modal-book-location');
     };
 
     window.addBook = async () => {
       const title = document.getElementById('newBookTitle').value.trim();
       const author = document.getElementById('newBookAuthor').value.trim();
-      const category = document.getElementById('newBookCat').value.trim();
-      const shelfLocation = document.getElementById('newBookShelf').value.trim();
+      const publisher = document.getElementById('newBookPublisher').value.trim();
       const coverUrl = document.getElementById('newBookCover').value.trim();
+      const category = document.getElementById('newBookCat').value.trim();
+      const shelf = document.getElementById('newBookShelf').value.trim();
+      const shelfBin = document.getElementById('newBookShelfBin').value.trim();
       const isNew = document.getElementById('newBookIsNew').checked;
-      if (!title || !author || !shelfLocation) return alert('책 이름, 저자, 책장 위치는 필수입니다.');
+      if (!title || !author || !shelf || !shelfBin) return alert('제목, 저자, 책장, 칸은 필수 입력 항목입니다.');
 
-      await Store.add('books', { title, author, category, shelfLocation, coverUrl, isNew, createdAt: Date.now() });
+      const now = new Date();
+      const regDate = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,'0')}-${String(now.getDate()).padStart(2,'0')}`;
+
+      await Store.add('books', { title, author, publisher, coverUrl, regDate, category, shelf, shelfBin, isNew, createdAt: Date.now() });
       closeModal('modal-add-book');
-      ['newBookTitle', 'newBookAuthor', 'newBookCat', 'newBookShelf', 'newBookCover'].forEach(id => document.getElementById(id).value = '');
+      ['newBookTitle', 'newBookAuthor', 'newBookPublisher', 'newBookCover', 'newBookCat', 'newBookShelf', 'newBookShelfBin'].forEach(id => document.getElementById(id).value = '');
       document.getElementById('newBookIsNew').checked = false;
       alert('도서가 등록되었습니다.');
     };
 
     window.exportBooksToExcel = () => {
       if (!allBooks.length) return alert('백업할 도서가 없습니다.');
-      const ws = XLSX.utils.json_to_sheet(allBooks.map(b => ({ '책이름': b.title, '저자': b.author, '책분류': b.category||'', '책장위치': b.shelfLocation||'', '표지URL': b.coverUrl||'', '신간여부': b.isNew?'Y':'N' })));
+      const excelData = allBooks.map(b => ({
+        '제목': b.title || '', '저자': b.author || '', '출판사': b.publisher || '',
+        '이미지URL': b.coverUrl || '', '등록일': b.regDate || '', '카테고리': b.category || '',
+        '책장': b.shelf || '', '칸': b.shelfBin || '', '신간': b.isNew ? 'Y' : 'N'
+      }));
+      const ws = XLSX.utils.json_to_sheet(excelData);
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, ws, "도서목록");
       const now = new Date();
@@ -810,14 +920,21 @@
         const rows = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
         if (!confirm(`총 ${rows.length}권의 도서를 복구(추가)하시겠습니까?`)) return;
         for (const r of rows) {
-          if (!r['책이름']) continue;
-          await Store.add('books', { title: String(r['책이름']), author: String(r['저자']||''), category: String(r['책분류']||'일반'), shelfLocation: String(r['책장위치']||''), coverUrl: String(r['표지URL']||''), isNew: String(r['신간여부']).toUpperCase()==='Y', createdAt: Date.now() });
+          const title = String(r['제목'] || r['책이름'] || '');
+          if (!title) continue;
+          await Store.add('books', {
+            title, author: String(r['저자'] || ''), publisher: String(r['출판사'] || ''),
+            coverUrl: String(r['이미지URL'] || r['표지URL'] || ''), regDate: String(r['등록일'] || new Date().toISOString().slice(0,10)),
+            category: String(r['카테고리'] || '일반'), shelf: String(r['책장'] || ''), shelfBin: String(r['칸'] || ''),
+            isNew: String(r['신간'] || r['신간여부']).toUpperCase() === 'Y', createdAt: Date.now()
+          });
         }
         alert('엑셀 복구가 완료되었습니다.');
       };
       reader.readAsArrayBuffer(file);
     };
 
+    // ---------------- 봉사신청 & 희망도서 ----------------
     window.openVolunteerNotice = () => { document.getElementById('volNoticeContent').innerText = currentVolNotice; openModal('modal-vol-notice'); };
     window.confirmVolunteerNotice = () => {
       closeModal('modal-vol-notice');
@@ -892,7 +1009,50 @@
       await Store.update('wishBooks', id, { status, rejectReason });
     };
 
-    // ---------------- 휘트니스 기구 / 수리 / 희망기구 (이미지 URL 예외처리 & 유튜브 아이콘 적용) ----------------
+    // ---------------- 휘트니스: 보유기구(내컴퓨터 사진 압축 + URL + 유튜브 팝업) ----------------
+    window.previewEquipFile = (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          // Firestore 용량 제한(1MB)에 맞춰 자동 리사이징 및 압축
+          const canvas = document.createElement('canvas');
+          const maxW = 700;
+          const scale = img.width > maxW ? maxW / img.width : 1;
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+          uploadedEquipBase64 = canvas.toDataURL('image/jpeg', 0.75);
+
+          const prev = document.getElementById('equipFilePreview');
+          prev.src = uploadedEquipBase64;
+          prev.classList.remove('hidden');
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    };
+
+    window.addEquipment = async () => {
+      const category = document.getElementById('newEquipCat').value;
+      const name = document.getElementById('newEquipName').value.trim();
+      const urlVal = document.getElementById('newEquipImg').value.trim();
+      const imageUrl = uploadedEquipBase64 || urlVal;
+      const youtubeUrl = document.getElementById('newEquipYoutube').value.trim();
+
+      if (!name) return alert('기구 이름을 입력해 주세요.');
+      await Store.add('equipments', { category, name, imageUrl, youtubeUrl, createdAt: Date.now() });
+
+      closeModal('modal-add-equip');
+      ['newEquipName', 'newEquipImg', 'newEquipYoutube', 'newEquipFile'].forEach(id => document.getElementById(id).value = '');
+      uploadedEquipBase64 = '';
+      document.getElementById('equipFilePreview').classList.add('hidden');
+      alert('기구가 등록되었습니다.');
+    };
+
     window.filterEquip = (cat) => {
       currentEquipFilter = cat;
       document.querySelectorAll('.eq-filter').forEach(b => {
@@ -912,23 +1072,21 @@
         <div class="bg-white rounded-2xl overflow-hidden naver-shadow border border-gray-100">
           ${eq.imageUrl ? `
             <div class="w-full h-48 bg-gray-100 overflow-hidden relative">
-              <img src="${eq.imageUrl}" alt="${eq.name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class=\'flex items-center justify-center h-full text-xs text-gray-400\'>이미지를 불러올 수 없습니다 (URL 확인 필요)</div>';">
+              <img src="${eq.imageUrl}" alt="${eq.name}" class="w-full h-full object-cover" onerror="this.onerror=null; this.parentElement.innerHTML='<div class='flex items-center justify-center h-full text-xs text-gray-400'>이미지를 불러올 수 없습니다</div>';">
             </div>
           ` : ''}
-          <div class="p-4 space-y-3">
-            <div class="flex justify-between items-center">
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-600">${eq.category}</span>
-              <div class="flex items-center gap-1.5">
-                ${eq.youtubeUrl ? `
-                  <a href="${eq.youtubeUrl}" target="_blank" title="유튜브 사용법 보기" class="w-9 h-9 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center hover:bg-rose-100 transition shadow-xs">
-                    <i data-lucide="youtube" class="w-5 h-5"></i>
-                  </a>
-                ` : ''}
-                ${isAdmin ? `<button onclick="deleteItem('equipments', '${eq.id}')" class="text-xs text-rose-500 font-bold p-1">삭제</button>` : ''}
-              </div>
+          <div class="p-4 flex items-center justify-between gap-3">
+            <div class="space-y-1 min-w-0">
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-[10px] font-extrabold bg-blue-50 text-blue-600">${eq.category}</span>
+              <h4 class="text-base font-extrabold text-gray-900 truncate">${eq.name}</h4>
             </div>
-            <div>
-              <h4 class="text-base font-extrabold text-gray-900">${eq.name}</h4>
+            <div class="flex items-center gap-2 shrink-0">
+              ${eq.youtubeUrl ? `
+                <button onclick="openYoutubeGuide('${eq.name.replace(/'/g, "\'")}', '${eq.youtubeUrl}')" title="유튜브 사용법 보기" class="w-11 h-11 rounded-2xl bg-rose-600 text-white flex items-center justify-center shadow-md shadow-rose-200 active:scale-95 transition">
+                  <i data-lucide="youtube" class="w-6 h-6"></i>
+                </button>
+              ` : ''}
+              ${isAdmin ? `<button onclick="deleteItem('equipments', '${eq.id}')" class="px-2 py-1 text-xs text-rose-500 font-bold">삭제</button>` : ''}
             </div>
           </div>
         </div>
@@ -936,22 +1094,35 @@
       lucide.createIcons();
     };
 
-    window.addEquipment = async () => {
-      const category = document.getElementById('newEquipCat').value;
-      const name = document.getElementById('newEquipName').value.trim();
-      const imageUrl = document.getElementById('newEquipImg').value.trim();
-      const youtubeUrl = document.getElementById('newEquipYoutube').value.trim();
-      if (!name) return alert('기구 이름을 입력해 주세요.');
-      await Store.add('equipments', { category, name, imageUrl, youtubeUrl, createdAt: Date.now() });
-      closeModal('modal-add-equip');
-      ['newEquipName', 'newEquipImg', 'newEquipYoutube'].forEach(id => document.getElementById(id).value = '');
-      alert('기구가 등록되었습니다.');
+    // 유튜브 팝업 플레이어 실행
+    window.openYoutubeGuide = (title, url) => {
+      document.getElementById('ytModalTitle').innerText = title + ' 사용법';
+      document.getElementById('ytExternalLink').href = url;
+      
+      // 유튜브 Video ID 추출
+      let videoId = '';
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([^&?#]+)/);
+      if (match && match[1]) videoId = match[1];
+
+      const container = document.getElementById('ytPlayerContainer');
+      if (videoId) {
+        container.innerHTML = `<iframe class="w-full h-full" src="https://www.youtube.com/embed/${videoId}?autoplay=1" frameborder="0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+      } else {
+        container.innerHTML = `<div class="text-center p-4 text-xs text-white">아래 [유튜브 앱에서 크게 보기] 버튼을 눌러 영상을 확인하세요.</div>`;
+      }
+      openModal('modal-youtube-guide');
     };
 
+    window.closeYoutubeModal = () => {
+      document.getElementById('ytPlayerContainer').innerHTML = '';
+      closeModal('modal-youtube-guide');
+    };
+
+    // ---------------- 기구 수리요청 ----------------
     window.submitRepair = async () => {
       const equipName = document.getElementById('repairEquipSelect').value;
       const part = document.getElementById('repairPartInput').value.trim();
-      if (!equipName || !part) return alert('기구 선택과 수리 요청 부분을 입력해 주세요.');
+      if (!equipName || !part) return alert('기구 선택과 수리 요청 내용을 입력해 주세요.');
       await Store.add('repairs', { equipName, part, status: '접수완료', createdAt: Date.now() });
       document.getElementById('repairPartInput').value = '';
       alert('수리 요청이 접수되었습니다.');
@@ -976,30 +1147,51 @@
       `).join('');
     };
 
+    // ---------------- 희망기구 추천 (구매검토 / 구매불가+사유 / 구매예정 / 구매완료) ----------------
     window.submitWishEquip = async () => {
       const category = document.getElementById('wishEquipCat').value;
       const name = document.getElementById('wishEquipName').value.trim();
       const reason = document.getElementById('wishEquipReason').value.trim();
       if (!name) return alert('기구명을 입력해 주세요.');
-      await Store.add('wishEquipments', { category, name, reason, createdAt: Date.now() });
+      await Store.add('wishEquipments', { category, name, reason, status: '구매검토', rejectReason: '', createdAt: Date.now() });
       document.getElementById('wishEquipName').value = '';
       document.getElementById('wishEquipReason').value = '';
       alert('희망기구 추천이 등록되었습니다.');
     };
 
     window.renderWishEquips = () => {
-      document.getElementById('wishEquipListContainer').innerHTML = wishEquipsData.map(item => `
-        <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-1">
-          <div class="flex justify-between items-center">
-            <span class="text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${item.category}</span>
-            ${isAdmin ? `<button onclick="deleteItem('wishEquipments', '${item.id}')" class="text-[11px] text-rose-500 font-bold">삭제</button>` : ''}
+      const colors = { '구매검토': 'bg-gray-100 text-gray-600', '구매예정': 'bg-blue-50 text-blue-600', '구매불가': 'bg-rose-50 text-rose-600', '구매완료': 'bg-emerald-50 text-[#03C75A]' };
+      document.getElementById('wishEquipListContainer').innerHTML = wishEquipsData.map(item => {
+        const st = item.status || '구매검토';
+        return `
+          <div class="bg-white p-4 rounded-2xl naver-shadow border border-gray-100 space-y-2">
+            <div class="flex justify-between items-start gap-2">
+              <div>
+                <span class="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded">${item.category}</span>
+                <h4 class="text-sm font-extrabold text-gray-900 mt-1">${item.name}</h4>
+              </div>
+              <span class="px-2.5 py-0.5 rounded-full text-[11px] font-extrabold shrink-0 ${colors[st] || 'bg-gray-100'}">${st}</span>
+            </div>
+            ${item.reason ? `<p class="text-xs text-gray-500">추천 사유: ${item.reason}</p>` : ''}
+            ${st === '구매불가' && item.rejectReason ? `<p class="text-xs text-rose-600 bg-rose-50 px-2.5 py-1 rounded-lg">불가 사유: ${item.rejectReason}</p>` : ''}
+            ${isAdmin ? `
+              <div class="pt-2 border-t border-gray-100 flex flex-wrap gap-1">
+                ${['구매검토', '구매예정', '구매불가', '구매완료'].map(s => `<button onclick="changeWishEquipStatus('${item.id}', '${s}')" class="px-2 py-1 rounded text-[11px] font-bold border ${st===s ? 'bg-blue-600 text-white border-blue-600' : 'bg-gray-50 text-gray-600'}">${s}</button>`).join('')}
+                <button onclick="deleteItem('wishEquipments', '${item.id}')" class="ml-auto text-[11px] text-rose-500 font-bold">삭제</button>
+              </div>
+            ` : ''}
           </div>
-          <h4 class="text-sm font-extrabold text-gray-900">${item.name}</h4>
-          <p class="text-xs text-gray-500">${item.reason}</p>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     };
 
+    window.changeWishEquipStatus = async (id, status) => {
+      let rejectReason = '';
+      if (status === '구매불가') rejectReason = prompt('구매 불가 사유를 입력해 주세요:') || '휘트니스 운영 기준 미부합';
+      await Store.update('wishEquipments', id, { status, rejectReason });
+    };
+
+    // ---------------- 통합 건의사항 ----------------
     window.submitSuggestion = async () => {
       const facility = document.getElementById('suggestFacility').value;
       const author = document.getElementById('suggestAuthor').value.trim() || '익명 입주민';
