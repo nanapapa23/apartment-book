@@ -37,10 +37,7 @@
           <h1 id="headerTitle" class="text-[17px] font-extrabold tracking-tight text-[#191F28]">남율효성해링턴플레이스 2단지</h1>
         </div>
         <div class="flex items-center gap-1.5">
-          <button onclick="copyFullHtmlCode()" class="flex items-center gap-1 px-2.5 py-1.5 rounded-full text-[11px] font-bold bg-stone-100 hover:bg-stone-200 text-stone-700 active:scale-95 transition" title="전체 HTML 코드 복사">
-            <i data-lucide="copy" class="w-3 h-3"></i>
-            <span>코드복사</span>
-          </button>
+
           <button id="adminAuthBtn" onclick="openAdminModal()" class="flex items-center gap-1 px-3 py-1.5 rounded-full text-xs font-bold bg-gray-100 text-gray-700 active:scale-95 transition">
             <i data-lucide="user-check" class="w-3.5 h-3.5"></i>
             <span id="adminBtnText">관리자</span>
@@ -490,6 +487,69 @@
     </div>
   </div>
 
+  <!-- 도서 수정 모달 -->
+  <div id="modal-edit-book" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-extrabold">도서 정보 수정</h3>
+        <button onclick="closeModal('modal-edit-book')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <input type="hidden" id="editBookId">
+      <input type="text" id="editBookTitle" placeholder="제목 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="editBookAuthor" placeholder="저자 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="editBookPublisher" placeholder="출판사" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="url" id="editBookCover" placeholder="이미지 URL" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="text" id="editBookCat" placeholder="카테고리" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <div class="grid grid-cols-2 gap-2">
+        <input type="text" id="editBookShelf" placeholder="책장 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <input type="text" id="editBookShelfBin" placeholder="칸 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      </div>
+      <label class="flex items-center gap-2 text-xs font-bold text-[#2E7D67] pt-1">
+        <input type="checkbox" id="editBookIsNew" class="w-4 h-4 rounded"> 신간 도서
+      </label>
+      <button onclick="updateBookData()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">수정 저장</button>
+    </div>
+  </div>
+
+  <!-- 휘트니스 기구 수정 모달 -->
+  <div id="modal-edit-equip" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-extrabold">운동기구 정보 수정</h3>
+        <button onclick="closeModal('modal-edit-equip')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <input type="hidden" id="editEquipId">
+      <select id="editEquipCat" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <option value="유산소기구">유산소기구</option>
+        <option value="웨이트기구">웨이트기구</option>
+        <option value="기타">기타</option>
+      </select>
+      <input type="text" id="editEquipName" placeholder="기구 이름 *" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="url" id="editEquipImg" placeholder="사진 이미지 URL" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <input type="url" id="editEquipYoutube" placeholder="유튜브 영상 URL" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <button onclick="updateEquipData()" class="w-full py-3 bg-[#3B5998] text-white font-extrabold rounded-xl text-sm">수정 저장</button>
+    </div>
+  </div>
+
+  <!-- 공지사항 수정 모달 -->
+  <div id="modal-edit-notice-item" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-extrabold">공지사항 수정</h3>
+        <button onclick="closeModal('modal-edit-notice-item')"><i data-lucide="x" class="w-5 h-5 text-gray-400"></i></button>
+      </div>
+      <input type="hidden" id="editNoticeId">
+      <select id="editNoticeCat" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+        <option value="공통공지">단지 공통 공지</option>
+        <option value="작은도서관">작은도서관 공지</option>
+        <option value="휘트니스">휘트니스 공지</option>
+      </select>
+      <input type="text" id="editNoticeTitle" placeholder="공지 제목" class="w-full px-3.5 py-2.5 bg-gray-50 border border-gray-200 rounded-xl text-sm">
+      <textarea id="editNoticeContent" rows="5" class="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl text-xs"></textarea>
+      <button onclick="updateNoticeData()" class="w-full py-3 bg-[#2E7D67] text-white font-extrabold rounded-xl text-sm">수정 저장</button>
+    </div>
+  </div>
+
   <!-- 봉사 공지 수정 -->
   <div id="modal-edit-notice" class="fixed inset-0 bg-black/50 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-3">
@@ -516,7 +576,6 @@
   messagingSenderId: "150579513603",
   appId: "1:150579513603:web:bc76fe94bbddf244084136"
 };
-
 
     const isFirebaseConfigured = firebaseConfig.apiKey !== "YOUR_API_KEY" && firebaseConfig.apiKey !== "";
     let app, auth, db;
@@ -611,21 +670,7 @@
       return `${yyyy}-${mm}-${dd} ${hh}:${min}`;
     }
 
-    window.copyFullHtmlCode = async () => {
-      const fullDoc = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
-      try {
-        await navigator.clipboard.writeText(fullDoc);
-        alert('전체 HTML 코드가 클립보드에 복사되었습니다!\nGitHub index.html에 바로 붙여넣기 하시면 됩니다.');
-      } catch (err) {
-        const ta = document.createElement('textarea');
-        ta.value = fullDoc;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand('copy');
-        document.body.removeChild(ta);
-        alert('전체 HTML 코드가 클립보드에 복사되었습니다!');
-      }
-    };
+
     lucide.createIcons();
 
     ['lib', 'fit'].forEach(fac => {
@@ -851,7 +896,12 @@
             </div>
             <div class="flex items-center gap-2 shrink-0">
               <span class="text-[10px] text-gray-400">${n.createdAt ? formatDateTime(n.createdAt) : (n.date || '')}</span>
-              ${isAdmin ? `<button onclick="event.stopPropagation(); deleteItem('notices', '${n.id}')" class="text-[10px] text-rose-500 font-bold">삭제</button>` : ''}
+              ${isAdmin ? `
+                <div class="flex gap-1.5" onclick="event.stopPropagation()">
+                  <button onclick="openEditNoticeModal('${n.id}')" class="text-[10px] text-gray-600 font-bold">수정</button>
+                  <button onclick="deleteItem('notices', '${n.id}')" class="text-[10px] text-rose-500 font-bold">삭제</button>
+                </div>
+              ` : ''}
             </div>
           </div>
         `;
@@ -887,38 +937,69 @@
     // ---------------- 도서 목록 & 엑셀 ----------------
     window.renderBooks = () => {
       const kw = document.getElementById('bookSearchInput').value.toLowerCase();
-      const sorted = [...allBooks].sort((a, b) => (b.isNew === true) - (a.isNew === true));
-      const filtered = sorted.filter(b => 
+      const newBooks = allBooks.filter(b => b.isNew);
+      const filtered = allBooks.filter(b => 
         (b.title||'').toLowerCase().includes(kw) || 
         (b.author||'').toLowerCase().includes(kw) || 
         (b.publisher||'').toLowerCase().includes(kw) || 
         (b.category||'').toLowerCase().includes(kw)
       );
 
-      document.getElementById('bookListContainer').innerHTML = filtered.length ? filtered.map(b => `
-        <div onclick="showBookLocation('${b.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl bg-white naver-shadow transition cursor-pointer ${b.isNew ? 'border-2 border-[#2E7D67]' : 'border border-gray-100'}">
-          ${b.isNew ? `<span class="absolute -top-2.5 left-3 px-2 py-0.5 bg-[#2E7D67] text-white text-[10px] font-extrabold rounded-full">NEW 신간</span>` : ''}
+      let htmlContent = '';
+      if (newBooks.length && !kw) {
+        htmlContent += `
+          <div class="space-y-2 mb-4">
+            <h3 class="text-xs font-extrabold text-[#2E7D67] flex items-center gap-1 px-1">
+              <i data-lucide="sparkles" class="w-3.5 h-3.5"></i> 이달의 신간 도서 모아보기
+            </h3>
+            <div class="flex gap-3 overflow-x-auto pb-2 pt-1" style="scrollbar-width: none;">
+              ${newBooks.map(b => `
+                <div onclick="showBookLocation('${b.id}')" class="w-32 shrink-0 bg-white rounded-2xl p-2.5 naver-shadow border border-emerald-100 cursor-pointer space-y-2">
+                  <div class="w-full h-36 rounded-xl bg-gray-100 overflow-hidden relative">
+                    <img src="${b.coverUrl || 'https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK';">
+                    <span class="absolute top-1.5 left-1.5 px-1.5 py-0.5 bg-[#2E7D67] text-white text-[9px] font-extrabold rounded">NEW</span>
+                  </div>
+                  <div>
+                    <h4 class="text-xs font-extrabold text-gray-900 truncate">${b.title}</h4>
+                    <p class="text-[10px] text-gray-400 truncate">${b.author}</p>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }
+
+      htmlContent += `<div class="space-y-2.5">` + (filtered.length ? filtered.map(b => `
+        <div onclick="showBookLocation('${b.id}')" class="relative flex gap-3.5 p-3.5 rounded-2xl bg-white naver-shadow transition cursor-pointer border border-gray-100">
           <div class="w-14 h-20 rounded-xl bg-gray-100 shrink-0 overflow-hidden">
             <img src="${b.coverUrl || 'https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK'}" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/100x140/f1f5f9/94a3b8?text=BOOK';">
           </div>
           <div class="flex-1 min-w-0 flex flex-col justify-between">
             <div>
-              <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600">${b.category || '일반'}</span>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded bg-gray-100 text-gray-600">${b.category || '일반'}</span>
+                ${b.isNew ? '<span class="text-[9px] font-extrabold text-[#2E7D67] bg-emerald-50 px-1.5 py-0.5 rounded">NEW</span>' : ''}
+              </div>
               <h4 class="text-sm font-extrabold text-gray-900 truncate mt-1">${b.title}</h4>
               <p class="text-xs text-gray-500 truncate">${b.author} ${b.publisher ? '· ' + b.publisher : ''}</p>
             </div>
             <div class="flex items-center justify-between mt-1.5">
-              <span class="text-[11px] font-bold text-[#2E7D67]">📍 책장 위치보기</span>
-              ${isAdmin ? `
-                <div class="flex gap-1" onclick="event.stopPropagation()">
+              <span class="text-[11px] font-bold text-[#2E7D67]">📍 위치: ${b.shelf || '-'} ${b.shelfBin || ''}</span>
+              <div class="flex gap-1.5" onclick="event.stopPropagation()">
+                ${isAdmin ? `
+                  <button onclick="openEditBookModal('${b.id}')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-gray-100 text-gray-700">수정</button>
                   <button onclick="Store.update('books', '${b.id}', {isNew: ${!b.isNew}})" class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-50 text-[#2E7D67]">${b.isNew ? '신간해제' : '신간지정'}</button>
                   <button onclick="deleteItem('books', '${b.id}')" class="px-2 py-0.5 rounded text-[10px] font-bold bg-rose-50 text-rose-600">삭제</button>
-                </div>
-              ` : ''}
+                ` : ''}
+              </div>
             </div>
           </div>
         </div>
-      `).join('') : `<div class="text-center py-12 text-xs text-gray-400">등록된 도서가 없습니다.</div>`;
+      `).join('') : `<div class="text-center py-12 text-xs text-gray-400">등록된 도서가 없습니다.</div>`) + `</div>`;
+
+      document.getElementById('bookListContainer').innerHTML = htmlContent;
+      lucide.createIcons();
     };
 
     window.showBookLocation = (id) => {
@@ -1150,7 +1231,12 @@
                 <span>사용방법</span>
               </button>
             ` : ''}
-            ${isAdmin ? `<button onclick="deleteItem('equipments', '${eq.id}')" class="px-2 py-0.5 text-[11px] text-rose-500 font-bold">삭제</button>` : ''}
+            ${isAdmin ? `
+              <div class="flex gap-1.5">
+                <button onclick="openEditEquipModal('${eq.id}')" class="text-[11px] text-gray-600 font-bold">수정</button>
+                <button onclick="deleteItem('equipments', '${eq.id}')" class="text-[11px] text-rose-500 font-bold">삭제</button>
+              </div>
+            ` : ''}
           </div>
         </div>
       `).join('') : `<div class="text-center py-12 text-xs text-gray-400">등록된 운동기구가 없습니다.</div>`;
@@ -1292,6 +1378,85 @@
         </div>
       `).join('') : `<p class="text-xs text-gray-400">접수된 건의사항이 없습니다.</p>`;
     }
+
+        // 관리자 수정 모달 핸들러들
+    window.openEditBookModal = (id) => {
+      const b = allBooks.find(x => x.id === id);
+      if (!b) return;
+      document.getElementById('editBookId').value = b.id;
+      document.getElementById('editBookTitle').value = b.title || '';
+      document.getElementById('editBookAuthor').value = b.author || '';
+      document.getElementById('editBookPublisher').value = b.publisher || '';
+      document.getElementById('editBookCover').value = b.coverUrl || '';
+      document.getElementById('editBookCat').value = b.category || '';
+      document.getElementById('editBookShelf').value = b.shelf || '';
+      document.getElementById('editBookShelfBin').value = b.shelfBin || '';
+      document.getElementById('editBookIsNew').checked = !!b.isNew;
+      openModal('modal-edit-book');
+    };
+
+    window.updateBookData = async () => {
+      const id = document.getElementById('editBookId').value;
+      const title = document.getElementById('editBookTitle').value.trim();
+      const author = document.getElementById('editBookAuthor').value.trim();
+      const publisher = document.getElementById('editBookPublisher').value.trim();
+      const coverUrl = document.getElementById('editBookCover').value.trim();
+      const category = document.getElementById('editBookCat').value.trim();
+      const shelf = document.getElementById('editBookShelf').value.trim();
+      const shelfBin = document.getElementById('editBookShelfBin').value.trim();
+      const isNew = document.getElementById('editBookIsNew').checked;
+      if (!title || !author) return alert('제목과 저자는 필수 입력 항목입니다.');
+
+      await Store.update('books', id, { title, author, publisher, coverUrl, category, shelf, shelfBin, isNew });
+      closeModal('modal-edit-book');
+      alert('도서 정보가 수정되었습니다.');
+    };
+
+    window.openEditEquipModal = (id) => {
+      const eq = allEquipments.find(x => x.id === id);
+      if (!eq) return;
+      document.getElementById('editEquipId').value = eq.id;
+      document.getElementById('editEquipCat').value = eq.category || '유산소기구';
+      document.getElementById('editEquipName').value = eq.name || '';
+      document.getElementById('editEquipImg').value = eq.imageUrl || '';
+      document.getElementById('editEquipYoutube').value = eq.youtubeUrl || '';
+      openModal('modal-edit-equip');
+    };
+
+    window.updateEquipData = async () => {
+      const id = document.getElementById('editEquipId').value;
+      const category = document.getElementById('editEquipCat').value;
+      const name = document.getElementById('editEquipName').value.trim();
+      const imageUrl = document.getElementById('editEquipImg').value.trim();
+      const youtubeUrl = document.getElementById('editEquipYoutube').value.trim();
+      if (!name) return alert('기구 이름을 입력해 주세요.');
+
+      await Store.update('equipments', id, { category, name, imageUrl, youtubeUrl });
+      closeModal('modal-edit-equip');
+      alert('운동기구 정보가 수정되었습니다.');
+    };
+
+    window.openEditNoticeModal = (id) => {
+      const n = noticesData.find(x => x.id === id);
+      if (!n) return;
+      document.getElementById('editNoticeId').value = n.id;
+      document.getElementById('editNoticeCat').value = n.category || '공통공지';
+      document.getElementById('editNoticeTitle').value = n.title || '';
+      document.getElementById('editNoticeContent').value = n.content || '';
+      openModal('modal-edit-notice-item');
+    };
+
+    window.updateNoticeData = async () => {
+      const id = document.getElementById('editNoticeId').value;
+      const category = document.getElementById('editNoticeCat').value;
+      const title = document.getElementById('editNoticeTitle').value.trim();
+      const content = document.getElementById('editNoticeContent').value.trim();
+      if (!title || !content) return alert('제목과 내용을 입력해 주세요.');
+
+      await Store.update('notices', id, { category, title, content });
+      closeModal('modal-edit-notice-item');
+      alert('공지사항이 수정되었습니다.');
+    };
 
     window.Store = Store;
     window.deleteItem = async (col, id) => { if (confirm('정말 삭제하시겠습니까?')) await Store.remove(col, id); };
